@@ -1892,9 +1892,6 @@ Toolbar = (function(superClass) {
       this.opts.toolbar = ['bold', 'italic', 'underline', 'strikethrough', '|', 'ol', 'ul', 'blockquote', 'code', '|', 'link', 'image', '|', 'indent', 'outdent'];
     }
     this._render();
-    this.list.on('click', function(e) {
-      return false;
-    });
     this.wrapper.on('mousedown', (function(_this) {
       return function(e) {
         return _this.list.find('.menu-on').removeClass('.menu-on');
@@ -2679,8 +2676,8 @@ Simditor.i18n = {
     'linkText': '链接文字',
     'linkUrl': '链接地址',
     'linkTarget': '打开方式',
-    'openLinkInCurrentWindow': '在新窗口中打开',
-    'openLinkInNewWindow': '在当前窗口中打开',
+    'openLinkInCurrentWindow': '在当前窗口中打开',
+    'openLinkInNewWindow': '在新窗口中打开',
     'removeLink': '移除链接',
     'ol': '有序列表',
     'ul': '无序列表',
