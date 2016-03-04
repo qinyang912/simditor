@@ -89,6 +89,10 @@ class Toolbar extends SimpleModule
         $(@_tpl.separator).appendTo @list
         continue
 
+      if name instanceof $
+        name.appendTo @list
+        continue
+
       unless @constructor.buttons[name]
         throw new Error "simditor: invalid toolbar button #{name}"
         continue
@@ -97,6 +101,11 @@ class Toolbar extends SimpleModule
         editor: @editor
 
     @wrapper.hide() if @opts.toolbarHidden
+    @_resize() unless @opts.toolbarHidden
+
+  _resize: ->
+    $(window).on "resize", (e) =>
+      console.log(e)
 
   findButton: (name) ->
     button = @list.find('.toolbar-item-' + name).data('button')
