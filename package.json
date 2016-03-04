@@ -18,10 +18,10 @@
   "main": "lib/simditor.js",
   "homepage": "http://simditor.tower.im",
   "dependencies": {
-    "jquery": "~2.1.4",
+    "jquery": "^2.2.0",
     "simple-hotkeys": "~1.0.3",
-    "simple-uploader": "~2.0.7",
-    "simple-module": "~2.0.6"
+    "simple-module": "~2.0.6",
+    "simple-uploader": "~2.0.7"
   },
   "devDependencies": {
     "grunt": "0.x",
