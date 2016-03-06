@@ -107,22 +107,20 @@ class Toolbar extends SimpleModule
       @buttons.push button
       @buttonsJson[name] = button
 
-    console.log('@editor', @editor)
-    console.log('@buttons', @buttons)
     @wrapper.hide() if @opts.toolbarHidden
     @_moreOption() unless @opts.toolbarHidden
     
   _moreOption: ->
     @moreOption     = $(@_tpl.moreOption).appendTo @list
     @moreOptionList = []
-    @_renderMoreOption()
+    @moreOption.hide()
+    setTimeout @_renderMoreOption.bind(@), 0
     @moreOption.on "mousedown", (e) => 
       e.preventDefault()
       @moreOption.find('.more-option').toggleClass('open')
     @_resize()
 
   _renderMoreOption: ->
-    toolbarItemWidth = @buttons[0].el.outerWidth()
     listWidth        = @list.width()
     moreOptionWidth  = @moreOption.outerWidth()
     separatorCount   = @separators.length
@@ -146,7 +144,6 @@ class Toolbar extends SimpleModule
         _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
       if @moreOptionList[_count]
         for x in [0.._count]
-          console.log('@moreOptionList[x]', @moreOptionList[x]);
           _totalWidth += @moreOptionList[x].outerWidth()
         if _totalWidth < listWidth
           getMoveOutCount ++moveOutCount
@@ -158,25 +155,20 @@ class Toolbar extends SimpleModule
       getMoveInCount(moveInCount)
       for x in [1..moveInCount]
         prev = @moreOption.prev()
-        console.log('prev', prev);
         prev.detach()
         @moreOptionList.unshift(prev)
         prev.prependTo @moreOption.find('ul:eq(0)')
     else if totalWidth < listWidth
       getMoveOutCount(moveOutCount)
-      console.log('moveOutCount', moveOutCount)
       if moveOutCount > 0
         for x in [0..moveOutCount - 1]
           first = @moreOptionList.shift()
           first.detach()
           @moreOption.before first
-        console.log('@moreOptionList.length', @moreOptionList.length)
-    console.log('@moreOptionList', @moreOptionList);
-
-
-    # console.log('totalWidth', totalWidth)
-    # console.log('listWidth', listWidth)
-    # console.log 'need more option' if totalWidth >= listWidth
+    if @moreOptionList.length
+      @moreOption.show()
+    else 
+      @moreOption.hide()
 
   _resize: ->
     $(window).on "resize.simditor-more-option", (e) =>
