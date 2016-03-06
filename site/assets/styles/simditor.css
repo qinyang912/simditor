@@ -308,7 +308,9 @@
   color: #000;
   font-size: 12px;
   cursor: pointer;
-  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .simditor .simditor-toolbar > ul > li > .toolbar-item span, .simditor .more-option > ul > li > .toolbar-item span {
   opacity: 0.6;

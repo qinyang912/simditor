@@ -177,7 +177,9 @@ $simditor-button-width: 46px;
             color: #000;
             font-size: 12px;
             cursor: pointer;
-            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
           }
 
           span {
