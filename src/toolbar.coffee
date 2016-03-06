@@ -133,11 +133,12 @@ class Toolbar extends SimpleModule
 
     getMoveInCount   = (_count) =>
       _totalWidth    = 0
-      @list.find('>li').each (index) =>
-        if index < @list.find('>li').length - (_count + 1)
-          _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
-      if _totalWidth + moreOptionWidth >= listWidth
-        getMoveInCount ++moveInCount
+      if @list.find('>li').length >= _count
+        @list.find('>li').each (index) =>
+          if index < @list.find('>li').length - (_count + 1)
+            _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
+        if _totalWidth + moreOptionWidth >= listWidth
+          getMoveInCount ++moveInCount
     getMoveOutCount  = (_count) =>
       _totalWidth    = 0
       @list.find('>li').each (index) =>
