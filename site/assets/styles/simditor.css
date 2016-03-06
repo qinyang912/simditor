@@ -261,11 +261,14 @@
 }
 .simditor .simditor-toolbar .more-option, .simditor .more-option .more-option {
   position: absolute;
-  top: 100%;
+  top: 106%;
   right: 0px;
   z-index: 0;
   opacity: 0;
   width: auto;
+  border: none;
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.33);
+  border-radius: 3px;
 }
 .simditor .simditor-toolbar .more-option > ul, .simditor .more-option .more-option > ul {
   padding-left: 0px;
@@ -301,8 +304,15 @@
   text-align: center;
   text-decoration: none;
 }
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-more-option, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-more-option {
+  color: #000;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
 .simditor .simditor-toolbar > ul > li > .toolbar-item span, .simditor .more-option > ul > li > .toolbar-item span {
   opacity: 0.6;
+  transition: all 0.3s;
 }
 .simditor .simditor-toolbar > ul > li > .toolbar-item span.simditor-icon, .simditor .more-option > ul > li > .toolbar-item span.simditor-icon {
   display: inline;

@@ -173,9 +173,16 @@ $simditor-button-width: 46px;
           text-align: center;
           text-decoration: none;
 
+          &.toolbar-item-more-option {
+            color: #000;
+            font-size: 12px;
+            cursor: pointer;
+            user-select: none;
+          }
+
           span {
             opacity: 0.6;
-
+            transition: all 0.3s;
             &.simditor-icon {
               display: inline;
               line-height: normal;
