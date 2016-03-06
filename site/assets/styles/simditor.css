@@ -250,22 +250,38 @@
   opacity: 0;
   -webkit-user-select: text;
 }
-.simditor .simditor-toolbar {
+.simditor .simditor-toolbar, .simditor .more-option {
   border-bottom: 1px solid #eeeeee;
   background: #ffffff;
   width: 100%;
 }
-.simditor .simditor-toolbar > ul {
+.simditor .simditor-toolbar .more-option.open, .simditor .more-option .more-option.open {
+  z-index: 2;
+  opacity: 1;
+}
+.simditor .simditor-toolbar .more-option, .simditor .more-option .more-option {
+  position: absolute;
+  top: 100%;
+  right: 0px;
+  z-index: 0;
+  opacity: 0;
+  width: auto;
+}
+.simditor .simditor-toolbar .more-option > ul, .simditor .more-option .more-option > ul {
+  padding-left: 0px;
+}
+.simditor .simditor-toolbar > ul, .simditor .more-option > ul {
   margin: 0;
   padding: 0 0 0 6px;
   list-style: none;
+  white-space: nowrap;
 }
-.simditor .simditor-toolbar > ul > li {
+.simditor .simditor-toolbar > ul > li, .simditor .more-option > ul > li {
   position: relative;
   display: inline-block;
   font-size: 0;
 }
-.simditor .simditor-toolbar > ul > li > span.separator {
+.simditor .simditor-toolbar > ul > li > span.separator, .simditor .more-option > ul > li > span.separator {
   display: inline-block;
   background: #cfcfcf;
   width: 1px;
@@ -273,7 +289,7 @@
   margin: 11px 15px;
   vertical-align: middle;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item {
+.simditor .simditor-toolbar > ul > li > .toolbar-item, .simditor .more-option > ul > li > .toolbar-item {
   display: inline-block;
   width: 46px;
   height: 40px;
@@ -285,51 +301,51 @@
   text-align: center;
   text-decoration: none;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item span {
+.simditor .simditor-toolbar > ul > li > .toolbar-item span, .simditor .more-option > ul > li > .toolbar-item span {
   opacity: 0.6;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item span.simditor-icon {
+.simditor .simditor-toolbar > ul > li > .toolbar-item span.simditor-icon, .simditor .more-option > ul > li > .toolbar-item span.simditor-icon {
   display: inline;
   line-height: normal;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item:hover span {
+.simditor .simditor-toolbar > ul > li > .toolbar-item:hover span, .simditor .more-option > ul > li > .toolbar-item:hover span {
   opacity: 1;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.active {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.active, .simditor .more-option > ul > li > .toolbar-item.active {
   background: #eeeeee;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.active span {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.active span, .simditor .more-option > ul > li > .toolbar-item.active span {
   opacity: 1;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.disabled {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.disabled, .simditor .more-option > ul > li > .toolbar-item.disabled {
   cursor: default;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.disabled span {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.disabled span, .simditor .more-option > ul > li > .toolbar-item.disabled span {
   opacity: 0.3;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title span:before {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-title span:before {
   content: "H";
   font-size: 19px;
   font-weight: bold;
   font-family: 'Times New Roman';
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h1 span:before {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h1 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-title.active-h1 span:before {
   content: 'H1';
   font-size: 18px;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h2 span:before {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h2 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-title.active-h2 span:before {
   content: 'H2';
   font-size: 18px;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h3 span:before {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-title.active-h3 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-title.active-h3 span:before {
   content: 'H3';
   font-size: 18px;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-image {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-image, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-image {
   position: relative;
   overflow: hidden;
 }
-.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-image > input[type=file] {
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-image > input[type=file], .simditor .more-option > ul > li > .toolbar-item.toolbar-item-image > input[type=file] {
   position: absolute;
   right: 0px;
   top: 0px;
@@ -337,19 +353,19 @@
   font-size: 100px;
   cursor: pointer;
 }
-.simditor .simditor-toolbar > ul > li.menu-on .toolbar-item {
+.simditor .simditor-toolbar > ul > li.menu-on .toolbar-item, .simditor .more-option > ul > li.menu-on .toolbar-item {
   position: relative;
   z-index: 20;
   background: #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
-.simditor .simditor-toolbar > ul > li.menu-on .toolbar-item span {
+.simditor .simditor-toolbar > ul > li.menu-on .toolbar-item span, .simditor .more-option > ul > li.menu-on .toolbar-item span {
   opacity: 1;
 }
-.simditor .simditor-toolbar > ul > li.menu-on .toolbar-menu {
+.simditor .simditor-toolbar > ul > li.menu-on .toolbar-menu, .simditor .more-option > ul > li.menu-on .toolbar-menu {
   display: block;
 }
-.simditor .simditor-toolbar .toolbar-menu {
+.simditor .simditor-toolbar .toolbar-menu, .simditor .more-option .toolbar-menu {
   display: none;
   position: absolute;
   top: 40px;
@@ -359,7 +375,7 @@
   text-align: left;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
-.simditor .simditor-toolbar .toolbar-menu:before {
+.simditor .simditor-toolbar .toolbar-menu:before, .simditor .more-option .toolbar-menu:before {
   content: '';
   display: block;
   width: 46px;
@@ -369,13 +385,13 @@
   top: -3px;
   left: 0;
 }
-.simditor .simditor-toolbar .toolbar-menu ul {
+.simditor .simditor-toolbar .toolbar-menu ul, .simditor .more-option .toolbar-menu ul {
   min-width: 160px;
   list-style: none;
   margin: 0;
   padding: 10px 1px;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item, .simditor .more-option .toolbar-menu ul > li .menu-item {
   display: block;
   font-size: 16px;
   line-height: 2em;
@@ -383,30 +399,30 @@
   text-decoration: none;
   color: #666666;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item:hover {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item:hover, .simditor .more-option .toolbar-menu ul > li .menu-item:hover {
   background: #f6f6f6;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h1 {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h1, .simditor .more-option .toolbar-menu ul > li .menu-item.menu-item-h1 {
   font-size: 24px;
   color: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h2 {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h2, .simditor .more-option .toolbar-menu ul > li .menu-item.menu-item-h2 {
   font-size: 22px;
   color: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h3 {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h3, .simditor .more-option .toolbar-menu ul > li .menu-item.menu-item-h3 {
   font-size: 20px;
   color: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h4 {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h4, .simditor .more-option .toolbar-menu ul > li .menu-item.menu-item-h4 {
   font-size: 18px;
   color: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h5 {
+.simditor .simditor-toolbar .toolbar-menu ul > li .menu-item.menu-item-h5, .simditor .more-option .toolbar-menu ul > li .menu-item.menu-item-h5 {
   font-size: 16px;
   color: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu ul > li .separator {
+.simditor .simditor-toolbar .toolbar-menu ul > li .separator, .simditor .more-option .toolbar-menu ul > li .separator {
   display: block;
   border-top: 1px solid #cccccc;
   height: 0;
@@ -414,68 +430,68 @@
   font-size: 0;
   margin: 6px 0;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color, .simditor .more-option .toolbar-menu.toolbar-menu-color {
   width: 96px;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list {
   height: 40px;
   margin: 10px 6px 6px 10px;
   padding: 0;
   min-width: 0;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li {
   float: left;
   margin: 0 4px 4px 0;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color {
   display: block;
   width: 16px;
   height: 16px;
   background: #dfdfdf;
   border-radius: 2px;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover {
   opacity: 0.8;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default {
   background: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-1 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-1, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-1 {
   background: #E33737;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-2 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-2, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-2 {
   background: #e28b41;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-3 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-3, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-3 {
   background: #c8a732;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-4 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-4, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-4 {
   background: #209361;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-5 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-5, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-5 {
   background: #418caf;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-6 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-6, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-6 {
   background: #aa8773;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-7 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-7, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-7 {
   background: #999999;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table {
   background: #ffffff;
   padding: 1px;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table table {
   border: none;
   border-collapse: collapse;
   border-spacing: 0;
   table-layout: fixed;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table table td {
   padding: 0;
   cursor: pointer;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td:before {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td:before, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table table td:before {
   width: 16px;
   height: 16px;
   border: 1px solid #ffffff;
@@ -483,20 +499,20 @@
   display: block;
   content: "";
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td.selected:before {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table table td.selected:before, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table table td.selected:before {
   background: #cfcfcf;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-edit-table {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-edit-table, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-edit-table {
   display: none;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-edit-table ul li {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-edit-table ul li, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-edit-table ul li {
   white-space: nowrap;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-image .menu-item-upload-image {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-image .menu-item-upload-image, .simditor .more-option .toolbar-menu.toolbar-menu-image .menu-item-upload-image {
   position: relative;
   overflow: hidden;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-image .menu-item-upload-image input[type=file] {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-image .menu-item-upload-image input[type=file], .simditor .more-option .toolbar-menu.toolbar-menu-image .menu-item-upload-image input[type=file] {
   position: absolute;
   right: 0px;
   top: 0px;
@@ -504,13 +520,13 @@
   font-size: 100px;
   cursor: pointer;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment, .simditor .more-option .toolbar-menu.toolbar-menu-alignment {
   width: 100%;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment ul {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment ul, .simditor .more-option .toolbar-menu.toolbar-menu-alignment ul {
   min-width: 100%;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment .menu-item {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment .menu-item, .simditor .more-option .toolbar-menu.toolbar-menu-alignment .menu-item {
   text-align: center;
 }
 .simditor .simditor-popover {

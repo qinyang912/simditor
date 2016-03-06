@@ -1,0 +1,18 @@
+@mixin moreOption {
+  .more-option.open {
+    // display: block;
+    z-index: 2;
+    opacity: 1;
+  }
+	.more-option {
+    position: absolute;
+    top: 100%;
+    right: 0px;
+    z-index: 0;
+    opacity: 0;
+    width: auto;
+    & > ul {
+      padding-left: 0px;
+    }
+  }
+}

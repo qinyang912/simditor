@@ -12,6 +12,7 @@ class Toolbar extends SimpleModule
   _tpl:
     wrapper: '<div class="simditor-toolbar"><ul></ul></div>'
     separator: '<li><span class="separator"></span></li>'
+    moreOption: '<li><span class="toolbar-item toolbar-item-more-option">更多</span><div class="more-option"><ul></ul></div></li>'
 
   _init: ->
     @editor = @_module
@@ -81,31 +82,93 @@ class Toolbar extends SimpleModule
 
   _render: ->
     @buttons = []
+    @buttonsJson = {}
+    @separators = []
+    @otherEls   = [] # 其他额外插入到toolbar里的jquery元素
     @wrapper = $(@_tpl.wrapper).prependTo(@editor.wrapper)
     @list = @wrapper.find('ul')
 
     for name in @opts.toolbar
       if name == '|'
-        $(@_tpl.separator).appendTo @list
+        separator = $(@_tpl.separator).appendTo(@list)
+        @separators.push(separator)
         continue
 
       if name instanceof $
         name.appendTo @list
+        @otherEls.push(name)
         continue
 
       unless @constructor.buttons[name]
         throw new Error "simditor: invalid toolbar button #{name}"
         continue
-
-      @buttons.push new @constructor.buttons[name]
+      button = new @constructor.buttons[name]
         editor: @editor
+      @buttons.push button
+      @buttonsJson[name] = button
 
+    console.log('@editor', @editor)
+    console.log('@buttons', @buttons)
     @wrapper.hide() if @opts.toolbarHidden
-    @_resize() unless @opts.toolbarHidden
+    @_moreOption() unless @opts.toolbarHidden
+    
+  _moreOption: ->
+    @moreOption     = $(@_tpl.moreOption).appendTo @list
+    @moreOptionList = []
+    @_renderMoreOption()
+    @moreOption.on "mousedown", (e) => 
+      e.preventDefault()
+      @moreOption.find('.more-option').toggleClass('open')
+    @_resize()
+
+  _renderMoreOption: ->
+    toolbarItemWidth = @buttons[0].el.outerWidth()
+    listWidth        = @list.width()
+    moreOptionWidth  = @moreOption.outerWidth()
+    separatorCount   = @separators.length
+    separatorWidth   = @separators[0].outerWidth()
+    otherElCount     = @otherEls.length
+    buttonCount      = @buttons.length
+    totalWidth       = 0
+    moveInCount      = 1
+    moveOutCount     = 0
+    threshold        = 3
+
+    getMoveInCount   = (_count) =>
+      _totalWidth    = 0
+      @list.find('>li').each (index) =>
+        if index < @list.find('>li').length - (_count + 1)
+          _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
+      if _totalWidth + moreOptionWidth >= listWidth - threshold
+        getMoveInCount ++moveInCount
+    getMoveOutCount  = (_count) =>
+      _totalWidth    = 0
+      @list.find('>li').each (index) =>
+        _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
+      if @moreOptionList[_count] and _totalWidth + @moreOptionList[_count].outerWidth() <= listWidth + threshold
+        getMoveOutCount ++moveOutCount
+
+    @list.find('>li').each (index) =>
+      totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
+
+    if totalWidth >= listWidth - threshold
+      getMoveInCount(moveInCount)
+      console.log('moveInCount', moveInCount);
+      for x in [1..moveInCount]
+        @moreOptionList.unshift(@moreOption.prev())
+        @moreOption.prev().prependTo @moreOption.find('ul')
+    else if totalWidth <= listWidth + threshold
+      getMoveOutCount(moveOutCount)
+      console.log('moveOutCount', moveOutCount)
+
+
+    console.log('totalWidth', totalWidth)
+    console.log('listWidth', listWidth)
+    console.log 'need more option' if totalWidth >= listWidth
 
   _resize: ->
-    $(window).on "resize", (e) =>
-      console.log(e)
+    $(window).on "resize.simditor-more-option", (e) =>
+      setTimeout @_renderMoreOption.bind(@), 0
 
   findButton: (name) ->
     button = @list.find('.toolbar-item-' + name).data('button')

@@ -1879,7 +1879,8 @@ Toolbar = (function(superClass) {
 
   Toolbar.prototype._tpl = {
     wrapper: '<div class="simditor-toolbar"><ul></ul></div>',
-    separator: '<li><span class="separator"></span></li>'
+    separator: '<li><span class="separator"></span></li>',
+    moreOption: '<li><span class="toolbar-item toolbar-item-more-option">更多</span><div class="more-option"><ul></ul></div></li>'
   };
 
   Toolbar.prototype._init = function() {
@@ -1959,41 +1960,125 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._render = function() {
-    var k, len, name, ref;
+    var button, k, len, name, ref, separator;
     this.buttons = [];
+    this.buttonsJson = {};
+    this.separators = [];
+    this.otherEls = [];
     this.wrapper = $(this._tpl.wrapper).prependTo(this.editor.wrapper);
     this.list = this.wrapper.find('ul');
     ref = this.opts.toolbar;
     for (k = 0, len = ref.length; k < len; k++) {
       name = ref[k];
       if (name === '|') {
-        $(this._tpl.separator).appendTo(this.list);
+        separator = $(this._tpl.separator).appendTo(this.list);
+        this.separators.push(separator);
         continue;
       }
       if (name instanceof $) {
         name.appendTo(this.list);
+        this.otherEls.push(name);
         continue;
       }
       if (!this.constructor.buttons[name]) {
         throw new Error("simditor: invalid toolbar button " + name);
         continue;
       }
-      this.buttons.push(new this.constructor.buttons[name]({
+      button = new this.constructor.buttons[name]({
         editor: this.editor
-      }));
+      });
+      this.buttons.push(button);
+      this.buttonsJson[name] = button;
     }
+    console.log('@editor', this.editor);
+    console.log('@buttons', this.buttons);
     if (this.opts.toolbarHidden) {
       this.wrapper.hide();
     }
     if (!this.opts.toolbarHidden) {
-      return this._resize();
+      return this._moreOption();
+    }
+  };
+
+  Toolbar.prototype._moreOption = function() {
+    this.moreOption = $(this._tpl.moreOption).appendTo(this.list);
+    this.moreOptionList = [];
+    this._renderMoreOption();
+    this.moreOption.on("mousedown", (function(_this) {
+      return function(e) {
+        e.preventDefault();
+        return _this.moreOption.find('.more-option').toggleClass('open');
+      };
+    })(this));
+    return this._resize();
+  };
+
+  Toolbar.prototype._renderMoreOption = function() {
+    var buttonCount, getMoveInCount, getMoveOutCount, k, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, ref, separatorCount, separatorWidth, threshold, toolbarItemWidth, totalWidth, x;
+    toolbarItemWidth = this.buttons[0].el.outerWidth();
+    listWidth = this.list.width();
+    moreOptionWidth = this.moreOption.outerWidth();
+    separatorCount = this.separators.length;
+    separatorWidth = this.separators[0].outerWidth();
+    otherElCount = this.otherEls.length;
+    buttonCount = this.buttons.length;
+    totalWidth = 0;
+    moveInCount = 1;
+    moveOutCount = 0;
+    threshold = 3;
+    getMoveInCount = (function(_this) {
+      return function(_count) {
+        var _totalWidth;
+        _totalWidth = 0;
+        _this.list.find('>li').each(function(index) {
+          if (index < _this.list.find('>li').length - (_count + 1)) {
+            return _totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
+          }
+        });
+        if (_totalWidth + moreOptionWidth >= listWidth - threshold) {
+          return getMoveInCount(++moveInCount);
+        }
+      };
+    })(this);
+    getMoveOutCount = (function(_this) {
+      return function(_count) {
+        var _totalWidth;
+        _totalWidth = 0;
+        _this.list.find('>li').each(function(index) {
+          return _totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
+        });
+        if (_this.moreOptionList[_count] && _totalWidth + _this.moreOptionList[_count].outerWidth() <= listWidth + threshold) {
+          return getMoveOutCount(++moveOutCount);
+        }
+      };
+    })(this);
+    this.list.find('>li').each((function(_this) {
+      return function(index) {
+        return totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
+      };
+    })(this));
+    if (totalWidth >= listWidth - threshold) {
+      getMoveInCount(moveInCount);
+      console.log('moveInCount', moveInCount);
+      for (x = k = 1, ref = moveInCount; 1 <= ref ? k <= ref : k >= ref; x = 1 <= ref ? ++k : --k) {
+        this.moreOptionList.unshift(this.moreOption.prev());
+        this.moreOption.prev().prependTo(this.moreOption.find('ul'));
+      }
+    } else if (totalWidth <= listWidth + threshold) {
+      getMoveOutCount(moveOutCount);
+      console.log('moveOutCount', moveOutCount);
+    }
+    console.log('totalWidth', totalWidth);
+    console.log('listWidth', listWidth);
+    if (totalWidth >= listWidth) {
+      return console.log('need more option');
     }
   };
 
   Toolbar.prototype._resize = function() {
-    return $(window).on("resize", (function(_this) {
+    return $(window).on("resize.simditor-more-option", (function(_this) {
       return function(e) {
-        return console.log(e);
+        return setTimeout(_this._renderMoreOption.bind(_this), 0);
       };
     })(this));
   };
