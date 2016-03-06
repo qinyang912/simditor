@@ -132,39 +132,51 @@ class Toolbar extends SimpleModule
     totalWidth       = 0
     moveInCount      = 1
     moveOutCount     = 0
-    threshold        = 3
 
     getMoveInCount   = (_count) =>
       _totalWidth    = 0
       @list.find('>li').each (index) =>
         if index < @list.find('>li').length - (_count + 1)
           _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
-      if _totalWidth + moreOptionWidth >= listWidth - threshold
+      if _totalWidth + moreOptionWidth >= listWidth
         getMoveInCount ++moveInCount
     getMoveOutCount  = (_count) =>
       _totalWidth    = 0
       @list.find('>li').each (index) =>
         _totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
-      if @moreOptionList[_count] and _totalWidth + @moreOptionList[_count].outerWidth() <= listWidth + threshold
-        getMoveOutCount ++moveOutCount
+      if @moreOptionList[_count]
+        for x in [0.._count]
+          console.log('@moreOptionList[x]', @moreOptionList[x]);
+          _totalWidth += @moreOptionList[x].outerWidth()
+        if _totalWidth < listWidth
+          getMoveOutCount ++moveOutCount
 
     @list.find('>li').each (index) =>
       totalWidth += @list.find('>li:eq(' + index + ')').outerWidth()
 
-    if totalWidth >= listWidth - threshold
+    if totalWidth >= listWidth
       getMoveInCount(moveInCount)
-      console.log('moveInCount', moveInCount);
       for x in [1..moveInCount]
-        @moreOptionList.unshift(@moreOption.prev())
-        @moreOption.prev().prependTo @moreOption.find('ul')
-    else if totalWidth <= listWidth + threshold
+        prev = @moreOption.prev()
+        console.log('prev', prev);
+        prev.detach()
+        @moreOptionList.unshift(prev)
+        prev.prependTo @moreOption.find('ul:eq(0)')
+    else if totalWidth < listWidth
       getMoveOutCount(moveOutCount)
       console.log('moveOutCount', moveOutCount)
+      if moveOutCount > 0
+        for x in [0..moveOutCount - 1]
+          first = @moreOptionList.shift()
+          first.detach()
+          @moreOption.before first
+        console.log('@moreOptionList.length', @moreOptionList.length)
+    console.log('@moreOptionList', @moreOptionList);
 
 
-    console.log('totalWidth', totalWidth)
-    console.log('listWidth', listWidth)
-    console.log 'need more option' if totalWidth >= listWidth
+    # console.log('totalWidth', totalWidth)
+    # console.log('listWidth', listWidth)
+    # console.log 'need more option' if totalWidth >= listWidth
 
   _resize: ->
     $(window).on "resize.simditor-more-option", (e) =>

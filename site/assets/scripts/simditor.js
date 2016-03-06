@@ -2014,7 +2014,7 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._renderMoreOption = function() {
-    var buttonCount, getMoveInCount, getMoveOutCount, k, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, ref, separatorCount, separatorWidth, threshold, toolbarItemWidth, totalWidth, x;
+    var buttonCount, first, getMoveInCount, getMoveOutCount, k, l, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, prev, ref, ref1, separatorCount, separatorWidth, toolbarItemWidth, totalWidth, x;
     toolbarItemWidth = this.buttons[0].el.outerWidth();
     listWidth = this.list.width();
     moreOptionWidth = this.moreOption.outerWidth();
@@ -2025,7 +2025,6 @@ Toolbar = (function(superClass) {
     totalWidth = 0;
     moveInCount = 1;
     moveOutCount = 0;
-    threshold = 3;
     getMoveInCount = (function(_this) {
       return function(_count) {
         var _totalWidth;
@@ -2035,20 +2034,26 @@ Toolbar = (function(superClass) {
             return _totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
           }
         });
-        if (_totalWidth + moreOptionWidth >= listWidth - threshold) {
+        if (_totalWidth + moreOptionWidth >= listWidth) {
           return getMoveInCount(++moveInCount);
         }
       };
     })(this);
     getMoveOutCount = (function(_this) {
       return function(_count) {
-        var _totalWidth;
+        var _totalWidth, k, ref, x;
         _totalWidth = 0;
         _this.list.find('>li').each(function(index) {
           return _totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
         });
-        if (_this.moreOptionList[_count] && _totalWidth + _this.moreOptionList[_count].outerWidth() <= listWidth + threshold) {
-          return getMoveOutCount(++moveOutCount);
+        if (_this.moreOptionList[_count]) {
+          for (x = k = 0, ref = _count; 0 <= ref ? k <= ref : k >= ref; x = 0 <= ref ? ++k : --k) {
+            console.log('@moreOptionList[x]', _this.moreOptionList[x]);
+            _totalWidth += _this.moreOptionList[x].outerWidth();
+          }
+          if (_totalWidth < listWidth) {
+            return getMoveOutCount(++moveOutCount);
+          }
         }
       };
     })(this);
@@ -2057,22 +2062,28 @@ Toolbar = (function(superClass) {
         return totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
       };
     })(this));
-    if (totalWidth >= listWidth - threshold) {
+    if (totalWidth >= listWidth) {
       getMoveInCount(moveInCount);
-      console.log('moveInCount', moveInCount);
       for (x = k = 1, ref = moveInCount; 1 <= ref ? k <= ref : k >= ref; x = 1 <= ref ? ++k : --k) {
-        this.moreOptionList.unshift(this.moreOption.prev());
-        this.moreOption.prev().prependTo(this.moreOption.find('ul'));
+        prev = this.moreOption.prev();
+        console.log('prev', prev);
+        prev.detach();
+        this.moreOptionList.unshift(prev);
+        prev.prependTo(this.moreOption.find('ul:eq(0)'));
       }
-    } else if (totalWidth <= listWidth + threshold) {
+    } else if (totalWidth < listWidth) {
       getMoveOutCount(moveOutCount);
       console.log('moveOutCount', moveOutCount);
+      if (moveOutCount > 0) {
+        for (x = l = 0, ref1 = moveOutCount - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; x = 0 <= ref1 ? ++l : --l) {
+          first = this.moreOptionList.shift();
+          first.detach();
+          this.moreOption.before(first);
+        }
+        console.log('@moreOptionList.length', this.moreOptionList.length);
+      }
     }
-    console.log('totalWidth', totalWidth);
-    console.log('listWidth', listWidth);
-    if (totalWidth >= listWidth) {
-      return console.log('need more option');
-    }
+    return console.log('@moreOptionList', this.moreOptionList);
   };
 
   Toolbar.prototype._resize = function() {
