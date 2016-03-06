@@ -146,6 +146,10 @@ $simditor-button-width: 46px;
       padding: 0 0 0 6px;
       list-style: none;
       white-space: nowrap;
+      & > li:first-child[data-type="separator"] {
+        position: absolute;
+        opacity: 0;
+      }
 
       & > li {
         position: relative;

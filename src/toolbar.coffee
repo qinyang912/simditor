@@ -11,7 +11,7 @@ class Toolbar extends SimpleModule
 
   _tpl:
     wrapper: '<div class="simditor-toolbar"><ul></ul></div>'
-    separator: '<li><span class="separator"></span></li>'
+    separator: '<li data-type="separator"><span class="separator"></span></li>'
     moreOption: '<li><a href="javascript:;" class="toolbar-item toolbar-item-more-option"><span>更多</span></a><div class="more-option"><ul></ul></div></li>'
 
   _init: ->

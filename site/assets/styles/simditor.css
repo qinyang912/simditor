@@ -279,6 +279,10 @@
   list-style: none;
   white-space: nowrap;
 }
+.simditor .simditor-toolbar > ul > li:first-child[data-type="separator"], .simditor .more-option > ul > li:first-child[data-type="separator"] {
+  position: absolute;
+  opacity: 0;
+}
 .simditor .simditor-toolbar > ul > li, .simditor .more-option > ul > li {
   position: relative;
   display: inline-block;
