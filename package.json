@@ -18,7 +18,6 @@
   "main": "lib/simditor.js",
   "homepage": "http://simditor.tower.im",
   "dependencies": {
-    "simditor-mention": "git+https://github.com/qinyang912/simditor-mention.git",
     "simple-hotkeys": "~1.0.3",
     "simple-module": "~2.0.6",
     "simple-uploader": "git+https://github.com/qinyang912/simple-uploader.git"

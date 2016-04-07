@@ -1,18 +1,18 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module unless amdModuleId is set
-    define('simditor', ["jquery","simple-module","simple-hotkeys","simple-uploader","simditor-mention"], function ($, SimpleModule, simpleHotkeys, simpleUploader, simditorMention) {
-      return (root['Simditor'] = factory($, SimpleModule, simpleHotkeys, simpleUploader, simditorMention));
+    define('simditor', ["jquery","simple-module","simple-hotkeys","simple-uploader"], function ($, SimpleModule, simpleHotkeys, simpleUploader) {
+      return (root['Simditor'] = factory($, SimpleModule, simpleHotkeys, simpleUploader));
     });
   } else if (typeof exports === 'object') {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory(require("jquery"),require("simple-module"),require("simple-hotkeys"),require("simple-uploader"),require("simditor-mention"));
+    module.exports = factory(require("jquery"),require("simple-module"),require("simple-hotkeys"),require("simple-uploader"));
   } else {
-    root['Simditor'] = factory(jQuery,SimpleModule,simple.hotkeys,simple.uploader,simditor.mention);
+    root['Simditor'] = factory(jQuery,SimpleModule,simple.hotkeys,simple.uploader);
   }
-}(this, function ($, SimpleModule, simpleHotkeys, simpleUploader, simditorMention) {
+}(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
 var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2550,8 +2550,6 @@ Simditor = (function(superClass) {
   Simditor.connect(Indentation);
 
   Simditor.connect(Clipboard);
-
-  Simditor.connect(simditorMention);
 
   Simditor.count = 0;
 
