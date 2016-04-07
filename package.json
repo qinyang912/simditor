@@ -19,7 +19,6 @@
   "homepage": "http://simditor.tower.im",
   "dependencies": {
     "simple-hotkeys": "~1.0.3",
-    "simple-module": "~2.0.6",
     "simple-uploader": "git+https://github.com/qinyang912/simple-uploader.git"
   },
   "devDependencies": {
