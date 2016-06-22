@@ -7,7 +7,7 @@ class LinkButton extends Button
 
   htmlTag: 'a'
 
-  disableTag: 'pre'
+  disableTag: 'pre,[data-mention="true"]'
 
   render: (args...) ->
     super args...
