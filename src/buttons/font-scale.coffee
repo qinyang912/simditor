@@ -58,9 +58,12 @@ class FontScaleButton extends Button
 
   setActive: (active, param) ->
     super active
+    @el.removeClass 'active-font active-12 active-14 active-16 active-18 active-20 active-24 active-30 active-36'
     return if not active
     fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size');
     console.log('setActive', fontSize, @el);
+    
+    @el.addClass('active active-font active-' + fontSize.replace('px', ''))
 
   command: (param)->
     range = @editor.selection.range()
@@ -83,10 +86,7 @@ class FontScaleButton extends Button
     $scales.each (i, n) =>
       $span = $(n)
       size = n.style.fontSize
-      if param is '16px'
-        $span.replaceWith $span.contents()
-      else
-        $span.css('fontSize', param)
+      $span.css('fontSize', param)
 
     @editor.trigger 'valuechanged'
 

@@ -369,6 +369,43 @@
   font-size: 100px;
   cursor: pointer;
 }
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-font span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-font span:before {
+  font-size: 19px;
+  font-weight: bold;
+  font-family: 'Times New Roman';
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-12 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-12 span:before {
+  content: '12';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-14 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-14 span:before {
+  content: '14';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-16 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-16 span:before {
+  content: '16';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-18 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-18 span:before {
+  content: '18';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-20 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-20 span:before {
+  content: '20';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-24 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-24 span:before {
+  content: '24';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-30 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-30 span:before {
+  content: '30';
+  font-size: 18px;
+}
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-36 span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-36 span:before {
+  content: '36';
+  font-size: 18px;
+}
 .simditor .simditor-toolbar > ul > li.menu-on .toolbar-item, .simditor .more-option > ul > li.menu-on .toolbar-item {
   position: relative;
   z-index: 20;

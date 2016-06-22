@@ -252,6 +252,45 @@ $simditor-button-width: 46px;
               cursor: pointer;
             }
           }
+          &.toolbar-item-fontScale {
+            &.active-font span:before {
+              font-size: 19px;
+              font-weight: bold;
+              font-family: 'Times New Roman';
+            }
+            &.active-12 span:before {
+              content: '12';
+              font-size: 18px;
+            }
+            &.active-14 span:before {
+              content: '14';
+              font-size: 18px;
+            }
+            &.active-16 span:before {
+              content: '16';
+              font-size: 18px;
+            }
+            &.active-18 span:before {
+              content: '18';
+              font-size: 18px;
+            }
+            &.active-20 span:before {
+              content: '20';
+              font-size: 18px;
+            }
+            &.active-24 span:before {
+              content: '24';
+              font-size: 18px;
+            }
+            &.active-30 span:before {
+              content: '30';
+              font-size: 18px;
+            }
+            &.active-36 span:before {
+              content: '36';
+              font-size: 18px;
+            }
+          }
         }
 
         &.menu-on {
