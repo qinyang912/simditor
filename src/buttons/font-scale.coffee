@@ -9,33 +9,39 @@ class FontScaleButton extends Button
 
   htmlTag: 'span'
 
-  sizeMap:
-    'x-large': '1.5em'
-    'large': '1.25em'
-    'small': '.75em'
-    'x-small': '.5em'
-
   _init: ->
     @menu = [{
-      name: '150%'
-      text: @_t('fontScaleXLarge')
-      param: '5'
+      name: '75%'
+      text: '12'
+      param: '12px'
     }, {
-      name: '125%'
-      text: @_t('fontScaleLarge')
-      param: '4'
+      name: '87.5%'
+      text: '14'
+      param: '14px'
     }, {
       name: '100%'
-      text: @_t('fontScaleNormal')
-      param: '3'
+      text: '16'
+      param: '16px'
     }, {
-      name: '75%'
-      text: @_t('fontScaleSmall')
-      param: '2'
+      name: '112.5%'
+      text: '18'
+      param: '18px'
     }, {
-      name: '50%'
-      text: @_t('fontScaleXSmall')
-      param: '1'
+      name: '125%'
+      text: '20'
+      param: '20px'
+    }, {
+      name: '150%'
+      text: '24'
+      param: '24px'
+    }, {
+      name: '187.5%'
+      text: '30'
+      param: '30px'
+    }, {
+      name: '225%'
+      text: '36'
+      param: '36px'
     }]
     super()
 
@@ -46,8 +52,15 @@ class FontScaleButton extends Button
     startNode = startNodes.filter('span[style*="font-size"]')
     endNode = endNodes.filter('span[style*="font-size"]')
     active = startNodes.length > 0 and endNodes.length > 0 and startNode.is(endNode)
+    @node = if active then startNode else null
     @setActive active
     @active
+
+  setActive: (active, param) ->
+    super active
+    return if not active
+    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size');
+    console.log('setActive', fontSize, @el);
 
   command: (param)->
     range = @editor.selection.range()
@@ -55,7 +68,7 @@ class FontScaleButton extends Button
 
     # Use span[style] instead of font[size]
     document.execCommand 'styleWithCSS', false, true
-    document.execCommand 'fontSize', false, param
+    document.execCommand 'fontSize', false, 3
     document.execCommand 'styleWithCSS', false, false
     @editor.selection.reset()
     @editor.selection.range()
@@ -70,11 +83,10 @@ class FontScaleButton extends Button
     $scales.each (i, n) =>
       $span = $(n)
       size = n.style.fontSize
-
-      if /large|x-large|small|x-small/.test(size)
-        $span.css('fontSize', @sizeMap[size])
-      else if size is 'medium'
+      if param is '16px'
         $span.replaceWith $span.contents()
+      else
+        $span.css('fontSize', param)
 
     @editor.trigger 'valuechanged'
 
