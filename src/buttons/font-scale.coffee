@@ -60,9 +60,7 @@ class FontScaleButton extends Button
     super active
     @el.removeClass 'active-font active-12 active-14 active-16 active-18 active-20 active-24 active-30 active-36'
     return if not active
-    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size');
-    console.log('setActive', fontSize, @el);
-    
+    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size')    
     @el.addClass('active active-font active-' + fontSize.replace('px', ''))
 
   command: (param)->

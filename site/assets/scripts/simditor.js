@@ -3417,7 +3417,6 @@ FontScaleButton = (function(superClass) {
       return;
     }
     fontSize = window.getComputedStyle(this.node[0], null).getPropertyValue('font-size');
-    console.log('setActive', fontSize, this.el);
     return this.el.addClass('active active-font active-' + fontSize.replace('px', ''));
   };
 
