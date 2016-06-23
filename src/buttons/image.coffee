@@ -164,7 +164,7 @@ class ImageButton extends Button
 
       percent = loaded / total
       percent = (percent * 100).toFixed(0)
-      percent = 99 if percent > 99
+      percent = 85 if percent > 85
       $mask.find('.progress').height "#{100 - percent}%"
     , 500), @
     @editor.uploader.on 'uploadprogress', uploadProgress
