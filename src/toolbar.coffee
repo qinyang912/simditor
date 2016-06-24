@@ -109,7 +109,7 @@ class Toolbar extends SimpleModule
       @buttonsJson[name] = button
 
     @wrapper.hide() if @opts.toolbarHidden
-    @_moreOption() unless @opts.toolbarHidden and @opts.moreOption
+    @_moreOption()  if !@opts.toolbarHidden and @opts.moreOption
     
   _moreOption: ->
     @moreOption     = $(@_tpl.moreOption).appendTo @list

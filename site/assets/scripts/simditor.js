@@ -1994,7 +1994,7 @@ Toolbar = (function(superClass) {
     if (this.opts.toolbarHidden) {
       this.wrapper.hide();
     }
-    if (!(this.opts.toolbarHidden && this.opts.moreOption)) {
+    if (!this.opts.toolbarHidden && this.opts.moreOption) {
       return this._moreOption();
     }
   };
