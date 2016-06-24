@@ -8,6 +8,7 @@ class Toolbar extends SimpleModule
     toolbarFloat: true
     toolbarHidden: false
     toolbarFloatOffset: 0
+    moreOption: true
 
   _tpl:
     wrapper: '<div class="simditor-toolbar"><ul></ul></div>'
@@ -108,7 +109,7 @@ class Toolbar extends SimpleModule
       @buttonsJson[name] = button
 
     @wrapper.hide() if @opts.toolbarHidden
-    @_moreOption() unless @opts.toolbarHidden
+    @_moreOption() unless @opts.toolbarHidden and @opts.moreOption
     
   _moreOption: ->
     @moreOption     = $(@_tpl.moreOption).appendTo @list

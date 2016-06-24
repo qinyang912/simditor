@@ -1874,7 +1874,8 @@ Toolbar = (function(superClass) {
     toolbar: true,
     toolbarFloat: true,
     toolbarHidden: false,
-    toolbarFloatOffset: 0
+    toolbarFloatOffset: 0,
+    moreOption: true
   };
 
   Toolbar.prototype._tpl = {
@@ -1993,7 +1994,7 @@ Toolbar = (function(superClass) {
     if (this.opts.toolbarHidden) {
       this.wrapper.hide();
     }
-    if (!this.opts.toolbarHidden) {
+    if (!(this.opts.toolbarHidden && this.opts.moreOption)) {
       return this._moreOption();
     }
   };
