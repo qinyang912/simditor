@@ -172,6 +172,7 @@ class ImageButton extends Button
     @editor.uploader.on 'uploadsuccess', (e, file, result) =>
       return unless file.inline
 
+      console.log('upload success result', result)
       $img = file.img
       return unless $img.hasClass('uploading') and $img.parent().length > 0
 
@@ -188,20 +189,47 @@ class ImageButton extends Button
         alert msg
         img_path = @defaultImage
       else
-        img_path = result.file_path
+        if result.ALY == true
+          $.ajax
+            url: @editor.opts.upload.GET_FILE_FROM_ALI
+            type: 'post'
+            data: 
+              fileName: file.name
+              filePath: result.key
+            success: (data) =>
+              console.log('save in server ', data);
+              img_path = data.realPath;
+              @loadImage $img, img_path, =>
+                $img.removeData 'file'
+                $img.removeClass 'uploading'
+                .removeClass 'loading'
 
-      @loadImage $img, img_path, =>
-        $img.removeData 'file'
-        $img.removeClass 'uploading'
-        .removeClass 'loading'
+                $mask = $img.data('mask')
+                $mask.remove() if $mask
+                $img.removeData 'mask'
+                $img.addClass 'oss-file'
+                $img.attr 'data-bucket', 'rishiqing-file'
+                $img.attr 'data-key-name', result.key 
 
-        $mask = $img.data('mask')
-        $mask.remove() if $mask
-        $img.removeData 'mask'
+                @editor.trigger 'valuechanged'
+                if @editor.body.find('img.uploading').length < 1
+                  @editor.uploader.trigger 'uploadready', [file, result]
+            error: () => 
 
-        @editor.trigger 'valuechanged'
-        if @editor.body.find('img.uploading').length < 1
-          @editor.uploader.trigger 'uploadready', [file, result]
+        else 
+          img_path = result.file_path
+          @loadImage $img, img_path, =>
+            $img.removeData 'file'
+            $img.removeClass 'uploading'
+            .removeClass 'loading'
+
+            $mask = $img.data('mask')
+            $mask.remove() if $mask
+            $img.removeData 'mask'
+
+            @editor.trigger 'valuechanged'
+            if @editor.body.find('img.uploading').length < 1
+              @editor.uploader.trigger 'uploadready', [file, result]
 
       if @popover.active
         @popover.srcEl.prop('disabled', false)
