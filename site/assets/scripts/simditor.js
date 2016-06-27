@@ -2930,6 +2930,7 @@ Button = (function(superClass) {
                 'left': 'auto',
                 'right': 0
               });
+              _this.menuWrapper.addClass('toolbar-menu-align-right');
             }
             _this.trigger('menuexpand');
           }

@@ -428,6 +428,10 @@
   text-align: left;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-align-right:before, .simditor .more-option .toolbar-menu.toolbar-menu-align-right:before {
+  left: auto;
+  right: 0;
+}
 .simditor .simditor-toolbar .toolbar-menu:before, .simditor .more-option .toolbar-menu:before {
   content: '';
   display: block;

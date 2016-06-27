@@ -52,11 +52,11 @@ class Button extends SimpleModule
         if @wrapper.is('.menu-on')
           exceed = @menuWrapper.offset().left + @menuWrapper.outerWidth() + 5 -
             @editor.wrapper.offset().left - @editor.wrapper.outerWidth()
-
           if exceed > 0
             @menuWrapper.css
               'left': 'auto'
               'right': 0
+            @menuWrapper.addClass('toolbar-menu-align-right');
 
           @trigger 'menuexpand'
 
