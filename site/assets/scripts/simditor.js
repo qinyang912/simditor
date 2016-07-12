@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, FormatPaintButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -2819,7 +2819,10 @@ Simditor.i18n = {
     'fontScaleLarge': '大号字体',
     'fontScaleNormal': '正常大小',
     'fontScaleSmall': '小号字体',
-    'fontScaleXSmall': '超小字体'
+    'fontScaleXSmall': '超小字体',
+    'undo': '撤销',
+    'redo': '重做',
+    'formatPaint': '格式刷'
   },
   'en-US': {
     'blockquote': 'Block Quote',
@@ -2872,7 +2875,10 @@ Simditor.i18n = {
     'fontScaleLarge': 'Large Size',
     'fontScaleNormal': 'Normal Size',
     'fontScaleSmall': 'Small Size',
-    'fontScaleXSmall': 'X Small Size'
+    'fontScaleXSmall': 'X Small Size',
+    'undo': 'Undo',
+    'redo': 'Redo',
+    'formatPaint': 'Format Paint'
   }
 };
 
@@ -5802,6 +5808,29 @@ UndoButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(UndoButton);
+
+FormatPaintButton = (function(superClass) {
+  extend(FormatPaintButton, superClass);
+
+  function FormatPaintButton() {
+    return FormatPaintButton.__super__.constructor.apply(this, arguments);
+  }
+
+  FormatPaintButton.prototype.name = 'formatPaint';
+
+  FormatPaintButton.prototype.icon = 'simditor-r-icon-format_paint';
+
+  FormatPaintButton.prototype._init = function() {
+    return FormatPaintButton.__super__._init.call(this);
+  };
+
+  FormatPaintButton.prototype.command = function() {};
+
+  return FormatPaintButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(FormatPaintButton);
 
 return Simditor;
 
