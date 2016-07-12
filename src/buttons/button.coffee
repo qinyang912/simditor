@@ -103,7 +103,15 @@ class Button extends SimpleModule
       @_status() if @editor.inputManager.focused
 
   iconClassOf: (icon) ->
-    if icon then "simditor-icon simditor-icon-#{icon}" else ''
+    iconClass = ''
+    if icon
+      if icon.indexOf("simditor-r-icon") == 0
+        iconClass = icon
+      else 
+        iconClass = "simditor-icon simditor-icon-#{icon}"
+    else
+      iconClass = ""
+    return iconClass
 
   setIcon: (icon) ->
     @el.find('span')

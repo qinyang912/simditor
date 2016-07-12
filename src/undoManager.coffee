@@ -17,7 +17,7 @@ class UndoManager extends SimpleModule
 
     if @editor.util.os.mac
       undoShortcut = 'cmd+z'
-      redoShortcut = 'shift+cmd+z'
+      redoShortcut = 'cmd+y'
     else if @editor.util.os.win
       undoShortcut = 'ctrl+z'
       redoShortcut = 'ctrl+y'
@@ -46,7 +46,7 @@ class UndoManager extends SimpleModule
 
     @editor.on 'selectionchanged', (e) =>
       @resetCaretPosition()
-      @update()
+      # @update()
 
     @editor.on 'focus', (e) =>
       @_pushUndoState() if @_stack.length == 0
@@ -98,6 +98,7 @@ class UndoManager extends SimpleModule
       null
 
   undo: ->
+    console.log('undo', @);
     return if @_index < 1 or @_stack.length < 2
 
     @editor.hidePopover()

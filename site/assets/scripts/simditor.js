@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -1306,7 +1306,7 @@ UndoManager = (function(superClass) {
     this._stack = [];
     if (this.editor.util.os.mac) {
       undoShortcut = 'cmd+z';
-      redoShortcut = 'shift+cmd+z';
+      redoShortcut = 'cmd+y';
     } else if (this.editor.util.os.win) {
       undoShortcut = 'ctrl+z';
       redoShortcut = 'ctrl+y';
@@ -1343,8 +1343,7 @@ UndoManager = (function(superClass) {
     })(this));
     this.editor.on('selectionchanged', (function(_this) {
       return function(e) {
-        _this.resetCaretPosition();
-        return _this.update();
+        return _this.resetCaretPosition();
       };
     })(this));
     this.editor.on('focus', (function(_this) {
@@ -1420,6 +1419,7 @@ UndoManager = (function(superClass) {
 
   UndoManager.prototype.undo = function() {
     var state;
+    console.log('undo', this);
     if (this._index < 1 || this._stack.length < 2) {
       return;
     }
@@ -2997,11 +2997,18 @@ Button = (function(superClass) {
   };
 
   Button.prototype.iconClassOf = function(icon) {
+    var iconClass;
+    iconClass = '';
     if (icon) {
-      return "simditor-icon simditor-icon-" + icon;
+      if (icon.indexOf("simditor-r-icon") === 0) {
+        iconClass = icon;
+      } else {
+        iconClass = "simditor-icon simditor-icon-" + icon;
+      }
     } else {
-      return '';
+      iconClass = "";
     }
+    return iconClass;
   };
 
   Button.prototype.setIcon = function(icon) {
@@ -5731,6 +5738,62 @@ AlignmentButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(AlignmentButton);
+
+UndoButton = (function(superClass) {
+  extend(UndoButton, superClass);
+
+  function UndoButton() {
+    return UndoButton.__super__.constructor.apply(this, arguments);
+  }
+
+  UndoButton.prototype.name = 'undo';
+
+  UndoButton.prototype.icon = 'simditor-r-icon-undo';
+
+  UndoButton.prototype._init = function() {
+    return UndoButton.__super__._init.call(this);
+  };
+
+  UndoButton.prototype._activeStatus = function() {};
+
+  UndoButton.prototype.command = function() {
+    console.log('undo command');
+    return this.editor.undoManager.undo();
+  };
+
+  return UndoButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(UndoButton);
+
+UndoButton = (function(superClass) {
+  extend(UndoButton, superClass);
+
+  function UndoButton() {
+    return UndoButton.__super__.constructor.apply(this, arguments);
+  }
+
+  UndoButton.prototype.name = 'redo';
+
+  UndoButton.prototype.icon = 'simditor-r-icon-redo';
+
+  UndoButton.prototype._init = function() {
+    return UndoButton.__super__._init.call(this);
+  };
+
+  UndoButton.prototype._activeStatus = function() {};
+
+  UndoButton.prototype.command = function() {
+    console.log('redo command');
+    return this.editor.undoManager.redo();
+  };
+
+  return UndoButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(UndoButton);
 
 return Simditor;
 
