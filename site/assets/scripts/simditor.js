@@ -1343,7 +1343,8 @@ UndoManager = (function(superClass) {
     })(this));
     this.editor.on('selectionchanged', (function(_this) {
       return function(e) {
-        return _this.resetCaretPosition();
+        _this.resetCaretPosition();
+        return _this.update();
       };
     })(this));
     this.editor.on('focus', (function(_this) {
@@ -1419,7 +1420,6 @@ UndoManager = (function(superClass) {
 
   UndoManager.prototype.undo = function() {
     var state;
-    console.log('undo', this);
     if (this._index < 1 || this._stack.length < 2) {
       return;
     }
@@ -1449,12 +1449,16 @@ UndoManager = (function(superClass) {
   };
 
   UndoManager.prototype.update = function() {
-    var currentState;
+    var currentState, html;
     currentState = this.currentState();
     if (!currentState) {
       return;
     }
-    currentState.html = this.editor.body.html();
+    html = this.editor.body.html();
+    if (currentState.html !== html) {
+      return;
+    }
+    currentState.html = html;
     return currentState.caret = this.caretPosition();
   };
 

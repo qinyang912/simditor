@@ -46,7 +46,7 @@ class UndoManager extends SimpleModule
 
     @editor.on 'selectionchanged', (e) =>
       @resetCaretPosition()
-      # @update()
+      @update()
 
     @editor.on 'focus', (e) =>
       @_pushUndoState() if @_stack.length == 0
@@ -98,7 +98,6 @@ class UndoManager extends SimpleModule
       null
 
   undo: ->
-    console.log('undo', @);
     return if @_index < 1 or @_stack.length < 2
 
     @editor.hidePopover()
@@ -131,8 +130,9 @@ class UndoManager extends SimpleModule
   update: () ->
     currentState = @currentState()
     return unless currentState
-
-    currentState.html = @editor.body.html()
+    html = @editor.body.html()
+    return if currentState.html != html
+    currentState.html = html
     currentState.caret = @caretPosition()
 
   _getNodeOffset: (node, index) ->
