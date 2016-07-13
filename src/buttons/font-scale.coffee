@@ -77,7 +77,7 @@ class FontScaleButton extends Button
     containerNode = @editor.selection.containerNode()
 
     if containerNode[0].nodeType is Node.TEXT_NODE
-      $scales = containerNode.closest('span[style*="font-size"]')
+      $scales = containerNode.closest('[style*="font-size"]')
     else
       $scales = containerNode.find('span[style*="font-size"]')
 

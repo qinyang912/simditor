@@ -3452,7 +3452,7 @@ FontScaleButton = (function(superClass) {
     this.editor.selection.range();
     containerNode = this.editor.selection.containerNode();
     if (containerNode[0].nodeType === Node.TEXT_NODE) {
-      $scales = containerNode.closest('span[style*="font-size"]');
+      $scales = containerNode.closest('[style*="font-size"]');
     } else {
       $scales = containerNode.find('span[style*="font-size"]');
     }
