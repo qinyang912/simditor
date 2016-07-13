@@ -3454,7 +3454,7 @@ FontScaleButton = (function(superClass) {
     if (containerNode[0].nodeType === Node.TEXT_NODE) {
       $scales = containerNode.closest('[style*="font-size"]');
     } else {
-      $scales = containerNode.find('span[style*="font-size"]');
+      $scales = containerNode.find('[style*="font-size"]');
     }
     $scales.each((function(_this) {
       return function(i, n) {
@@ -5822,7 +5822,7 @@ FormatPaintButton = (function(superClass) {
 
   FormatPaintButton.prototype.commandList = ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-color', 'background-image', 'background-position', 'background-repeat', 'background-attachment'];
 
-  FormatPaintButton.prototype.attrList = ['class', 'style'];
+  FormatPaintButton.prototype.attrList = ['class', 'style', 'size', 'color', 'face'];
 
   FormatPaintButton.prototype._format = {};
 

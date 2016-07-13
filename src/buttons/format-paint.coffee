@@ -7,7 +7,7 @@ class FormatPaintButton extends Button
 
   commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-color', 'background-image', 'background-position', 'background-repeat', 'background-attachment']
 
-  attrList: ['class', 'style']
+  attrList: ['class', 'style', 'size', 'color', 'face']
 
   _format: {}
 
