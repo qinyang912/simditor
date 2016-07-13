@@ -9,40 +9,65 @@ class FormatPaintButton extends Button
 
   attrList: ['class', 'style', 'size', 'color', 'face']
 
+  tagList: ['p', 'b', 'i', 'u', 'strike', 'h1', 'h2', 'h3', 'h4', 'h5'] # 需要考虑，p标签只能在目标标签是h1-h5的时候才可用
+
   _format: {}
 
   _init: ->
     super()
+    @editor.on 'blur', (e) =>
+      @_removeEvent()
 
   _getSelectedElement: ->
     $startNodes = @editor.selection.startNodes()
-    return unless $startNodes and $startNodes.length > 0
-    startNode = $startNodes[0]
-    $node
-    if startNode.nodeName != '#text'
-      $node = $(startNode)
-    else 
-      $node = $(startNode).parent();
-    return if $node.is(@editor.body)
-    return $node
 
-  _getComputedStyle: (node) ->
+  _getComputedStyle: ($node) ->
+    node = $node[0]
+    if node.nodeName == '#text'
+      node = $(node).parent()[0]
     _computedStyle = window.getComputedStyle(node, null)
     computedStyles = {}
     @commandList.forEach (style) ->
       computedStyles[style] = _computedStyle.getPropertyValue(style)
     return computedStyles
 
-  _getEleAttr: (node) -> 
-    eleAttr = {nodeName: node.nodeName}
-    @attrList.forEach (attr) ->
-      eleAttr[attr] = node.getAttribute(attr) || ''
-    return [eleAttr]
+  _getEleAttr: ($node) ->
+    $node = $node.filter @tagList.join ','
+    list = []
+    $node.each (i, node) =>
+      eleAttr = {nodeName: node.nodeName}
+      @attrList.forEach (attr) =>
+        value = node.getAttribute(attr) || ''
+        if value
+          eleAttr[attr] = value
+      list.push(eleAttr)
+    return list
+
+  _formatApply: ->
+    console.log('_formatApply ****', @_format)
+
+  _registerEvent: ->
+    @_mousedown = false
+    @_mouseup = false
+    @editor.body.one 'mousedown.format_paint', (e) => 
+      @_mousedown = true;
+    @editor.body.one 'mouseup.format_paint', (e) =>
+      @_mouseup = true
+      if @_mousedown
+        @_formatApply();
+      @editor.body.removeClass 'simditor-on-format-paint'
+
+  _removeEvent: ->
+    @editor.body.off 'mousedown.format_paint'
+    @editor.body.off 'mouseup.format_paint'
+    @editor.body.removeClass 'simditor-on-format-paint'
+
   command: ->
     $node = @_getSelectedElement()
     return unless $node and $node.length > 0
-    @_format['computedStyles'] = @_getComputedStyle($node[0])
-    @_format['elements'] = @_getEleAttr($node[0])
+    @_format.computedStyles = @_getComputedStyle($node)
+    @_format.elements = @_getEleAttr($node)
     @editor.body.addClass 'simditor-on-format-paint'
-    console.log('_format', @_format);
+    @_registerEvent()
+
 Simditor.Toolbar.addButton FormatPaintButton

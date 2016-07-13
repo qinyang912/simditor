@@ -5824,33 +5824,30 @@ FormatPaintButton = (function(superClass) {
 
   FormatPaintButton.prototype.attrList = ['class', 'style', 'size', 'color', 'face'];
 
+  FormatPaintButton.prototype.tagList = ['p', 'b', 'i', 'u', 'strike', 'h1', 'h2', 'h3', 'h4', 'h5'];
+
   FormatPaintButton.prototype._format = {};
 
   FormatPaintButton.prototype._init = function() {
-    return FormatPaintButton.__super__._init.call(this);
+    FormatPaintButton.__super__._init.call(this);
+    return this.editor.on('blur', (function(_this) {
+      return function(e) {
+        return _this._removeEvent();
+      };
+    })(this));
   };
 
   FormatPaintButton.prototype._getSelectedElement = function() {
-    var $node, $startNodes, startNode;
-    $startNodes = this.editor.selection.startNodes();
-    if (!($startNodes && $startNodes.length > 0)) {
-      return;
-    }
-    startNode = $startNodes[0];
-    $node;
-    if (startNode.nodeName !== '#text') {
-      $node = $(startNode);
-    } else {
-      $node = $(startNode).parent();
-    }
-    if ($node.is(this.editor.body)) {
-      return;
-    }
-    return $node;
+    var $startNodes;
+    return $startNodes = this.editor.selection.startNodes();
   };
 
-  FormatPaintButton.prototype._getComputedStyle = function(node) {
-    var _computedStyle, computedStyles;
+  FormatPaintButton.prototype._getComputedStyle = function($node) {
+    var _computedStyle, computedStyles, node;
+    node = $node[0];
+    if (node.nodeName === '#text') {
+      node = $(node).parent()[0];
+    }
     _computedStyle = window.getComputedStyle(node, null);
     computedStyles = {};
     this.commandList.forEach(function(style) {
@@ -5859,15 +5856,56 @@ FormatPaintButton = (function(superClass) {
     return computedStyles;
   };
 
-  FormatPaintButton.prototype._getEleAttr = function(node) {
-    var eleAttr;
-    eleAttr = {
-      nodeName: node.nodeName
-    };
-    this.attrList.forEach(function(attr) {
-      return eleAttr[attr] = node.getAttribute(attr) || '';
-    });
-    return [eleAttr];
+  FormatPaintButton.prototype._getEleAttr = function($node) {
+    var list;
+    $node = $node.filter(this.tagList.join(','));
+    list = [];
+    $node.each((function(_this) {
+      return function(i, node) {
+        var eleAttr;
+        eleAttr = {
+          nodeName: node.nodeName
+        };
+        _this.attrList.forEach(function(attr) {
+          var value;
+          value = node.getAttribute(attr) || '';
+          if (value) {
+            return eleAttr[attr] = value;
+          }
+        });
+        return list.push(eleAttr);
+      };
+    })(this));
+    return list;
+  };
+
+  FormatPaintButton.prototype._formatApply = function() {
+    return console.log('_formatApply ****', this._format);
+  };
+
+  FormatPaintButton.prototype._registerEvent = function() {
+    this._mousedown = false;
+    this._mouseup = false;
+    this.editor.body.one('mousedown.format_paint', (function(_this) {
+      return function(e) {
+        return _this._mousedown = true;
+      };
+    })(this));
+    return this.editor.body.one('mouseup.format_paint', (function(_this) {
+      return function(e) {
+        _this._mouseup = true;
+        if (_this._mousedown) {
+          _this._formatApply();
+        }
+        return _this.editor.body.removeClass('simditor-on-format-paint');
+      };
+    })(this));
+  };
+
+  FormatPaintButton.prototype._removeEvent = function() {
+    this.editor.body.off('mousedown.format_paint');
+    this.editor.body.off('mouseup.format_paint');
+    return this.editor.body.removeClass('simditor-on-format-paint');
   };
 
   FormatPaintButton.prototype.command = function() {
@@ -5876,10 +5914,10 @@ FormatPaintButton = (function(superClass) {
     if (!($node && $node.length > 0)) {
       return;
     }
-    this._format['computedStyles'] = this._getComputedStyle($node[0]);
-    this._format['elements'] = this._getEleAttr($node[0]);
+    this._format.computedStyles = this._getComputedStyle($node);
+    this._format.elements = this._getEleAttr($node);
     this.editor.body.addClass('simditor-on-format-paint');
-    return console.log('_format', this._format);
+    return this._registerEvent();
   };
 
   return FormatPaintButton;
