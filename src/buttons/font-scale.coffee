@@ -79,7 +79,7 @@ class FontScaleButton extends Button
     if containerNode[0].nodeType is Node.TEXT_NODE
       $scales = containerNode.closest('[style*="font-size"]')
     else
-      $scales = containerNode.find('span[style*="font-size"]')
+      $scales = containerNode.find('[style*="font-size"]')
 
     $scales.each (i, n) =>
       $span = $(n)
