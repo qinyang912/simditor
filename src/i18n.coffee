@@ -52,7 +52,9 @@ Simditor.i18n =
     'fontScaleNormal': '正常大小'
     'fontScaleSmall': '小号字体'
     'fontScaleXSmall': '超小字体'
-
+    'undo': '撤销'
+    'redo': '重做'
+    'formatPaint': '格式刷'
   'en-US':
     'blockquote': 'Block Quote'
     'bold': 'Bold'
@@ -105,3 +107,6 @@ Simditor.i18n =
     'fontScaleNormal': 'Normal Size'
     'fontScaleSmall': 'Small Size'
     'fontScaleXSmall': 'X Small Size'
+    'undo': 'Undo'
+    'redo': 'Redo'
+    'formatPaint': 'Format Paint'

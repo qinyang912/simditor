@@ -17,7 +17,7 @@ class UndoManager extends SimpleModule
 
     if @editor.util.os.mac
       undoShortcut = 'cmd+z'
-      redoShortcut = 'shift+cmd+z'
+      redoShortcut = 'cmd+y'
     else if @editor.util.os.win
       undoShortcut = 'ctrl+z'
       redoShortcut = 'ctrl+y'
@@ -130,8 +130,9 @@ class UndoManager extends SimpleModule
   update: () ->
     currentState = @currentState()
     return unless currentState
-
-    currentState.html = @editor.body.html()
+    html = @editor.body.html()
+    return if currentState.html != html
+    currentState.html = html
     currentState.caret = @caretPosition()
 
   _getNodeOffset: (node, index) ->
