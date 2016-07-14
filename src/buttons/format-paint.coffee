@@ -62,7 +62,10 @@ class FormatPaintButton extends Button
     @editor.body.off 'mouseup.format_paint'
     @editor.body.removeClass 'simditor-on-format-paint'
 
+  _shouldCleanUpNode: ->
+    
   command: ->
+    @_removeEvent()
     $node = @_getSelectedElement()
     return unless $node and $node.length > 0
     @_format.computedStyles = @_getComputedStyle($node)

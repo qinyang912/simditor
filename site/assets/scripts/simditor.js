@@ -5908,8 +5908,11 @@ FormatPaintButton = (function(superClass) {
     return this.editor.body.removeClass('simditor-on-format-paint');
   };
 
+  FormatPaintButton.prototype._shouldCleanUpNode = function() {};
+
   FormatPaintButton.prototype.command = function() {
     var $node;
+    this._removeEvent();
     $node = this._getSelectedElement();
     if (!($node && $node.length > 0)) {
       return;
