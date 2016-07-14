@@ -41,6 +41,9 @@ module.exports = (grunt) ->
             'src/buttons/table.coffee'
             'src/buttons/strikethrough.coffee'
             'src/buttons/alignment.coffee'
+            'src/buttons/undo.coffee'
+            'src/buttons/redo.coffee'
+            'src/buttons/format-paint.coffee'
           ]
       site:
         expand: true
