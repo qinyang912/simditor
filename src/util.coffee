@@ -104,6 +104,47 @@ class Util extends SimpleModule
 
     new RegExp("^(#{@blockNodes.join('|')})$").test node.nodeName.toLowerCase()
 
+  isTextNode: (node) ->
+    node = $(node)[0]
+    return node && node.nodeType && (node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8);
+
+  canHaveChildren: (node) ->
+    node = $(node)[0]
+    if !node or @isTextNode(node)
+      return false
+    switch (node.tagName || node.nodeName).toUpperCase()
+      when "AREA", "BASE", "BASEFONT", "COL", "FRAME", "HR", "IMG", "BR", "INPUT", "ISINDEX", "LINK", "META", "PARAM" then return false
+      else return true
+
+  isTag: (node, tagName) ->
+    node = $(node)[0]
+    return !!(node && node.tagName && tagName) && node.tagName.toLowerCase() == tagName.toLowerCase()
+
+  isAncestorOf: (m, l) ->
+    try
+      if @isTextNode(l)
+        tempL = l.parentNode
+      else 
+        tempL = l
+      return !@isTextNode(m) && (l.parentNode == m || $.contains(m, tempL))
+    catch error
+      return false
+
+  isAncestorOrSelf: (l, k) ->
+    return @isAncestorOf(l, k) || (l == k);
+
+  findAncestorUntil: (l, k) ->
+    if @isAncestorOf(l, k)
+      while k && k.parentNode != l
+        k = k.parentNode
+    k
+
+  traversePreviousNode: (l) ->
+    k = l
+    while k && !(m = k.previousSibling)
+      k = k.parentNode;
+    m
+
   getNodeLength: (node) ->
     node = $(node)[0]
     switch node.nodeType

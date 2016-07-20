@@ -43,8 +43,12 @@ class FormatPaintButton extends Button
       list.push(eleAttr)
     return list
 
-  _formatApply: ->
-    console.log('_formatApply ****', @_format)
+  _formatPainterApply: ->
+    stripCondition = (node) => 
+      return !@editor.util.isTextNode(node) && !@editor.util.isBlockNode(node) && @editor.util.canHaveChildren(node)
+    command = new Simditor.StripElementCommand @editor,
+      stripCondition: stripCondition
+    command.onExecute()
 
   _registerEvent: ->
     @_mousedown = false
@@ -54,7 +58,7 @@ class FormatPaintButton extends Button
     @editor.body.one 'mouseup.format_paint', (e) =>
       @_mouseup = true
       if @_mousedown
-        @_formatApply();
+        @_formatPainterApply();
       @editor.body.removeClass 'simditor-on-format-paint'
 
   _removeEvent: ->
