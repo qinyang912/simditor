@@ -24,7 +24,7 @@ class InlineCommand extends CommandBase
 
   executeInlineCommand: ->
     editor = @get_editor()
-    @range = editor.selection.range()
+    @range = @getEditorRange()
     @collapsedRange = @range.collapsed
     if @collapsedRange and @isGreedy()
       boundary = @getWordBoundaries(@range.startContainer, @range.startOffset)
@@ -105,4 +105,6 @@ class InlineCommand extends CommandBase
     rangeFragmentsTraverse.traverseFragments(@traverseCondition.bind(@))
 
   traverseCondition: (node) ->
-    
+
+  getEditorRange: ->
+    return Simditor.DomRange.toDomRange(@get_editor(), @get_editor().selection.range())    

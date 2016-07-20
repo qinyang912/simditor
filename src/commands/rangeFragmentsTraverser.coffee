@@ -39,8 +39,8 @@ class RangeFragmentsTraverser extends SimpleModule
 
   isInRange: (node) ->
     range = @range.cloneRange();
-    @editor.selection.selectNodeContents(node, range);
-    return this.range.compareBoundaryPoints(Telerik.Web.UI.Editor.DomRange.END_TO_END, g) > -1 && this.range.compareBoundaryPoints(Telerik.Web.UI.Editor.DomRange.START_TO_START, g) < 1;
+    range.selectNodeContents(node);
+    return @range.compareBoundaryPoints(Simditor.DomRange.END_TO_END, range) > -1 && @range.compareBoundaryPoints(Simditor.DomRange.START_TO_START, range) < 1;
 
   splitRangeEdges: ->
     end = @splitEnd(@range.endContainer, @range.endOffset)

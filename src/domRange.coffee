@@ -31,7 +31,7 @@ class DomRange extends SimpleModule
     preventCalculateEdges: false
 
   constructor: (editor, range, options) ->
-    @options = $.extend(@options, r || {})
+    @options = $.extend(@options, options || {})
     @range = range
     @editor = editor
     @_initialCalculateEdges()
@@ -96,6 +96,39 @@ class DomRange extends SimpleModule
       @setEnd(node, node[tmp].length);
       @setStart(r, 0);
 
+  cloneRange: ->
+    range = @_updateBrowserRange()
+    if @editor.browser.msie && range.length
+        cloneRange = @cloneControlRange(range)
+        if cloneRange
+          return new b.DomRange(@editor, cloneRange, @options)
+    cloneRange = @_cloneBrowserRange()
+    if cloneRange
+        domRange = new b.DomRange(@editor, cloneRange, @options)
+        domRange.setStart(@startContainer, @startOffset)
+        domRange.setEnd(@endContainer, @endOffset)
+    return domRange;
+
+  cloneControlRange: (range) ->
+    length = range.length
+    if length
+      item = range.item(0)
+      body = item.ownerDocument.body
+      range = body.createControlRange()
+      for t in [0..length - 1]
+        range.addElement(@range.item(t))
+      return range;
+
+  _cloneBrowserRange: ->
+    if @range.cloneRange
+      return @range.cloneRange()
+    else
+      if @range.duplicate
+        return @range.duplicate()
+      else
+        if @editor.browser.msie && @range.length
+          return @cloneControlRange(@range)
+
   _isControlRange: ->
     @range.length
 
@@ -132,8 +165,12 @@ class DomRange extends SimpleModule
   _calculateEdge: (isStart, J) ->
     range = @range;
     isCollapsed = @_isBrowserRangeCollapsed();
-    containerKey = isStart ? "startContainer" : "endContainer";
-    offsetKey = isStart ? "startOffset" : "endOffset";
+    if isStart
+      containerKey = "startContainer"
+      offsetKey = "startOffset"
+    else
+      containerKey = "endContainer"
+      offsetKey = "endOffset"
     container = range[containerKey];
     offset = range[offsetKey] || 0;
     # if !container
@@ -292,5 +329,6 @@ class DomRange extends SimpleModule
       when DomRange.END_TO_START
         return "StartToEnd"
       else return ""
+
       
 Simditor.DomRange = DomRange

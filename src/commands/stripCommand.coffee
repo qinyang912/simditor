@@ -17,3 +17,9 @@ class StripCommand extends InlineCommand
 
   shouldCollectNode: ->
     true
+
+  getEditorRange: ->
+    if @settings.selectAll
+
+    else
+      return super()
