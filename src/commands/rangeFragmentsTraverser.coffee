@@ -18,29 +18,44 @@ class RangeFragmentsTraverser extends SimpleModule
       @collectNode(@nodesToTraverse.shift(), fn)
 
   collectNode: (node, fn) ->
-    # while node && this.isInRange(node)
-    #   if !this.isSuitable(node, fn)
-    #     this.removeTraversedNode(node);
-    #     if (node.firstChild) {
-    #       this.collectNode(node.firstChild, fn);
-    #     }
-    #     node = node.nextSibling;
-    #     continue;
-    #   var f = new b.FragmentContainer();
-    #   var g = node;
-    #   while g && this.isSuitable(g, fn)
-    #     if fn(g)
-    #       this.removeTraversedNode(g);
-    #     node = g;
-    #     g = node.nextSibling;
-    #     f.addNode(node);
-    #   this.storeFragment(f);
-    #   node = node ? node.nextSibling : null ;
+    while node && @isInRange(node)
+      if !@isSuitable(node, fn)
+        @removeTraversedNode(node)
+        if node.firstChild
+          @collectNode(node.firstChild, fn)
+        node = node.nextSibling
+        continue
+      fragmentContainer = new Simditor.FragmentContainer()
+      nodeTmp = node
+      while nodeTmp && @isSuitable(nodeTmp, fn)
+        if fn(nodeTmp)
+          @removeTraversedNode(nodeTmp)
+        node = nodeTmp
+        nodeTmp = node.nextSibling
+        fragmentContainer.addNode(node)
+      @storeFragment(fragmentContainer)
+      if node
+        node = node.nextSibling
+      else
+        node = null
+
+  storeFragment: (fragment) ->
+    if fragment.nodes.length
+      @traversedFragments.push(fragment)
+
+  isSuitable: (node, fn) ->
+    return fn(node) && @isInRange(node);
 
   isInRange: (node) ->
     range = @range.cloneRange();
     range.selectNodeContents(node);
     return @range.compareBoundaryPoints(Simditor.DomRange.END_TO_END, range) > -1 && @range.compareBoundaryPoints(Simditor.DomRange.START_TO_START, range) < 1;
+
+  removeTraversedNode: (node) ->
+    list = @nodesToTraverse;
+    index = $.inArray(node, list);
+    if index != -1
+      list.splice(index, 1);
 
   splitRangeEdges: ->
     end = @splitEnd(@range.endContainer, @range.endOffset)

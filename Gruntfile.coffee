@@ -51,6 +51,7 @@ module.exports = (grunt) ->
             'src/commands/stripElementCommand.coffee'
             'src/commands/rangeFragmentsTraverser.coffee'
             'src/commands/rangeIterator.coffee'
+            'src/commands/fragmentContainer.coffee'
           ]
       site:
         expand: true

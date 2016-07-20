@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, DomRange, FontScaleButton, FormatPaintButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, DomRange, FontScaleButton, FormatPaintButton, Formatter, FragmentContainer, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -6466,7 +6466,9 @@ InlineCommand = (function(superClass) {
     return rangeFragmentsTraverse.traverseFragments(this.traverseCondition.bind(this));
   };
 
-  InlineCommand.prototype.traverseCondition = function(node) {};
+  InlineCommand.prototype.traverseCondition = function(node) {
+    return this.shouldCollectNode();
+  };
 
   InlineCommand.prototype.getEditorRange = function() {
     return Simditor.DomRange.toDomRange(this.get_editor(), this.get_editor().selection.range());
@@ -6571,13 +6573,62 @@ RangeFragmentsTraverser = (function(superClass) {
     return results;
   };
 
-  RangeFragmentsTraverser.prototype.collectNode = function(node, fn) {};
+  RangeFragmentsTraverser.prototype.collectNode = function(node, fn) {
+    var fragmentContainer, nodeTmp, results;
+    results = [];
+    while (node && this.isInRange(node)) {
+      if (!this.isSuitable(node, fn)) {
+        this.removeTraversedNode(node);
+        if (node.firstChild) {
+          this.collectNode(node.firstChild, fn);
+        }
+        node = node.nextSibling;
+        continue;
+      }
+      fragmentContainer = new Simditor.FragmentContainer();
+      nodeTmp = node;
+      while (nodeTmp && this.isSuitable(nodeTmp, fn)) {
+        if (fn(nodeTmp)) {
+          this.removeTraversedNode(nodeTmp);
+        }
+        node = nodeTmp;
+        nodeTmp = node.nextSibling;
+        fragmentContainer.addNode(node);
+      }
+      this.storeFragment(fragmentContainer);
+      if (node) {
+        results.push(node = node.nextSibling);
+      } else {
+        results.push(node = null);
+      }
+    }
+    return results;
+  };
+
+  RangeFragmentsTraverser.prototype.storeFragment = function(fragment) {
+    if (fragment.nodes.length) {
+      return this.traversedFragments.push(fragment);
+    }
+  };
+
+  RangeFragmentsTraverser.prototype.isSuitable = function(node, fn) {
+    return fn(node) && this.isInRange(node);
+  };
 
   RangeFragmentsTraverser.prototype.isInRange = function(node) {
     var range;
     range = this.range.cloneRange();
     range.selectNodeContents(node);
     return this.range.compareBoundaryPoints(Simditor.DomRange.END_TO_END, range) > -1 && this.range.compareBoundaryPoints(Simditor.DomRange.START_TO_START, range) < 1;
+  };
+
+  RangeFragmentsTraverser.prototype.removeTraversedNode = function(node) {
+    var index, list;
+    list = this.nodesToTraverse;
+    index = $.inArray(node, list);
+    if (index !== -1) {
+      return list.splice(index, 1);
+    }
   };
 
   RangeFragmentsTraverser.prototype.splitRangeEdges = function() {
@@ -6740,6 +6791,23 @@ RangeIterator = (function(superClass) {
 })(SimpleModule);
 
 Simditor.RangeIterator = RangeIterator;
+
+FragmentContainer = (function(superClass) {
+  extend(FragmentContainer, superClass);
+
+  function FragmentContainer() {
+    this.nodes = [];
+  }
+
+  FragmentContainer.prototype.addNode = function(node) {
+    return this.nodes.push(node);
+  };
+
+  return FragmentContainer;
+
+})(SimpleModule);
+
+Simditor.FragmentContainer = FragmentContainer;
 
 return Simditor;
 

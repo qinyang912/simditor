@@ -105,6 +105,6 @@ class InlineCommand extends CommandBase
     rangeFragmentsTraverse.traverseFragments(@traverseCondition.bind(@))
 
   traverseCondition: (node) ->
-
+    return @shouldCollectNode()
   getEditorRange: ->
     return Simditor.DomRange.toDomRange(@get_editor(), @get_editor().selection.range())    
