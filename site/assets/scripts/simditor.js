@@ -6463,7 +6463,8 @@ InlineCommand = (function(superClass) {
     var rangeFragmentsTraverse;
     range = range || this.range;
     rangeFragmentsTraverse = new Simditor.RangeFragmentsTraverser(this.get_editor(), range);
-    return rangeFragmentsTraverse.traverseFragments(this.traverseCondition.bind(this));
+    rangeFragmentsTraverse.traverseFragments(this.traverseCondition.bind(this));
+    return rangeFragmentsTraverse.traversedFragments;
   };
 
   InlineCommand.prototype.traverseCondition = function(node) {
@@ -6555,7 +6556,6 @@ RangeFragmentsTraverser = (function(superClass) {
   }
 
   RangeFragmentsTraverser.prototype.traverseFragments = function(fn) {
-    var results;
     this.iterator.iterate((function(_this) {
       return function(node) {
         return _this.nodesToTraverse.push(node);
@@ -6566,11 +6566,10 @@ RangeFragmentsTraverser = (function(superClass) {
     }
     this.splitRangeEdges();
     this.clearEmptyTextNodes(this.nodesToTraverse);
-    results = [];
     while (this.nodesToTraverse.length) {
-      results.push(this.collectNode(this.nodesToTraverse.shift(), fn));
+      this.collectNode(this.nodesToTraverse.shift(), fn);
     }
-    return results;
+    return this.removeDuplicatedEnd();
   };
 
   RangeFragmentsTraverser.prototype.collectNode = function(node, fn) {
@@ -6710,6 +6709,29 @@ RangeFragmentsTraverser = (function(superClass) {
       } else {
         results.push(f++);
       }
+    }
+    return results;
+  };
+
+  RangeFragmentsTraverser.prototype.removeDuplicatedEnd = function() {
+    var firstNode, fragments, last, lastNode, lastSecond, length, results;
+    fragments = this.traversedFragments;
+    if (fragments.length < 2) {
+      return;
+    }
+    length = fragments.length;
+    last = fragments[length - 1];
+    firstNode = last.nodes[0];
+    lastSecond = fragments[length - 2];
+    lastNode = lastSecond.nodes[lastSecond.nodes.length - 1];
+    results = [];
+    while (this.editor.util.isAncestorOf(lastNode, firstNode)) {
+      last.removeNodeAt(0);
+      if (last.nodes.length === 0) {
+        fragments.pop();
+        break;
+      }
+      results.push(firstNode = last.nodes[0]);
     }
     return results;
   };

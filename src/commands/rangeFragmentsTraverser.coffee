@@ -17,6 +17,8 @@ class RangeFragmentsTraverser extends SimpleModule
     while @nodesToTraverse.length
       @collectNode(@nodesToTraverse.shift(), fn)
 
+    @removeDuplicatedEnd()
+
   collectNode: (node, fn) ->
     while node && @isInRange(node)
       if !@isSuitable(node, fn)
@@ -115,5 +117,21 @@ class RangeFragmentsTraverser extends SimpleModule
           e.parentNode.removeChild(e)
       else
         f++
+
+  removeDuplicatedEnd: ->
+    fragments = this.traversedFragments
+    if fragments.length < 2
+      return
+    length = fragments.length
+    last = fragments[length - 1]
+    firstNode = last.nodes[0]
+    lastSecond = fragments[length - 2]
+    lastNode = lastSecond.nodes[lastSecond.nodes.length - 1]
+    while @editor.util.isAncestorOf(lastNode, firstNode)
+      last.removeNodeAt(0)
+      if last.nodes.length == 0
+        fragments.pop()
+        break;
+      firstNode = last.nodes[0]
 
 Simditor.RangeFragmentsTraverser = RangeFragmentsTraverser

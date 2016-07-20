@@ -103,6 +103,7 @@ class InlineCommand extends CommandBase
     range = range || @range
     rangeFragmentsTraverse = new Simditor.RangeFragmentsTraverser @get_editor(), range
     rangeFragmentsTraverse.traverseFragments(@traverseCondition.bind(@))
+    return rangeFragmentsTraverse.traversedFragments;
 
   traverseCondition: (node) ->
     return @shouldCollectNode()
