@@ -34,6 +34,12 @@ class InlineCommand extends CommandBase
       @collapsedRange = @range.collapsed
 
     fragments = @traverseFragments(@range)
+    if @range
+      @emptyRange = @range.toString() == ""
+    else
+      @emptyRange = true
+    @storeRangeByFragments(fragments)
+
 
 
     # var j = this
@@ -107,5 +113,26 @@ class InlineCommand extends CommandBase
 
   traverseCondition: (node) ->
     return @shouldCollectNode()
+
   getEditorRange: ->
-    return Simditor.DomRange.toDomRange(@get_editor(), @get_editor().selection.range())    
+    return Simditor.DomRange.toDomRange(@get_editor(), @get_editor().selection.range()) 
+
+  storeRangeByFragments: (fragments) ->
+    if fragments.length
+      first = fragments[0];
+      last = fragments[fragments.length - 1];
+      @startMarker = @createMarker();
+      @endMarker = @startMarker.cloneNode(true);
+      first.insertBeforeFirst(@startMarker);
+      last.appendNodeAfter(@endMarker);
+    else
+      @storeRange()
+
+  createMarker: ->
+    marker = document.createElement("span")
+    marker.className = @markerClass
+    marker.innerHTML = "&nbsp;"
+    marker
+
+
+
