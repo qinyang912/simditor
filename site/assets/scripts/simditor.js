@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, DomRange, FontScaleButton, FormatPaintButton, Formatter, FragmentContainer, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, Formatter, FragmentContainer, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -509,7 +509,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype.autolink = function($el) {
-    var $link, $node, findLinkNode, lastIndex, len, linkNodes, match, o, re, replaceEls, subStr, text, uri;
+    var $link, $node, findLinkNode, lastIndex, len, linkNodes, match, re, replaceEls, subStr, text, uri, w;
     if ($el == null) {
       $el = this.editor.body;
     }
@@ -530,8 +530,8 @@ Formatter = (function(superClass) {
     };
     findLinkNode($el);
     re = /(https?:\/\/|www\.)[\w\-\.\?&=\/#%:,@\!\+]+/ig;
-    for (o = 0, len = linkNodes.length; o < len; o++) {
-      $node = linkNodes[o];
+    for (w = 0, len = linkNodes.length; w < len; w++) {
+      $node = linkNodes[w];
       text = $node.text();
       replaceEls = [];
       match = null;
@@ -551,7 +551,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype.format = function($el) {
-    var $node, blockNode, len, len1, n, node, o, q, ref, ref1;
+    var $node, blockNode, len, len1, n, node, ref, ref1, w, y;
     if ($el == null) {
       $el = this.editor.body;
     }
@@ -560,13 +560,13 @@ Formatter = (function(superClass) {
       return $el;
     }
     ref = $el.contents();
-    for (o = 0, len = ref.length; o < len; o++) {
-      n = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      n = ref[w];
       this.cleanNode(n, true);
     }
     ref1 = $el.contents();
-    for (q = 0, len1 = ref1.length; q < len1; q++) {
-      node = ref1[q];
+    for (y = 0, len1 = ref1.length; y < len1; y++) {
+      node = ref1[y];
       $node = $(node);
       if ($node.is('br')) {
         if (typeof blockNode !== "undefined" && blockNode !== null) {
@@ -598,7 +598,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype.cleanNode = function(node, recursive) {
-    var $blockEls, $childImg, $node, $p, $td, allowedAttributes, attr, contents, isDecoration, len, len1, n, o, q, ref, ref1, text, textNode;
+    var $blockEls, $childImg, $node, $p, $td, allowedAttributes, attr, contents, isDecoration, len, len1, n, ref, ref1, text, textNode, w, y;
     $node = $(node);
     if (!($node.length > 0)) {
       return;
@@ -635,8 +635,8 @@ Formatter = (function(superClass) {
       if (!isDecoration) {
         allowedAttributes = this._allowedAttributes[$node[0].tagName.toLowerCase()];
         ref = $.makeArray($node[0].attributes);
-        for (o = 0, len = ref.length; o < len; o++) {
-          attr = ref[o];
+        for (w = 0, len = ref.length; w < len; w++) {
+          attr = ref[w];
           if (attr.name === 'style') {
             continue;
           }
@@ -674,8 +674,8 @@ Formatter = (function(superClass) {
       contents = null;
     }
     if (recursive && (contents != null) && !$node.is('pre')) {
-      for (q = 0, len1 = contents.length; q < len1; q++) {
-        n = contents[q];
+      for (y = 0, len1 = contents.length; y < len1; y++) {
+        n = contents[y];
         this.cleanNode(n, true);
       }
     }
@@ -683,7 +683,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype._cleanNodeStyles = function($node) {
-    var allowedStyles, len, o, pair, ref, ref1, style, styleStr, styles;
+    var allowedStyles, len, pair, ref, ref1, style, styleStr, styles, w;
     styleStr = $node.attr('style');
     if (!styleStr) {
       return;
@@ -695,8 +695,8 @@ Formatter = (function(superClass) {
     }
     styles = {};
     ref = styleStr.split(';');
-    for (o = 0, len = ref.length; o < len; o++) {
-      style = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      style = ref[w];
       style = $.trim(style);
       pair = style.split(':');
       if (!(pair.length = 2)) {
@@ -1524,10 +1524,10 @@ UndoManager = (function(superClass) {
   };
 
   UndoManager.prototype._getNodeByPosition = function(position) {
-    var child, childNodes, i, len, node, o, offset, ref;
+    var child, childNodes, i, len, node, offset, ref, w;
     node = this.editor.body[0];
     ref = position.slice(0, position.length - 1);
-    for (i = o = 0, len = ref.length; o < len; i = ++o) {
+    for (i = w = 0, len = ref.length; w < len; i = ++w) {
       offset = ref[i];
       childNodes = node.childNodes;
       if (offset > childNodes.length - 1) {
@@ -1595,6 +1595,8 @@ Util = (function(superClass) {
   }
 
   Util.pluginName = 'Util';
+
+  Util.prototype.emptyNodeRegExp = /^&nbsp;?$/;
 
   Util.prototype._init = function() {
     this.editor = this._module;
@@ -1760,6 +1762,10 @@ Util = (function(superClass) {
     return !!(node && node.tagName && tagName) && node.tagName.toLowerCase() === tagName.toLowerCase();
   };
 
+  Util.prototype.isList = function(node) {
+    return this.isTag(node, "ul") || this.isTag(node, "ol");
+  };
+
   Util.prototype.isAncestorOf = function(m, l) {
     var error, tempL;
     try {
@@ -1815,6 +1821,30 @@ Util = (function(superClass) {
     return k;
   };
 
+  Util.prototype.getAllChildNodesBy = function(m, l) {
+    var k;
+    k = [];
+    this._getChildNodes(m, k, l);
+    return k;
+  };
+
+  Util.prototype._getChildNodes = function(o, l, m, p) {
+    var firstChild, n, results;
+    firstChild = o.firstChild;
+    results = [];
+    while (firstChild) {
+      n = m(firstChild);
+      if (!(p && n) && firstChild.nodeType === 1 && this.canHaveChildren(firstChild)) {
+        this._getChildNodes(firstChild, l, m, p);
+      }
+      if (n) {
+        l.push(firstChild);
+      }
+      results.push(firstChild = firstChild.nextSibling);
+    }
+    return results;
+  };
+
   Util.prototype.getNodeLength = function(node) {
     node = $(node)[0];
     switch (node.nodeType) {
@@ -1830,7 +1860,7 @@ Util = (function(superClass) {
   };
 
   Util.prototype.dataURLtoBlob = function(dataURL) {
-    var BlobBuilder, arrayBuffer, bb, blobArray, byteString, hasArrayBufferViewSupport, hasBlobConstructor, i, intArray, mimeString, o, ref, supportBlob;
+    var BlobBuilder, arrayBuffer, bb, blobArray, byteString, hasArrayBufferViewSupport, hasBlobConstructor, i, intArray, mimeString, ref, supportBlob, w;
     hasBlobConstructor = window.Blob && (function() {
       var e;
       try {
@@ -1861,7 +1891,7 @@ Util = (function(superClass) {
     }
     arrayBuffer = new ArrayBuffer(byteString.length);
     intArray = new Uint8Array(arrayBuffer);
-    for (i = o = 0, ref = byteString.length; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
+    for (i = w = 0, ref = byteString.length; 0 <= ref ? w <= ref : w >= ref; i = 0 <= ref ? ++w : --w) {
       intArray[i] = byteString.charCodeAt(i);
     }
     mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
@@ -1949,6 +1979,120 @@ Util = (function(superClass) {
       lastMatch = match;
     }
     return $.trim(result);
+  };
+
+  Util.prototype.isEditorContentArea = function(node) {
+    if (node && node === this.editor.body[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  Util.prototype.removeNode = function(node) {
+    var parentNode;
+    parentNode = node.parentNode;
+    if (parentNode !== null) {
+      while (node.firstChild) {
+        parentNode.insertBefore(node.firstChild, node);
+      }
+      parentNode.removeChild(node);
+      return parentNode;
+    }
+    return true;
+  };
+
+  Util.prototype.removeChildren = function(node) {
+    var results;
+    results = [];
+    while (node.firstChild) {
+      results.push(node.removeChild(node.firstChild));
+    }
+    return results;
+  };
+
+  Util.prototype.cloneNodeClean = function(node) {
+    var cloneNode;
+    cloneNode = node.cloneNode(false);
+    this.removeChildren(cloneNode);
+    return cloneNode;
+  };
+
+  Util.prototype.isTextNodeEmpty = function(node) {
+    return !/[^\s\xA0\u200b]+/.test(node.nodeValue);
+  };
+
+  Util.prototype.isTextNodeCompletelyEmpty = function(node) {
+    return !/[^\n\r\t\u200b]+/.test(node.nodeValue);
+  };
+
+  Util.prototype.isNodeEmpty = function(node) {
+    return this.isNodeCompletelyEmpty(node) || this.emptyNodeRegExp.test(node.innerHTML);
+  };
+
+  Util.prototype.isNodeCompletelyEmpty = function(node) {
+    return !node.innerHTML || node.childNodes.length === 0;
+  };
+
+  Util.prototype.isEmptyDom = function(node) {
+    if (this.isTextNode(node)) {
+      return this.isTextNodeEmpty(node);
+    } else {
+      return this.isNodeEmpty(node);
+    }
+  };
+
+  Util.prototype.isCompletelyEmptyDom = function(node) {
+    if (this.isTextNode(node)) {
+      return this.isTextNodeCompletelyEmpty(node);
+    } else {
+      return this.isNodeCompletelyEmpty(node);
+    }
+  };
+
+  Util.prototype.isNodeEmptyRecursive = function(m, k) {
+    var firstChild;
+    if (m.nodeType === 1 && !this.canHaveChildren(m)) {
+      return false;
+    } else {
+      if (m.childNodes.length === 0) {
+        if (k) {
+          return this.isCompletelyEmptyDom(m);
+        } else {
+          return this.isEmptyDom(m);
+        }
+      } else {
+        if (this.isList(m) && m.children.length === 0) {
+          return true;
+        }
+      }
+    }
+    firstChild = m.firstChild;
+    while (firstChild && this.isNodeEmptyRecursive(firstChild, k)) {
+      firstChild = firstChild.nextSibling;
+    }
+    return !firstChild;
+  };
+
+  Util.prototype.hasAttributes = function(node) {
+    var a, b, c, l;
+    l = this.getOuterHtml(node).replace(node.innerHTML, "");
+    a = /=["][^"]/.test(l);
+    b = /=['][^']/.test(l);
+    c = /=[^'"]/.test(l);
+    return a || b || c;
+  };
+
+  Util.prototype.getOuterHtml = function(node) {
+    var b, c;
+    if (node.outerHTML) {
+      return node.outerHTML;
+    } else {
+      b = node.cloneNode(true);
+      c = document.createElement("div");
+      c.appendChild(b);
+      return c.innerHTML;
+    }
   };
 
   return Util;
@@ -2055,7 +2199,7 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._render = function() {
-    var button, len, name, o, ref, separator;
+    var button, len, name, ref, separator, w;
     this.buttons = [];
     this.buttonsJson = {};
     this.separators = [];
@@ -2063,8 +2207,8 @@ Toolbar = (function(superClass) {
     this.wrapper = $(this._tpl.wrapper).prependTo(this.editor.wrapper);
     this.list = this.wrapper.find('ul');
     ref = this.opts.toolbar;
-    for (o = 0, len = ref.length; o < len; o++) {
-      name = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      name = ref[w];
       if (name === '|') {
         separator = $(this._tpl.separator).appendTo(this.list);
         this.separators.push(separator);
@@ -2108,7 +2252,7 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._renderMoreOption = function() {
-    var buttonCount, first, getMoveInCount, getMoveOutCount, listWidth, moreOptionWidth, moveInCount, moveOutCount, o, otherElCount, prev, q, ref, ref1, separatorCount, separatorWidth, totalWidth, x;
+    var buttonCount, first, getMoveInCount, getMoveOutCount, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, prev, ref, ref1, separatorCount, separatorWidth, totalWidth, w, x, y;
     listWidth = this.list.width();
     moreOptionWidth = this.moreOption.outerWidth();
     separatorCount = this.separators.length;
@@ -2136,13 +2280,13 @@ Toolbar = (function(superClass) {
     })(this);
     getMoveOutCount = (function(_this) {
       return function(_count) {
-        var _totalWidth, o, ref, x;
+        var _totalWidth, ref, w, x;
         _totalWidth = 0;
         _this.list.find('>li').each(function(index) {
           return _totalWidth += _this.list.find('>li:eq(' + index + ')').outerWidth();
         });
         if (_this.moreOptionList[_count]) {
-          for (x = o = 0, ref = _count; 0 <= ref ? o <= ref : o >= ref; x = 0 <= ref ? ++o : --o) {
+          for (x = w = 0, ref = _count; 0 <= ref ? w <= ref : w >= ref; x = 0 <= ref ? ++w : --w) {
             _totalWidth += _this.moreOptionList[x].outerWidth();
           }
           if (_totalWidth < listWidth) {
@@ -2158,7 +2302,7 @@ Toolbar = (function(superClass) {
     })(this));
     if (totalWidth >= listWidth) {
       getMoveInCount(moveInCount);
-      for (x = o = 1, ref = moveInCount; 1 <= ref ? o <= ref : o >= ref; x = 1 <= ref ? ++o : --o) {
+      for (x = w = 1, ref = moveInCount; 1 <= ref ? w <= ref : w >= ref; x = 1 <= ref ? ++w : --w) {
         prev = this.moreOption.prev();
         prev.detach();
         this.moreOptionList.unshift(prev);
@@ -2167,7 +2311,7 @@ Toolbar = (function(superClass) {
     } else if (totalWidth < listWidth) {
       getMoveOutCount(moveOutCount);
       if (moveOutCount > 0) {
-        for (x = q = 0, ref1 = moveOutCount - 1; 0 <= ref1 ? q <= ref1 : q >= ref1; x = 0 <= ref1 ? ++q : --q) {
+        for (x = y = 0, ref1 = moveOutCount - 1; 0 <= ref1 ? y <= ref1 : y >= ref1; x = 0 <= ref1 ? ++y : --y) {
           first = this.moreOptionList.shift();
           first.detach();
           this.moreOption.before(first);
@@ -2239,9 +2383,9 @@ Indentation = (function(superClass) {
     $blockNodes = this.editor.selection.blockNodes();
     nodes = [];
     $blockNodes = $blockNodes.each(function(i, node) {
-      var include, j, len, n, o;
+      var include, j, len, n, w;
       include = true;
-      for (j = o = 0, len = nodes.length; o < len; j = ++o) {
+      for (j = w = 0, len = nodes.length; w < len; j = ++w) {
         n = nodes[j];
         if ($.contains(node, n)) {
           include = false;
@@ -2520,7 +2664,7 @@ Clipboard = (function(superClass) {
   };
 
   Clipboard.prototype._processPasteContent = function(pasteContent) {
-    var $blockEl, $img, blob, children, insertPosition, lastLine, len, len1, len2, len3, len4, line, lines, node, o, q, ref, ref1, ref2, uploadOpt, w, y, z;
+    var $blockEl, $img, aa, ab, blob, children, insertPosition, lastLine, len, len1, len2, len3, len4, line, lines, node, ref, ref1, ref2, uploadOpt, w, y, z;
     if (this.editor.triggerHandler('pasting', [pasteContent]) === false) {
       return;
     }
@@ -2531,8 +2675,8 @@ Clipboard = (function(superClass) {
       if ($blockEl.is('table')) {
         lines = pasteContent.split('\n');
         lastLine = lines.pop();
-        for (o = 0, len = lines.length; o < len; o++) {
-          line = lines[o];
+        for (w = 0, len = lines.length; w < len; w++) {
+          line = lines[w];
           this.editor.selection.insertNode(document.createTextNode(line));
           this.editor.selection.insertNode($('<br/>'));
         }
@@ -2540,14 +2684,14 @@ Clipboard = (function(superClass) {
       } else {
         pasteContent = $('<div/>').text(pasteContent);
         ref = pasteContent.contents();
-        for (q = 0, len1 = ref.length; q < len1; q++) {
-          node = ref[q];
+        for (y = 0, len1 = ref.length; y < len1; y++) {
+          node = ref[y];
           this.editor.selection.insertNode($(node)[0]);
         }
       }
     } else if ($blockEl.is(this.editor.body)) {
-      for (w = 0, len2 = pasteContent.length; w < len2; w++) {
-        node = pasteContent[w];
+      for (z = 0, len2 = pasteContent.length; z < len2; z++) {
+        node = pasteContent[z];
         this.editor.selection.insertNode(node);
       }
     } else if (pasteContent.length < 1) {
@@ -2573,8 +2717,8 @@ Clipboard = (function(superClass) {
             return;
           }
         }
-        for (y = 0, len3 = children.length; y < len3; y++) {
-          node = children[y];
+        for (aa = 0, len3 = children.length; aa < len3; aa++) {
+          node = children[aa];
           this.editor.selection.insertNode(node);
         }
       } else if ($blockEl.is('p') && this.editor.util.isEmptyNode($blockEl)) {
@@ -2584,8 +2728,8 @@ Clipboard = (function(superClass) {
         if (pasteContent.find('li').length === 1) {
           pasteContent = $('<div/>').text(pasteContent.text());
           ref2 = pasteContent.contents();
-          for (z = 0, len4 = ref2.length; z < len4; z++) {
-            node = ref2[z];
+          for (ab = 0, len4 = ref2.length; ab < len4; ab++) {
+            node = ref2[ab];
             this.editor.selection.insertNode($(node)[0]);
           }
         } else if ($blockEl.is('li')) {
@@ -3132,13 +3276,13 @@ DomRange = (function(superClass) {
   };
 
   DomRange.prototype.cloneControlRange = function(range) {
-    var body, item, length, o, ref, t;
+    var body, item, length, ref, t, w;
     length = range.length;
     if (length) {
       item = range.item(0);
       body = item.ownerDocument.body;
       range = body.createControlRange();
-      for (t = o = 0, ref = length - 1; 0 <= ref ? o <= ref : o >= ref; t = 0 <= ref ? ++o : --o) {
+      for (t = w = 0, ref = length - 1; 0 <= ref ? w <= ref : w >= ref; t = 0 <= ref ? ++w : --w) {
         range.addElement(this.range.item(t));
       }
       return range;
@@ -3293,6 +3437,40 @@ DomRange = (function(superClass) {
 
 Simditor.DomRange = DomRange;
 
+DomRangeMemento = (function(superClass) {
+  extend(DomRangeMemento, superClass);
+
+  function DomRangeMemento(editor, range) {
+    var domRange;
+    domRange = Simditor.DomRange.toDomRange(editor, range);
+    this.collapsed = domRange.isCollapsed();
+    if (!editor.util.isTextNode(domRange.startContainer) && domRange.startContainer.childNodes[domRange.startOffset] && !editor.util.isTextNode(domRange.startContainer.childNodes[domRange.startOffset])) {
+      this.startContainer = domRange.startContainer.childNodes[domRange.startOffset];
+      this.startOffset = false;
+    } else {
+      this.startContainer = domRange.startContainer;
+      this.startOffset = domRange.startOffset;
+    }
+    if (!editor.util.isTextNode(domRange.endContainer) && domRange.endContainer.childNodes[domRange.endOffset] && !editor.util.isTextNode(domRange.endContainer.childNodes[domRange.endOffset])) {
+      this.endContainer = domRange.endContainer.childNodes[domRange.endOffset];
+      this.endOffset = false;
+    } else {
+      if (!editor.util.isTextNode(domRange.endContainer) && !editor.util.isTag(domRange.endContainer, "img") && domRange.endContainer.childNodes > 0 && !domRange.endContainer.childNodes[domRange.endOffset]) {
+        this.endContainer = domRange.endContainer;
+        this.endOffset = "outside";
+      } else {
+        this.endContainer = domRange.endContainer;
+        this.endOffset = domRange.endOffset;
+      }
+    }
+  }
+
+  return DomRangeMemento;
+
+})(SimpleModule);
+
+Simditor.DomRangeMemento = DomRangeMemento;
+
 Button = (function(superClass) {
   extend(Button, superClass);
 
@@ -3332,7 +3510,7 @@ Button = (function(superClass) {
   }
 
   Button.prototype._init = function() {
-    var len, o, ref, tag;
+    var len, ref, tag, w;
     this.render();
     this.el.on('mousedown', (function(_this) {
       return function(e) {
@@ -3401,8 +3579,8 @@ Button = (function(superClass) {
       })(this));
     }
     ref = this.htmlTag.split(',');
-    for (o = 0, len = ref.length; o < len; o++) {
-      tag = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      tag = ref[w];
       tag = $.trim(tag);
       if (tag && $.inArray(tag, this.editor.formatter._allowedTags) < 0) {
         this.editor.formatter._allowedTags.push(tag);
@@ -3450,15 +3628,15 @@ Button = (function(superClass) {
   };
 
   Button.prototype.renderMenu = function() {
-    var $menuBtnEl, $menuItemEl, len, menuItem, o, ref, ref1, results;
+    var $menuBtnEl, $menuItemEl, len, menuItem, ref, ref1, results, w;
     if (!$.isArray(this.menu)) {
       return;
     }
     this.menuEl = $('<ul/>').appendTo(this.menuWrapper);
     ref = this.menu;
     results = [];
-    for (o = 0, len = ref.length; o < len; o++) {
-      menuItem = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      menuItem = ref[w];
       if (menuItem === '|') {
         $(this._tpl.separator).appendTo(this.menuEl);
         continue;
@@ -4459,7 +4637,7 @@ CodePopover = (function(superClass) {
   }
 
   CodePopover.prototype.render = function() {
-    var $option, lang, len, o, ref;
+    var $option, lang, len, ref, w;
     this._tpl = "<div class=\"code-settings\">\n  <div class=\"settings-field\">\n    <select class=\"select-lang\">\n      <option value=\"-1\">" + (this._t('selectLanguage')) + "</option>\n    </select>\n  </div>\n</div>";
     this.langs = this.editor.opts.codeLanguages || [
       {
@@ -4527,8 +4705,8 @@ CodePopover = (function(superClass) {
     this.el.addClass('code-popover').append(this._tpl);
     this.selectEl = this.el.find('.select-lang');
     ref = this.langs;
-    for (o = 0, len = ref.length; o < len; o++) {
-      lang = ref[o];
+    for (w = 0, len = ref.length; w < len; w++) {
+      lang = ref[w];
       $option = $('<option/>', {
         text: lang.name,
         value: lang.value
@@ -4754,13 +4932,13 @@ ImageButton = (function(superClass) {
   ImageButton.prototype.needFocus = false;
 
   ImageButton.prototype._init = function() {
-    var item, len, o, ref;
+    var item, len, ref, w;
     if (this.editor.opts.imageButton) {
       if (Array.isArray(this.editor.opts.imageButton)) {
         this.menu = [];
         ref = this.editor.opts.imageButton;
-        for (o = 0, len = ref.length; o < len; o++) {
-          item = ref[o];
+        for (w = 0, len = ref.length; w < len; w++) {
+          item = ref[w];
           this.menu.push({
             name: item + '-image',
             text: this._t(item + 'Image')
@@ -5851,14 +6029,14 @@ TableButton = (function(superClass) {
   };
 
   TableButton.prototype.createTable = function(row, col, phBr) {
-    var $table, $tbody, $td, $thead, $tr, c, o, q, r, ref, ref1;
+    var $table, $tbody, $td, $thead, $tr, c, r, ref, ref1, w, y;
     $table = $('<table/>');
     $thead = $('<thead/>').appendTo($table);
     $tbody = $('<tbody/>').appendTo($table);
-    for (r = o = 0, ref = row; 0 <= ref ? o < ref : o > ref; r = 0 <= ref ? ++o : --o) {
+    for (r = w = 0, ref = row; 0 <= ref ? w < ref : w > ref; r = 0 <= ref ? ++w : --w) {
       $tr = $('<tr/>');
       $tr.appendTo(r === 0 ? $thead : $tbody);
-      for (c = q = 0, ref1 = col; 0 <= ref1 ? q < ref1 : q > ref1; c = 0 <= ref1 ? ++q : --q) {
+      for (c = y = 0, ref1 = col; 0 <= ref1 ? y < ref1 : y > ref1; c = 0 <= ref1 ? ++y : --y) {
         $td = $(r === 0 ? '<th/>' : '<td/>').appendTo($tr);
         if (phBr) {
           $td.append(this.editor.util.phBr);
@@ -5919,7 +6097,7 @@ TableButton = (function(superClass) {
   };
 
   TableButton.prototype.insertRow = function($td, direction) {
-    var $newTr, $table, $tr, cellTag, colNum, i, index, o, ref;
+    var $newTr, $table, $tr, cellTag, colNum, i, index, ref, w;
     if (direction == null) {
       direction = 'after';
     }
@@ -5942,7 +6120,7 @@ TableButton = (function(superClass) {
     } else {
       $tr[direction]($newTr);
     }
-    for (i = o = 1, ref = colNum; 1 <= ref ? o <= ref : o >= ref; i = 1 <= ref ? ++o : --o) {
+    for (i = w = 1, ref = colNum; 1 <= ref ? w <= ref : w >= ref; i = 1 <= ref ? ++w : --w) {
       $("<" + cellTag + "/>").append(this.editor.util.phBr).appendTo($newTr);
     }
     return this.editor.selection.setRangeAtStartOf($newTr.find('td, th').eq(index));
@@ -6414,7 +6592,12 @@ InlineCommand = (function(superClass) {
     } else {
       this.emptyRange = true;
     }
-    return this.storeRangeByFragments(fragments);
+    this.storeRangeByFragments(fragments);
+    this.rangeChanged = false;
+    this.removeFormatting = this.shouldRemoveFormatting();
+    if (this.removeFormatting) {
+      return this.removeFormat(fragments);
+    }
   };
 
   InlineCommand.prototype.isGreedy = function() {
@@ -6495,12 +6678,139 @@ InlineCommand = (function(superClass) {
     }
   };
 
+  InlineCommand.prototype.storeRange = function(range) {
+    range = range || this.getEditorRange();
+    return this.rangeMemento = new Simditor.DomRangeMemento(this.get_editor(), range);
+  };
+
   InlineCommand.prototype.createMarker = function() {
     var marker;
     marker = document.createElement("span");
     marker.className = this.markerClass;
     marker.innerHTML = "&nbsp;";
     return marker;
+  };
+
+  InlineCommand.prototype.shouldRemoveFormatting = function() {
+    return true;
+  };
+
+  InlineCommand.prototype.removeFormat = function(fragments) {
+    var results;
+    results = [];
+    while (fragments.length) {
+      results.push(this.removeFormat_fragment(fragments.shift()));
+    }
+    return results;
+  };
+
+  InlineCommand.prototype.removeFormat_fragment = function(fragment) {
+    var ancestor, edges, parent;
+    this.cleanUpFormat(fragment);
+    parent = fragment.getParent();
+    ancestor = this.findFormattedAncestor(parent);
+    if (ancestor && this.isSameFormatNode(ancestor) && !this.get_editor().util.isEditorContentArea(ancestor)) {
+      edges = this.getFragmentEdges(fragment);
+      return this.removeFormat_extract(ancestor, edges.first, edges.last);
+    }
+  };
+
+  InlineCommand.prototype.getFragmentEdges = function(fragment) {
+    var first, last, nodes;
+    nodes = fragment.nodes;
+    first = nodes[0];
+    last = nodes[nodes.length - 1];
+    if (this.isMarker(first.previousSibling)) {
+      first = first.previousSibling;
+    }
+    if (this.isMarker(first.nextSibling)) {
+      first = first.nextSibling;
+    }
+    return {
+      first: first,
+      last: first
+    };
+  };
+
+  InlineCommand.prototype.removeEmptyNode = function(node) {
+    if (this.get_editor().util.isNodeEmptyRecursive(node) && !this.get_editor().util.hasAttributes(node) && node.parentNode) {
+      return node.parentNode.removeChild(node);
+    }
+  };
+
+  InlineCommand.prototype.cleanUpFormat = function(fragment) {
+    var l, n, node, ref, results, w;
+    this.cleanUpFragment = fragment;
+    n = fragment.nodes;
+    results = [];
+    for (l = w = ref = n.length - 1; ref <= 0 ? w <= 0 : w >= 0; l = ref <= 0 ? ++w : --w) {
+      node = n[l];
+      if (!this._shouldCleanUpNode(node)) {
+        continue;
+      }
+      this.removeSameFormatChildren(node);
+      results.push(this.removeSameFormat(node, l));
+    }
+    return results;
+  };
+
+  InlineCommand.prototype.removeSameFormatChildren = function(node) {
+    var k, results;
+    k = this.getSameFormatChildren(node);
+    results = [];
+    while (k.length) {
+      results.push(this.removeSameFormat(k.shift()));
+    }
+    return results;
+  };
+
+  InlineCommand.prototype.removeSameFormat = function(node, m) {
+    var child, childNodes, n, ref, w;
+    if (this.isSameFormatNode(node)) {
+      if (!isNaN(m) && this.shouldRemoveNode(node)) {
+        this.cleanUpFragment.removeNodeAt(m);
+        childNodes = node.childNodes;
+        for (n = w = ref = childNodes.length - 1; ref <= 0 ? w <= 0 : w >= 0; n = ref <= 0 ? ++w : --w) {
+          child = childNodes[n];
+          this.cleanUpFragment.addNodeAt(child, m);
+        }
+      }
+      return this.removeNodeFormatting(node);
+    }
+  };
+
+  InlineCommand.prototype.extractFormatting = function(k, j, m) {
+    var i, l, n, o, p, q;
+    l = k.parentNode;
+    i = new Simditor.DomTreeExtractor(k);
+    n = i.extractBefore(j);
+    p = i.extractAfter(m);
+    o = this.get_editor().util.cloneNodeClean(k);
+    q = this.get_editor().util.cloneNodeClean(k);
+    q.appendChild(p);
+    o.appendChild(n);
+    if (!h.isNodeEmptyRecursive(o, true)) {
+      l.insertBefore(o, k);
+    }
+    if (!h.isNodeEmptyRecursive(q, true)) {
+      return l.insertBefore(q, k.nextSibling);
+    }
+  };
+
+  InlineCommand.prototype.shouldRemoveNode = function() {
+    return true;
+  };
+
+  InlineCommand.prototype.isMarker = function(node) {
+    return node && (node === this.startMarker || node === this.endMarker || node.className === this.markerClass);
+  };
+
+  InlineCommand.prototype.isComment = function(node) {
+    return node.nodeType === 8;
+  };
+
+  InlineCommand.prototype._shouldCleanUpNode = function(node) {
+    return node && !this.isMarker(node) && (!this.get_editor().util.isTextNode(node) || this.isComment(node));
   };
 
   return InlineCommand;
@@ -6541,6 +6851,35 @@ StripCommand = (function(superClass) {
     }
   };
 
+  StripCommand.prototype.getSameFormatChildren = function(node) {
+    return $.makeArray($(node).find("*").filter((function(_this) {
+      return function(h, g) {
+        return _this.isSameFormatNode(g) && !_this.isMarker(g);
+      };
+    })(this)));
+  };
+
+  StripCommand.prototype.findFormattedAncestor = function(node) {
+    var tmp;
+    tmp = node;
+    while (!this.get_editor().util.isBlockNode(node)) {
+      if (this.isSameFormatNode(node)) {
+        tmp = node;
+      }
+      node = node.parentNode;
+    }
+    return tmp;
+  };
+
+  StripCommand.prototype.removeFormat_extract = function(g, f, h) {
+    if (!this.get_editor().util.isBlockNode(g)) {
+      this.extractFormatting(g, f, h);
+      this.removeSameFormatChildren(g);
+      this.removeNodeFormatting(g);
+      return this.removeEmptyNode(g);
+    }
+  };
+
   return StripCommand;
 
 })(InlineCommand);
@@ -6566,9 +6905,53 @@ StripElementCommand = (function(superClass) {
     StripElementCommand.__super__.constructor.call(this, editor, settings, options);
   }
 
+  StripElementCommand.prototype.getSameFormatChildren = function(node) {
+    if (this._isStripAll()) {
+      return this.get_editor().util.getAllChildNodesBy(node, StripElementCommand.c);
+    } else {
+      return StripElementCommand.__super__.getSameFormatChildren.call(this, node);
+    }
+  };
+
+  StripElementCommand.prototype.isSameFormatNode = function(node) {
+    return node && (this.settings.stripCondition(node) || (this.isCommentToStrip(node) || this.isTagToStrip(node)));
+  };
+
+  StripElementCommand.prototype.isCommentToStrip = function(node) {
+    return this._isStripAll() && this.isComment(node);
+  };
+
+  StripElementCommand.prototype.isTagToStrip = function(node) {
+    return this.settings.tags && (this.nodeNamesRegExp.test(node.nodeName) && !this.get_editor().util.isEditorContentArea(node) && !this._isNodeExcluded(node));
+  };
+
+  StripElementCommand.prototype.removeNodeFormatting = function(node) {
+    if (this.isCommentToStrip(node)) {
+      return node.parentNode.removeChild(node);
+    } else {
+      if (!this.get_editor().util.isTextNode(node) && !this.isMarker(node)) {
+        return this.get_editor().util.removeNode(node);
+      }
+    }
+  };
+
+  StripElementCommand.prototype._isStripAll = function() {
+    return this.settings.tags && this.settings.tags[0] === "ALL";
+  };
+
+  StripElementCommand.prototype._isNodeExcluded = function(node) {
+    return $.inArray(node.nodeName.toLowerCase(), this.settings.exclude) >= 0;
+  };
+
   return StripElementCommand;
 
 })(StripCommand);
+
+StripElementCommand.c = (function(_this) {
+  return function() {
+    return true;
+  };
+})(this);
 
 Simditor.StripElementCommand = StripElementCommand;
 
@@ -6880,11 +7263,91 @@ FragmentContainer = (function(superClass) {
     return parent.insertBefore(node, last.nextSibling);
   };
 
+  FragmentContainer.prototype.removeNodeAt = function(m) {
+    return this.nodes.splice(m, 1);
+  };
+
+  FragmentContainer.prototype.addNodeAt = function(f, e) {
+    return this.nodes.splice(e, 0, f);
+  };
+
   return FragmentContainer;
 
 })(SimpleModule);
 
 Simditor.FragmentContainer = FragmentContainer;
+
+DomTreeExtractor = (function(superClass) {
+  extend(DomTreeExtractor, superClass);
+
+  function DomTreeExtractor(topNode) {
+    this.top = topNode;
+  }
+
+  DomTreeExtractor.prototype.extractBefore = function(node) {
+    return this._traverseSide({
+      edge: node,
+      next: (function(_this) {
+        return function(n) {
+          return n.previousSibling;
+        };
+      })(this),
+      insert: (function(_this) {
+        return function(f, g) {
+          return f.insertBefore(g, f.firstChild);
+        };
+      })(this)
+    });
+  };
+
+  DomTreeExtractor.prototype.extractAfter = function(node) {
+    return this._traverseSide({
+      edge: node,
+      next: (function(_this) {
+        return function(n) {
+          return n.nextSibling;
+        };
+      })(this),
+      insert: (function(_this) {
+        return function(f, g) {
+          return f.appendChild(g);
+        };
+      })(this)
+    });
+  };
+
+  DomTreeExtractor.prototype._traverseSide = function(data) {
+    var e, edge, fragment, i, parentNode, top;
+    top = this.top;
+    fragment = document.createDocumentFragment();
+    edge = data.edge;
+    while (true) {
+      parentNode = edge.parentNode;
+      edge = data.next(edge);
+      while (edge) {
+        i = data.next(edge);
+        data.insert(fragment, edge);
+        edge = i;
+      }
+      if (parentNode !== top) {
+        e = parentNode.cloneNode(false);
+        e.innerHTML = "";
+        e.appendChild(fragment);
+        data.insert(fragment, e);
+      }
+      edge = parentNode;
+      if (!(edge && edge !== top)) {
+        break;
+      }
+    }
+    return fragment;
+  };
+
+  return DomTreeExtractor;
+
+})(SimpleModule);
+
+Simditor.DomTreeExtractor = DomTreeExtractor;
 
 return Simditor;
 

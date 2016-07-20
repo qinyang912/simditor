@@ -21,8 +21,14 @@ class FragmentContainer extends SimpleModule
   appendNodeAfter: (node) ->
     if !@nodes.length
       return
-    parent = @getParent();
-    last = @nodes[@nodes.length - 1];
-    parent.insertBefore(node, last.nextSibling);
+    parent = @getParent()
+    last = @nodes[@nodes.length - 1]
+    parent.insertBefore(node, last.nextSibling)
+
+  removeNodeAt: (m) ->
+    @nodes.splice(m, 1)
+
+  addNodeAt: (f, e) ->
+    @nodes.splice(e, 0, f);
 
 Simditor.FragmentContainer = FragmentContainer

@@ -39,6 +39,11 @@ class InlineCommand extends CommandBase
     else
       @emptyRange = true
     @storeRangeByFragments(fragments)
+    @rangeChanged = false
+    @removeFormatting = @shouldRemoveFormatting()
+    if @removeFormatting
+      @removeFormat(fragments)
+
 
 
 
@@ -128,11 +133,98 @@ class InlineCommand extends CommandBase
     else
       @storeRange()
 
+  storeRange: (range) ->
+    range = range || @getEditorRange()
+    @rangeMemento = new Simditor.DomRangeMemento(@get_editor(), range)
+
   createMarker: ->
     marker = document.createElement("span")
     marker.className = @markerClass
     marker.innerHTML = "&nbsp;"
     marker
+
+  shouldRemoveFormatting: ->
+    true
+
+  removeFormat: (fragments) ->
+    while fragments.length
+      @removeFormat_fragment(fragments.shift())
+
+  removeFormat_fragment: (fragment) ->
+    @cleanUpFormat(fragment)
+    parent = fragment.getParent()
+    ancestor = @findFormattedAncestor(parent)
+    if ancestor && @isSameFormatNode(ancestor) && !@get_editor().util.isEditorContentArea(ancestor)
+      edges = @getFragmentEdges(fragment)
+      @removeFormat_extract(ancestor, edges.first, edges.last)
+
+  getFragmentEdges: (fragment) ->
+    nodes = fragment.nodes
+    first = nodes[0]
+    last = nodes[nodes.length - 1]
+    if @isMarker(first.previousSibling)
+      first = first.previousSibling
+    if @isMarker(first.nextSibling)
+      first = first.nextSibling
+    return {
+      first: first,
+      last: first
+    }
+
+  removeEmptyNode: (node) ->
+    if @get_editor().util.isNodeEmptyRecursive(node) && !@get_editor().util.hasAttributes(node) && node.parentNode
+      node.parentNode.removeChild(node)
+
+  cleanUpFormat: (fragment) ->
+    @cleanUpFragment = fragment
+    n = fragment.nodes;
+    for l in [n.length - 1..0]
+      node = n[l]
+      if !@_shouldCleanUpNode(node)
+        continue
+      @removeSameFormatChildren(node)
+      @removeSameFormat(node, l)
+
+  removeSameFormatChildren: (node) ->
+    k = @getSameFormatChildren(node)
+    while k.length
+      @removeSameFormat(k.shift())
+
+  removeSameFormat: (node, m) ->
+    if @isSameFormatNode(node)
+      if !isNaN(m) && @shouldRemoveNode(node)
+        @cleanUpFragment.removeNodeAt(m)
+        childNodes = node.childNodes
+        for n in [childNodes.length - 1..0]
+          child = childNodes[n]
+          @cleanUpFragment.addNodeAt(child, m)
+      @removeNodeFormatting(node)
+
+  extractFormatting: (k, j, m) ->
+    l = k.parentNode
+    i = new Simditor.DomTreeExtractor(k)
+    n = i.extractBefore(j)
+    p = i.extractAfter(m)
+    o = @get_editor().util.cloneNodeClean(k)
+    q = @get_editor().util.cloneNodeClean(k)
+    q.appendChild(p)
+    o.appendChild(n)
+    if !h.isNodeEmptyRecursive(o, true)
+      l.insertBefore(o, k)
+    if !h.isNodeEmptyRecursive(q, true)
+      l.insertBefore(q, k.nextSibling)
+
+  shouldRemoveNode: ->
+    true
+
+  isMarker: (node) ->
+    node && (node == @startMarker || node == @endMarker || node.className == @markerClass)
+
+  isComment: (node) ->
+    node.nodeType == 8;
+
+  _shouldCleanUpNode: (node) ->
+    node && !@isMarker(node) && (!@get_editor().util.isTextNode(node) || @isComment(node))
 
 
 

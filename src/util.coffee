@@ -3,6 +3,8 @@ class Util extends SimpleModule
 
   @pluginName: 'Util'
 
+  emptyNodeRegExp: /^&nbsp;?$/
+
   _init: ->
     @editor = @_module
     @phBr = '' if @browser.msie and @browser.version < 11
@@ -120,6 +122,9 @@ class Util extends SimpleModule
     node = $(node)[0]
     return !!(node && node.tagName && tagName) && node.tagName.toLowerCase() == tagName.toLowerCase()
 
+  isList: (node) ->
+    return @isTag(node, "ul") || @isTag(node, "ol")
+
   isAncestorOf: (m, l) ->
     try
       if @isTextNode(l)
@@ -157,6 +162,21 @@ class Util extends SimpleModule
     while k && k != l && !@isAncestorOf(k, l)
       k = k.parentNode;
     return k;
+
+  getAllChildNodesBy: (m, l) ->
+    k = []
+    @_getChildNodes(m, k, l)
+    return k;
+
+  _getChildNodes: (o, l, m, p) ->
+    firstChild = o.firstChild
+    while firstChild
+      n = m(firstChild)
+      if !(p && n) && firstChild.nodeType == 1 && @canHaveChildren(firstChild)
+        @_getChildNodes(firstChild, l, m, p)
+      if n
+        l.push(firstChild)
+      firstChild = firstChild.nextSibling
 
   getNodeLength: (node) ->
     node = $(node)[0]
@@ -274,3 +294,91 @@ class Util extends SimpleModule
       lastMatch = match
 
     $.trim result
+
+  isEditorContentArea: (node) ->
+    if node && node == @editor.body[0]
+      return true
+    else
+      return false
+
+  removeNode: (node) ->
+    parentNode = node.parentNode;
+    if parentNode != null
+      while node.firstChild
+        parentNode.insertBefore(node.firstChild, node)
+      parentNode.removeChild(node)
+      return parentNode
+    return true
+
+  removeChildren: (node) ->
+    while node.firstChild
+      node.removeChild(node.firstChild)
+
+  cloneNodeClean: (node) ->
+    cloneNode = node.cloneNode(false)
+    @removeChildren(cloneNode)
+    # if ($telerik.isIE10Mode && !$telerik.isIE10 && node.style && node.style.backgroundColor) {
+    #   cloneNode.style.backgroundColor = node.style.backgroundColor;
+    # }
+    return cloneNode
+
+  isTextNodeEmpty: (node) ->
+    return !/[^\s\xA0\u200b]+/.test(node.nodeValue)
+
+  isTextNodeCompletelyEmpty: (node) ->
+    return !/[^\n\r\t\u200b]+/.test(node.nodeValue)
+
+  isNodeEmpty: (node) ->
+    return @isNodeCompletelyEmpty(node) || @emptyNodeRegExp.test(node.innerHTML)
+
+  isNodeCompletelyEmpty: (node) ->
+    return !node.innerHTML || node.childNodes.length == 0
+
+  isEmptyDom: (node) ->
+    if @isTextNode(node)
+      return @isTextNodeEmpty(node)
+    else
+      return @isNodeEmpty(node)
+
+  isCompletelyEmptyDom: (node) ->
+    if @isTextNode(node)
+      return @isTextNodeCompletelyEmpty(node)
+    else
+      return @isNodeCompletelyEmpty(node)
+
+  isNodeEmptyRecursive: (m, k) ->
+    if m.nodeType == 1 && !@canHaveChildren(m)
+      return false
+    else
+      if m.childNodes.length == 0
+        if k
+          return @isCompletelyEmptyDom(m)
+        else
+          return @isEmptyDom(m)
+      else
+        if @isList(m) && m.children.length == 0
+          return true
+    firstChild = m.firstChild
+    while firstChild && @isNodeEmptyRecursive(firstChild, k)
+      firstChild = firstChild.nextSibling
+
+    return !firstChild
+
+  hasAttributes: (node) ->
+    l = @getOuterHtml(node).replace(node.innerHTML, "")
+    a = /=["][^"]/.test(l)
+    b = /=['][^']/.test(l)
+    c = /=[^'"]/.test(l)
+    return a || b || c
+
+  getOuterHtml: (node) ->
+    if node.outerHTML
+      return node.outerHTML
+    else
+      b = node.cloneNode(true)
+      c = document.createElement("div")
+      c.appendChild(b)
+      return c.innerHTML
+
+
+
