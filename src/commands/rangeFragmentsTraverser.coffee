@@ -18,31 +18,29 @@ class RangeFragmentsTraverser extends SimpleModule
       @collectNode(@nodesToTraverse.shift(), fn)
 
   collectNode: (node, fn) ->
-    while (node && this.isInRange(node)) {
-      if (!this.isSuitable(node, fn)) {
-        this.removeTraversedNode(node);
-        if (node.firstChild) {
-          this.collectNode(node.firstChild, fn);
-        }
-        node = node.nextSibling;
-        continue;
-      }
-      var f = new b.FragmentContainer();
-      var g = node;
-      while (g && this.isSuitable(g, fn)) {
-        if (fn(g)) {
-          this.removeTraversedNode(g);
-        }
-        node = g;
-        g = node.nextSibling;
-        f.addNode(node);
-      }
-      this.storeFragment(f);
-      node = node ? node.nextSibling : null ;
-    }
+    # while node && this.isInRange(node)
+    #   if !this.isSuitable(node, fn)
+    #     this.removeTraversedNode(node);
+    #     if (node.firstChild) {
+    #       this.collectNode(node.firstChild, fn);
+    #     }
+    #     node = node.nextSibling;
+    #     continue;
+    #   var f = new b.FragmentContainer();
+    #   var g = node;
+    #   while g && this.isSuitable(g, fn)
+    #     if fn(g)
+    #       this.removeTraversedNode(g);
+    #     node = g;
+    #     g = node.nextSibling;
+    #     f.addNode(node);
+    #   this.storeFragment(f);
+    #   node = node ? node.nextSibling : null ;
 
-  isInRange: () ->
-    
+  isInRange: (node) ->
+    range = @range.cloneRange();
+    @editor.selection.selectNodeContents(node, range);
+    return this.range.compareBoundaryPoints(Telerik.Web.UI.Editor.DomRange.END_TO_END, g) > -1 && this.range.compareBoundaryPoints(Telerik.Web.UI.Editor.DomRange.START_TO_START, g) < 1;
 
   splitRangeEdges: ->
     end = @splitEnd(@range.endContainer, @range.endOffset)

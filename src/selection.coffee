@@ -353,28 +353,4 @@ class Selection extends SimpleModule
     range.setEnd(node, node[tmp].length);
     range.setStart(node, 0);
 
-  _isControlRange: ->
-    @_range.length
-
-  _updateBrowserRange: ->
-    if @_isControlRange() || @editor.util.isTag @_range.startContainer, "textarea"
-      return @_range
-    @_updateBrowserRangeStart()
-    @_updateBrowserRangeEnd()
-    @_updateBrowserRangeStart()
-    @_range
-
-  _updateBrowserRangeStart: ->
-    container = @_range.startContainer
-    offset = @_range.startOffset
-    if @_range.setStart
-      @_range.setStart container, offset
-    # else 
-    #   @_range.setEndPoint "StartToStart", 
-  _updateBrowserRangeEnd: ->
-    container = @_range.endContainer
-    offset = @_range.endOffset
-    if @_range.setEnd
-      @_range.setEnd container, offset
-
 

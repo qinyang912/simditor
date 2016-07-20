@@ -142,8 +142,21 @@ class Util extends SimpleModule
   traversePreviousNode: (l) ->
     k = l
     while k && !(m = k.previousSibling)
-      k = k.parentNode;
+      k = k.parentNode
     m
+
+  findNodeIndex: (node) ->
+    node = $(node)[0]
+    index = 0
+    while node.previousSibling
+      node = node.previousSibling
+      index++
+    index
+
+  findCommonAncestor: (k, l) ->
+    while k && k != l && !@isAncestorOf(k, l)
+      k = k.parentNode;
+    return k;
 
   getNodeLength: (node) ->
     node = $(node)[0]
