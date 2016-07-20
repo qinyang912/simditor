@@ -6472,6 +6472,9 @@ FormatPaintButton = (function(superClass) {
     var command, stripCondition;
     stripCondition = (function(_this) {
       return function(node) {
+        if (_this.editor.util.isTag(node, 'a')) {
+          return false;
+        }
         return !_this.editor.util.isTextNode(node) && !_this.editor.util.isBlockNode(node) && _this.editor.util.canHaveChildren(node);
       };
     })(this);

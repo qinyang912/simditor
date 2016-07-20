@@ -44,7 +44,9 @@ class FormatPaintButton extends Button
     return list
 
   _formatPainterApply: ->
-    stripCondition = (node) => 
+    stripCondition = (node) =>
+      if @editor.util.isTag(node, 'a')
+        return false
       return !@editor.util.isTextNode(node) && !@editor.util.isBlockNode(node) && @editor.util.canHaveChildren(node)
     command = new Simditor.StripElementCommand @editor,
       stripCondition: stripCondition
