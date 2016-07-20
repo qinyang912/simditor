@@ -38,13 +38,13 @@ class RangeIterator extends SimpleModule
     return !@editor.util.isTextNode(node) && @editor.util.canHaveChildren(node) && (@editor.util.isAncestorOrSelf(node, @range.startContainer) || @editor.util.isAncestorOrSelf(node, @range.endContainer))
 
   _buildSubTraverser: (node) ->
-    range = @range.cloneRange();
-    @editor.selection.selectNodeContents(node, range);
+    range = @range.cloneRange()
+    range.selectNodeContents(node)
     if @editor.util.isAncestorOrSelf(node, @range.startContainer)
       range.setStart(@range.startContainer, @range.startOffset)
     if @editor.util.isAncestorOrSelf(node, @range.endContainer)
       range.setEnd(@range.endContainer, @range.endOffset)
-    return new Simditor.RangeIterator(@editor, range);
+    return new Simditor.RangeIterator(@editor, range)
 
 Simditor.RangeIterator = RangeIterator
     

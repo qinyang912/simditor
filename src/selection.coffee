@@ -336,21 +336,3 @@ class Selection extends SimpleModule
 
     @_selectionSaved = false
     range
-
-  select: (range) ->
-    if range
-      @range range
-    # r = @_updateBrowserRange()
-    # @range r
-
-  selectNodeContents: (node, range) ->
-    range = range || @_range
-    node = $(node)[0]
-    if node.nodeType == 1
-      tmp = "childNodes"
-    else
-      tmp = "nodeValue"
-    range.setEnd(node, node[tmp].length);
-    range.setStart(node, 0);
-
-

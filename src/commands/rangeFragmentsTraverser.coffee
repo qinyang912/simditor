@@ -49,7 +49,8 @@ class RangeFragmentsTraverser extends SimpleModule
       @range.setStartBefore(start)
     if end
       @range.setEndAfter(end)
-    @editor.selection.select(@range)
+
+    @range.select()
 
   splitEnd: (container, offset) ->
     if @editor.util.isTextNode(container)

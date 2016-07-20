@@ -446,25 +446,6 @@ Selection = (function(superClass) {
     return range;
   };
 
-  Selection.prototype.select = function(range) {
-    if (range) {
-      return this.range(range);
-    }
-  };
-
-  Selection.prototype.selectNodeContents = function(node, range) {
-    var tmp;
-    range = range || this._range;
-    node = $(node)[0];
-    if (node.nodeType === 1) {
-      tmp = "childNodes";
-    } else {
-      tmp = "nodeValue";
-    }
-    range.setEnd(node, node[tmp].length);
-    return range.setStart(node, 0);
-  };
-
   return Selection;
 
 })(SimpleModule);
@@ -3047,6 +3028,22 @@ DomRange = (function(superClass) {
     return this._calculateRangeProperties();
   };
 
+  DomRange.prototype.setStartBefore = function(node) {
+    return this.setStart(node.parentNode, this.editor.util.findNodeIndex(node));
+  };
+
+  DomRange.prototype.setStartAfter = function(node) {
+    return this.setStart(node.parentNode, this.editor.util.findNodeIndex(node) + 1);
+  };
+
+  DomRange.prototype.setEndBefore = function(node) {
+    return this.setEnd(node.parentNode, this.editor.util.findNodeIndex(node));
+  };
+
+  DomRange.prototype.setEndAfter = function(node) {
+    return this.setEnd(node.parentNode, this.editor.util.findNodeIndex(node) + 1);
+  };
+
   DomRange.prototype.toString = function() {
     var range;
     range = this._updateBrowserRange();
@@ -3112,22 +3109,22 @@ DomRange = (function(superClass) {
         tmp = "nodeValue";
       }
       this.setEnd(node, node[tmp].length);
-      return this.setStart(r, 0);
+      return this.setStart(node, 0);
     }
   };
 
   DomRange.prototype.cloneRange = function() {
     var cloneRange, domRange, range;
     range = this._updateBrowserRange();
-    if (this.editor.browser.msie && range.length) {
+    if (this.editor.util.browser.msie && range.length) {
       cloneRange = this.cloneControlRange(range);
       if (cloneRange) {
-        return new b.DomRange(this.editor, cloneRange, this.options);
+        return new DomRange(this.editor, cloneRange, this.options);
       }
     }
     cloneRange = this._cloneBrowserRange();
     if (cloneRange) {
-      domRange = new b.DomRange(this.editor, cloneRange, this.options);
+      domRange = new DomRange(this.editor, cloneRange, this.options);
       domRange.setStart(this.startContainer, this.startOffset);
       domRange.setEnd(this.endContainer, this.endOffset);
     }
@@ -3155,7 +3152,7 @@ DomRange = (function(superClass) {
       if (this.range.duplicate) {
         return this.range.duplicate();
       } else {
-        if (this.editor.browser.msie && this.range.length) {
+        if (this.editor.util.browser.msie && this.range.length) {
           return this.cloneControlRange(this.range);
         }
       }
@@ -6408,7 +6405,7 @@ InlineCommand = (function(superClass) {
       boundary = this.getWordBoundaries(this.range.startContainer, this.range.startOffset);
       this.range.setStart(this.range.startContainer, boundary.left);
       this.range.setEnd(this.range.startContainer, boundary.right);
-      editor.selection.select(this.range);
+      this.range.select();
       this.collapsedRange = this.range.collapsed;
     }
     return fragments = this.traverseFragments(this.range);
@@ -6593,7 +6590,7 @@ RangeFragmentsTraverser = (function(superClass) {
     if (end) {
       this.range.setEndAfter(end);
     }
-    return this.editor.selection.select(this.range);
+    return this.range.select();
   };
 
   RangeFragmentsTraverser.prototype.splitEnd = function(container, offset) {
@@ -6728,7 +6725,7 @@ RangeIterator = (function(superClass) {
   RangeIterator.prototype._buildSubTraverser = function(node) {
     var range;
     range = this.range.cloneRange();
-    this.editor.selection.selectNodeContents(node, range);
+    range.selectNodeContents(node);
     if (this.editor.util.isAncestorOrSelf(node, this.range.startContainer)) {
       range.setStart(this.range.startContainer, this.range.startOffset);
     }

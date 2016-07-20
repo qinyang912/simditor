@@ -30,7 +30,7 @@ class InlineCommand extends CommandBase
       boundary = @getWordBoundaries(@range.startContainer, @range.startOffset)
       @range.setStart(@range.startContainer, boundary.left)
       @range.setEnd(@range.startContainer, boundary.right)
-      editor.selection.select @range
+      @range.select()
       @collapsedRange = @range.collapsed
 
     fragments = @traverseFragments(@range)

@@ -37,14 +37,26 @@ class DomRange extends SimpleModule
     @_initialCalculateEdges()
 
   setEnd: (node, offset) ->
-    @endContainer = node;
-    @endOffset = offset;
-    @_calculateRangeProperties();
+    @endContainer = node
+    @endOffset = offset
+    @_calculateRangeProperties()
 
   setStart: (node, offset) ->
-    @startContainer = node;
-    @startOffset = offset;
-    @_calculateRangeProperties();
+    @startContainer = node
+    @startOffset = offset
+    @_calculateRangeProperties()
+
+  setStartBefore: (node) ->
+    @setStart(node.parentNode, @editor.util.findNodeIndex(node))
+
+  setStartAfter: (node) ->
+    @setStart(node.parentNode, @editor.util.findNodeIndex(node) + 1)
+
+  setEndBefore: (node) ->
+    @setEnd(node.parentNode, @editor.util.findNodeIndex(node))
+
+  setEndAfter: (node) ->
+    @setEnd(node.parentNode, @editor.util.findNodeIndex(node) + 1);
 
   toString: ->
     range = @_updateBrowserRange();
@@ -94,17 +106,17 @@ class DomRange extends SimpleModule
       else
         tmp = "nodeValue"
       @setEnd(node, node[tmp].length);
-      @setStart(r, 0);
+      @setStart(node, 0);
 
   cloneRange: ->
     range = @_updateBrowserRange()
-    if @editor.browser.msie && range.length
+    if @editor.util.browser.msie && range.length
         cloneRange = @cloneControlRange(range)
         if cloneRange
-          return new b.DomRange(@editor, cloneRange, @options)
+          return new DomRange(@editor, cloneRange, @options)
     cloneRange = @_cloneBrowserRange()
     if cloneRange
-        domRange = new b.DomRange(@editor, cloneRange, @options)
+        domRange = new DomRange(@editor, cloneRange, @options)
         domRange.setStart(@startContainer, @startOffset)
         domRange.setEnd(@endContainer, @endOffset)
     return domRange;
@@ -126,7 +138,7 @@ class DomRange extends SimpleModule
       if @range.duplicate
         return @range.duplicate()
       else
-        if @editor.browser.msie && @range.length
+        if @editor.util.browser.msie && @range.length
           return @cloneControlRange(@range)
 
   _isControlRange: ->
