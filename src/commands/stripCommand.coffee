@@ -8,7 +8,7 @@ class StripCommand extends InlineCommand
     super(editor, settings, @options)
 
   getState: ->
-
+    1
   traverseFragments: (range) ->
     if @settings.selectAll
 
@@ -38,8 +38,19 @@ class StripCommand extends InlineCommand
 
   removeFormat_extract: (g, f, h) ->
     if !@get_editor().util.isBlockNode(g)
-      @extractFormatting(g, f, h);
-      @removeSameFormatChildren(g);
-      @removeNodeFormatting(g);
-      @removeEmptyNode(g);
+      @extractFormatting(g, f, h)
+      @removeSameFormatChildren(g)
+      @removeNodeFormatting(g)
+      @removeEmptyNode(g)
+
+  restoreRange: ->
+    if @settings.selectAll
+      # var f = @getContentElement();
+      # a(f).find("." + @getMarkersCssClass()).remove();
+      # d.normalize(f);
+    else
+      super()
+
+  getContentElement: ->
+    return @settings.contentElement || super()
 

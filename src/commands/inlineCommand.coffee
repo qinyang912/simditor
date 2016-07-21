@@ -11,6 +11,13 @@ class InlineCommand extends CommandBase
     title: "Inline command"
     canUnexecute: false
 
+  c: (node) ->
+    util = @get_editor().util
+    return @d(node) || (util.isTextNode(node) && util.isTextNodeEmpty(node) && (/\n|\r/.test(node.nodeValue) || (node.previousSibling && !@d(node.previousSibling)) || (node.nextSibling && !@d(node.nextSibling))))
+  
+  d: (node) ->
+    return node && node.className == @markerClass;
+
   constructor: (editor, settings, options) ->
     @settings = settings || {}
     @options  = $.extend @options, options || {}
@@ -26,6 +33,7 @@ class InlineCommand extends CommandBase
     editor = @get_editor()
     @range = @getEditorRange()
     @collapsedRange = @range.collapsed
+    state = @getState()
     if @collapsedRange and @isGreedy()
       boundary = @getWordBoundaries(@range.startContainer, @range.startOffset)
       @range.setStart(@range.startContainer, boundary.left)
@@ -40,11 +48,16 @@ class InlineCommand extends CommandBase
       @emptyRange = true
     @storeRangeByFragments(fragments)
     @rangeChanged = false
-    @removeFormatting = @shouldRemoveFormatting()
+    @removeFormatting = @shouldRemoveFormatting(state)
     if @removeFormatting
       @removeFormat(fragments)
+    else
+      @formatFragments(fragments)
 
+    @consolidate()
 
+    if !@rangeChanged
+      @restoreRange()
 
 
     # var j = this
@@ -119,6 +132,15 @@ class InlineCommand extends CommandBase
   traverseCondition: (node) ->
     return @shouldCollectNode()
 
+  consolidate: (domRange) ->
+    consolidator = new Simditor.Consolidator(@get_editor())
+    area = @getContentElement()
+    consolidator.consolidateMarkedEdges(area)
+    if domRange
+      consolidator.normalize(domRange.commonAncestorContainer)
+    else
+      consolidator.normalize(area)
+
   getEditorRange: ->
     return Simditor.DomRange.toDomRange(@get_editor(), @get_editor().selection.range()) 
 
@@ -143,8 +165,8 @@ class InlineCommand extends CommandBase
     marker.innerHTML = "&nbsp;"
     marker
 
-  shouldRemoveFormatting: ->
-    true
+  shouldRemoveFormatting: (state) ->
+    state == 1
 
   removeFormat: (fragments) ->
     while fragments.length
@@ -217,11 +239,78 @@ class InlineCommand extends CommandBase
   shouldRemoveNode: ->
     true
 
+  restoreRange: ->
+    range = @range
+    marker = $("." + @markerClass, @get_editor().body[0])
+    consolidator = new Simditor.Consolidator()
+    if marker.length
+      startMarker = marker[0]
+      next = startMarker.nextSibling
+      endMarker = marker[1]
+      if (@get_editor().util.isTextNode(next) && @get_editor().util.isTextNodeEmpty(next) && endMarker.previousSibling == next) || (startMarker == endMarker.previousSibling)
+        $(endMarker).remove()
+        @restoreCollapsedRange(startMarker)
+      else
+        if !consolidator.normalizeTextEdge(startMarker, range, true)
+          if @isSameFormatNode(startMarker.nextSibling)
+            range.setStart(startMarker.nextSibling, 0)
+          else
+            range.setStartAfter(marker[0])
+        if !consolidator.normalizeTextEdge(endMarker, range, false)
+          if @isSameFormatNode(endMarker.previousSibling)
+            range.setEnd(endMarker.previousSibling, endMarker.previousSibling.childNodes.length)
+          else
+            range.setEndBefore(marker[1])
+        range.select()
+      marker.remove()
+    else
+      try
+        if @rangeMemento
+          @rangeMemento.restoreToRange(@getEditorRange())
+      catch e
+        # ...
+  
+  restoreCollapsedRange: (marker) ->
+    # range = this.range;
+    # var j = this.get_editor();
+    # var n = l.parentNode;
+    # var i = new Simditor.Consolidator();
+    # j.setActive();
+    # j.setFocus();
+    # var o = l.previousSibling;
+    # var m = l.nextSibling;
+    # if (i.normalizeTextEdge(l, range)) {
+    #   range.collapse();
+    # } else {
+    #   if (h.isTextNode(o)) {
+    #     range.setEnd(o, o.length);
+    #     range.collapse();
+    #   } else {
+    #     if (!$telerik.isSafari && h.isTextNode(m)) {
+    #       range.setStart(m, 0);
+    #       range.collapse(true);
+    #     } else {
+    #       var k = j.nodesTracker.createTrackedNode();
+    #       n.insertBefore(k, l);
+    #       range.setEnd(k, 1);
+    #       range.collapse();
+    #     }
+    #   }
+    # }
+    # range.select();
+
+  getContentElement: ->
+    return @get_editor().body[0]
+
+  isEmptyInlineFragment: (fragment) ->
+    fragment.all (node) =>
+      @c(node)
+
   isMarker: (node) ->
     node && (node == @startMarker || node == @endMarker || node.className == @markerClass)
 
   isComment: (node) ->
-    node.nodeType == 8;
+    node.nodeType == 8
 
   _shouldCleanUpNode: (node) ->
     node && !@isMarker(node) && (!@get_editor().util.isTextNode(node) || @isComment(node))

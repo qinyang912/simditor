@@ -35,6 +35,7 @@ class DomRange extends SimpleModule
     @range = range
     @editor = editor
     @_initialCalculateEdges()
+    @util = Simditor.CommandUtil
 
   setEnd: (node, offset) ->
     @endContainer = node
@@ -47,16 +48,16 @@ class DomRange extends SimpleModule
     @_calculateRangeProperties()
 
   setStartBefore: (node) ->
-    @setStart(node.parentNode, @editor.util.findNodeIndex(node))
+    @setStart(node.parentNode, @util.findNodeIndex(node))
 
   setStartAfter: (node) ->
-    @setStart(node.parentNode, @editor.util.findNodeIndex(node) + 1)
+    @setStart(node.parentNode, @util.findNodeIndex(node) + 1)
 
   setEndBefore: (node) ->
-    @setEnd(node.parentNode, @editor.util.findNodeIndex(node))
+    @setEnd(node.parentNode, @util.findNodeIndex(node))
 
   setEndAfter: (node) ->
-    @setEnd(node.parentNode, @editor.util.findNodeIndex(node) + 1);
+    @setEnd(node.parentNode, @util.findNodeIndex(node) + 1);
 
   toString: ->
     range = @_updateBrowserRange();
@@ -145,7 +146,7 @@ class DomRange extends SimpleModule
     @range.length
 
   _updateBrowserRange: ->
-    if @_isControlRange() || @editor.util.isTag(@startContainer, "textarea")
+    if @_isControlRange() || @util.isTag(@startContainer, "textarea")
       return @range;
     @_updateBrowserRangeStart();
     @_updateBrowserRangeEnd();
@@ -257,7 +258,7 @@ class DomRange extends SimpleModule
       @startOffset = @endOffset - text.length
 
   _calculateRangeProperties: ->
-    @commonAncestorContainer = @editor.util.findCommonAncestor(@startContainer, @endContainer)
+    @commonAncestorContainer = @util.findCommonAncestor(@startContainer, @endContainer)
     @collapsed = @startContainer == @endContainer && @startOffset == @endOffset
 
   _isBrowserRangeCollapsed: ->

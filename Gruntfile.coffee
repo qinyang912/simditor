@@ -24,6 +24,8 @@ module.exports = (grunt) ->
             'src/i18n.coffee'
             'src/domRange.coffee'
             'src/domRangeMemento.coffee'
+            'src/nodeComparer.coffee'
+            'src/commandUtil.coffee'
             'src/buttons/button.coffee'
             'src/buttons/popover.coffee'
             'src/buttons/title.coffee'
@@ -54,6 +56,8 @@ module.exports = (grunt) ->
             'src/commands/rangeIterator.coffee'
             'src/commands/fragmentContainer.coffee'
             'src/commands/domTreeExtractor.coffee'
+            'src/commands/consolidator.coffee'
+            'src/commands/formatPainterCommand.coffee'
           ]
       site:
         expand: true

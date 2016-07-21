@@ -48,9 +48,19 @@ class FormatPaintButton extends Button
       if @editor.util.isTag(node, 'a')
         return false
       return !@editor.util.isTextNode(node) && !@editor.util.isBlockNode(node) && @editor.util.canHaveChildren(node)
-    command = new Simditor.StripElementCommand @editor,
+    stripCommand = new Simditor.StripElementCommand @editor,
       stripCondition: stripCondition
-    command.onExecute()
+    stripCommand.onExecute()
+
+    settings = 
+      formatting: @_format
+
+    options = 
+      title: "Apply Format"
+
+    formatPainterCommand = new Simditor.FormatPainterCommand(@editor, settings, options)
+    formatPainterCommand.onExecute()
+
 
   _registerEvent: ->
     @_mousedown = false

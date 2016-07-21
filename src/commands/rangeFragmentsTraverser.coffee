@@ -27,7 +27,7 @@ class RangeFragmentsTraverser extends SimpleModule
           @collectNode(node.firstChild, fn)
         node = node.nextSibling
         continue
-      fragmentContainer = new Simditor.FragmentContainer()
+      fragmentContainer = new Simditor.FragmentContainer(@editor)
       nodeTmp = node
       while nodeTmp && @isSuitable(nodeTmp, fn)
         if fn(nodeTmp)

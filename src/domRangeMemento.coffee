@@ -19,4 +19,26 @@ class DomRangeMemento extends SimpleModule
       else
         @endContainer = domRange.endContainer;
         @endOffset = domRange.endOffset;
+
+  restoreToRange: (domRange) ->
+    @restoreStart(domRange)
+    if @endOffset == false
+      domRange.setEndBefore(@endContainer)
+    else
+      if @endOffset == "outside"
+        domRange.setEnd(@endContainer, Math.max(1, @endContainer.childNodes.length - 1))
+      else
+        domRange.setEnd(@endContainer, @endOffset)
+    @restoreStart(domRange)
+    if @collapsed
+      domRange.collapse()
+    domRange.select()
+
+  restoreStart: (domRange) ->
+    if @startOffset == false
+      domRange.setStartBefore(@startContainer)
+    else
+      domRange.setStart(@startContainer, @startOffset)
+
+
 Simditor.DomRangeMemento = DomRangeMemento

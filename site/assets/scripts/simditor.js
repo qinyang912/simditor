@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, Formatter, FragmentContainer, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -1766,6 +1766,18 @@ Util = (function(superClass) {
     return this.isTag(node, "ul") || this.isTag(node, "ol");
   };
 
+  Util.prototype.isHeading = function(node) {
+    return node && /^H[1-6]$/i.test(node.nodeName);
+  };
+
+  Util.prototype.isTableCell = function(node) {
+    return this.isTag(node, "td") || this.isTag(node, "th");
+  };
+
+  Util.prototype.isBlockComponent = function(node) {
+    return this.isTag(node, "li") || this.isTableCell(node);
+  };
+
   Util.prototype.isAncestorOf = function(m, l) {
     var error, tempL;
     try {
@@ -2072,6 +2084,34 @@ Util = (function(superClass) {
       firstChild = firstChild.nextSibling;
     }
     return !firstChild;
+  };
+
+  Util.prototype.every = function(nodes, fn) {
+    var length, m, ref, w;
+    length = nodes.length;
+    for (m = w = 0, ref = length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
+      if (!fn(nodes[m])) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Util.prototype.some = function(nodes, fn) {
+    var length, m, ref, w;
+    length = nodes.length;
+    for (m = w = 0, ref = length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
+      if (fn(nodes[m])) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  Util.prototype.getComputedStyle = function(node, style) {
+    var computedStyle;
+    computedStyle = window.getComputedStyle(node, null);
+    return computedStyle.getPropertyValue(style);
   };
 
   Util.prototype.hasAttributes = function(node) {
@@ -3158,6 +3198,7 @@ DomRange = (function(superClass) {
     this.range = range;
     this.editor = editor;
     this._initialCalculateEdges();
+    this.util = Simditor.CommandUtil;
   }
 
   DomRange.prototype.setEnd = function(node, offset) {
@@ -3173,19 +3214,19 @@ DomRange = (function(superClass) {
   };
 
   DomRange.prototype.setStartBefore = function(node) {
-    return this.setStart(node.parentNode, this.editor.util.findNodeIndex(node));
+    return this.setStart(node.parentNode, this.util.findNodeIndex(node));
   };
 
   DomRange.prototype.setStartAfter = function(node) {
-    return this.setStart(node.parentNode, this.editor.util.findNodeIndex(node) + 1);
+    return this.setStart(node.parentNode, this.util.findNodeIndex(node) + 1);
   };
 
   DomRange.prototype.setEndBefore = function(node) {
-    return this.setEnd(node.parentNode, this.editor.util.findNodeIndex(node));
+    return this.setEnd(node.parentNode, this.util.findNodeIndex(node));
   };
 
   DomRange.prototype.setEndAfter = function(node) {
-    return this.setEnd(node.parentNode, this.editor.util.findNodeIndex(node) + 1);
+    return this.setEnd(node.parentNode, this.util.findNodeIndex(node) + 1);
   };
 
   DomRange.prototype.toString = function() {
@@ -3308,7 +3349,7 @@ DomRange = (function(superClass) {
   };
 
   DomRange.prototype._updateBrowserRange = function() {
-    if (this._isControlRange() || this.editor.util.isTag(this.startContainer, "textarea")) {
+    if (this._isControlRange() || this.util.isTag(this.startContainer, "textarea")) {
       return this.range;
     }
     this._updateBrowserRangeStart();
@@ -3374,7 +3415,7 @@ DomRange = (function(superClass) {
   };
 
   DomRange.prototype._calculateRangeProperties = function() {
-    this.commonAncestorContainer = this.editor.util.findCommonAncestor(this.startContainer, this.endContainer);
+    this.commonAncestorContainer = this.util.findCommonAncestor(this.startContainer, this.endContainer);
     return this.collapsed = this.startContainer === this.endContainer && this.startOffset === this.endOffset;
   };
 
@@ -3465,11 +3506,380 @@ DomRangeMemento = (function(superClass) {
     }
   }
 
+  DomRangeMemento.prototype.restoreToRange = function(domRange) {
+    this.restoreStart(domRange);
+    if (this.endOffset === false) {
+      domRange.setEndBefore(this.endContainer);
+    } else {
+      if (this.endOffset === "outside") {
+        domRange.setEnd(this.endContainer, Math.max(1, this.endContainer.childNodes.length - 1));
+      } else {
+        domRange.setEnd(this.endContainer, this.endOffset);
+      }
+    }
+    this.restoreStart(domRange);
+    if (this.collapsed) {
+      domRange.collapse();
+    }
+    return domRange.select();
+  };
+
+  DomRangeMemento.prototype.restoreStart = function(domRange) {
+    if (this.startOffset === false) {
+      return domRange.setStartBefore(this.startContainer);
+    } else {
+      return domRange.setStart(this.startContainer, this.startOffset);
+    }
+  };
+
   return DomRangeMemento;
 
 })(SimpleModule);
 
 Simditor.DomRangeMemento = DomRangeMemento;
+
+NodeComparer = {
+  util: Simditor.CommandUtil,
+  equalNodes: function(h, i) {
+    return this.equalTag(h, i) && this.equalStyle(h, i) && this.equalAttributes(h, i);
+  },
+  equalTag: function(h, i) {
+    return this.util.isTag(h, i.tagName);
+  },
+  equalStyle: function(h, i) {
+    return h.style && i.style && h.style.cssText === i.style.cssText;
+  },
+  equalAttributes: function(h, i, m) {
+    var k, key, value;
+    i = this._collectAttributes(h, m);
+    k = this._collectAttributes(j, m);
+    if (i.length !== k.length) {
+      return false;
+    }
+    delete i.length;
+    delete i.style;
+    delete i.timestamp;
+    delete i.title;
+    for (key in i) {
+      if (!hasProp.call(i, key)) continue;
+      value = i[key];
+      if (i[key] !== k[key]) {
+        return false;
+      }
+    }
+    return true;
+  },
+  _collectAttributes: function(h, i) {
+    if (i && i.length > 0) {
+      return this.util.getAttributes(h, i);
+    } else {
+      return this.util.getDefinedAttributes(h);
+    }
+  }
+};
+
+Simditor.NodeComparer = NodeComparer;
+
+CommandUtil = {
+  emptyNodeRegExp: '/^&nbsp;?$/',
+  blockNodes: ["div", "p", "ul", "ol", "li", "blockquote", "hr", "pre", "h1", "h2", "h3", "h4", "h5", "table"],
+  isBlockNode: function(node) {
+    node = $(node)[0];
+    if (!node || node.nodeType === 3) {
+      return false;
+    }
+    return new RegExp("^(" + (this.blockNodes.join('|')) + ")$").test(node.nodeName.toLowerCase());
+  },
+  isTextNode: function(node) {
+    node = $(node)[0];
+    return node && node.nodeType && (node.nodeType === 3 || node.nodeType === 4 || node.nodeType === 8);
+  },
+  canHaveChildren: function(node) {
+    node = $(node)[0];
+    if (!node || this.isTextNode(node)) {
+      return false;
+    }
+    switch ((node.tagName || node.nodeName).toUpperCase()) {
+      case "AREA":
+      case "BASE":
+      case "BASEFONT":
+      case "COL":
+      case "FRAME":
+      case "HR":
+      case "IMG":
+      case "BR":
+      case "INPUT":
+      case "ISINDEX":
+      case "LINK":
+      case "META":
+      case "PARAM":
+        return false;
+      default:
+        return true;
+    }
+  },
+  isTag: function(node, tagName) {
+    node = $(node)[0];
+    return !!(node && node.tagName && tagName) && node.tagName.toLowerCase() === tagName.toLowerCase();
+  },
+  isList: function(node) {
+    return this.isTag(node, "ul") || this.isTag(node, "ol");
+  },
+  isHeading: function(node) {
+    return node && /^H[1-6]$/i.test(node.nodeName);
+  },
+  isTableCell: function(node) {
+    return this.isTag(node, "td") || this.isTag(node, "th");
+  },
+  isBlockComponent: function(node) {
+    return this.isTag(node, "li") || this.isTableCell(node);
+  },
+  isAncestorOf: function(m, l) {
+    var error, tempL;
+    try {
+      if (this.isTextNode(l)) {
+        tempL = l.parentNode;
+      } else {
+        tempL = l;
+      }
+      return !this.isTextNode(m) && (l.parentNode === m || $.contains(m, tempL));
+    } catch (_error) {
+      error = _error;
+      return false;
+    }
+  },
+  isAncestorOrSelf: function(l, k) {
+    return this.isAncestorOf(l, k) || (l === k);
+  },
+  findAncestorUntil: function(l, k) {
+    if (this.isAncestorOf(l, k)) {
+      while (k && k.parentNode !== l) {
+        k = k.parentNode;
+      }
+    }
+    return k;
+  },
+  traversePreviousNode: function(l) {
+    var k, m;
+    k = l;
+    while (k && !(m = k.previousSibling)) {
+      k = k.parentNode;
+    }
+    return m;
+  },
+  findNodeIndex: function(node) {
+    var index;
+    node = $(node)[0];
+    index = 0;
+    while (node.previousSibling) {
+      node = node.previousSibling;
+      index++;
+    }
+    return index;
+  },
+  findCommonAncestor: function(k, l) {
+    while (k && k !== l && !this.isAncestorOf(k, l)) {
+      k = k.parentNode;
+    }
+    return k;
+  },
+  getAllChildNodesBy: function(m, l) {
+    var k;
+    k = [];
+    this._getChildNodes(m, k, l);
+    return k;
+  },
+  _getChildNodes: function(o, l, m, p) {
+    var firstChild, n, results;
+    firstChild = o.firstChild;
+    results = [];
+    while (firstChild) {
+      n = m(firstChild);
+      if (!(p && n) && firstChild.nodeType === 1 && this.canHaveChildren(firstChild)) {
+        this._getChildNodes(firstChild, l, m, p);
+      }
+      if (n) {
+        l.push(firstChild);
+      }
+      results.push(firstChild = firstChild.nextSibling);
+    }
+    return results;
+  },
+  removeNode: function(node) {
+    var parentNode;
+    parentNode = node.parentNode;
+    if (parentNode !== null) {
+      while (node.firstChild) {
+        parentNode.insertBefore(node.firstChild, node);
+      }
+      parentNode.removeChild(node);
+      return parentNode;
+    }
+    return true;
+  },
+  removeChildren: function(node) {
+    var results;
+    results = [];
+    while (node.firstChild) {
+      results.push(node.removeChild(node.firstChild));
+    }
+    return results;
+  },
+  cloneNodeClean: function(node) {
+    var cloneNode;
+    cloneNode = node.cloneNode(false);
+    this.removeChildren(cloneNode);
+    return cloneNode;
+  },
+  isTextNodeEmpty: function(node) {
+    return !/[^\s\xA0\u200b]+/.test(node.nodeValue);
+  },
+  isTextNodeCompletelyEmpty: function(node) {
+    return !/[^\n\r\t\u200b]+/.test(node.nodeValue);
+  },
+  isNodeEmpty: function(node) {
+    return this.isNodeCompletelyEmpty(node) || this.emptyNodeRegExp.test(node.innerHTML);
+  },
+  isNodeCompletelyEmpty: function(node) {
+    return !node.innerHTML || node.childNodes.length === 0;
+  },
+  isEmptyDom: function(node) {
+    if (this.isTextNode(node)) {
+      return this.isTextNodeEmpty(node);
+    } else {
+      return this.isNodeEmpty(node);
+    }
+  },
+  isCompletelyEmptyDom: function(node) {
+    if (this.isTextNode(node)) {
+      return this.isTextNodeCompletelyEmpty(node);
+    } else {
+      return this.isNodeCompletelyEmpty(node);
+    }
+  },
+  isNodeEmptyRecursive: function(m, k) {
+    var firstChild;
+    if (m.nodeType === 1 && !this.canHaveChildren(m)) {
+      return false;
+    } else {
+      if (m.childNodes.length === 0) {
+        if (k) {
+          return this.isCompletelyEmptyDom(m);
+        } else {
+          return this.isEmptyDom(m);
+        }
+      } else {
+        if (this.isList(m) && m.children.length === 0) {
+          return true;
+        }
+      }
+    }
+    firstChild = m.firstChild;
+    while (firstChild && this.isNodeEmptyRecursive(firstChild, k)) {
+      firstChild = firstChild.nextSibling;
+    }
+    return !firstChild;
+  },
+  getDefinedAttributes: function(n) {
+    var k, l, m, ref, w;
+    l = {
+      length: 0
+    };
+    for (m = w = 0, ref = n.attributes.length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
+      k = n.attributes[m];
+      if (k.specified && k.nodeName !== "style" && !/^sizzle-/.test(k.nodeName)) {
+        l[k.nodeName] = k.nodeValue;
+        l.length++;
+      }
+    }
+    return l;
+  },
+  getAttributes: function(o, n) {
+    var k, l, m, ref, w;
+    k = {
+      length: 1
+    };
+    for (l = w = 0, ref = n.length - 1; 0 <= ref ? w < ref : w > ref; l = 0 <= ref ? ++w : --w) {
+      m = n[l];
+      k[m] = o.getAttribute(m);
+      k.length++;
+    }
+    return k;
+  },
+  every: function(nodes, fn) {
+    var length, m, ref, w;
+    length = nodes.length;
+    for (m = w = 0, ref = length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
+      if (!fn(nodes[m])) {
+        return false;
+      }
+    }
+    return true;
+  },
+  some: function(nodes, fn) {
+    var length, m, ref, w;
+    length = nodes.length;
+    for (m = w = 0, ref = length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
+      if (fn(nodes[m])) {
+        return true;
+      }
+    }
+    return false;
+  },
+  getComputedStyle: function(node, style) {
+    var computedStyle;
+    computedStyle = window.getComputedStyle(node, null);
+    return computedStyle.getPropertyValue(style);
+  },
+  normalize: function(node) {
+    if (!node.normalize) {
+      return this._normalizeTextNodes(node);
+    } else {
+      return node.normalize();
+    }
+  },
+  _normalizeTextNodes: function(node) {
+    var firstChild, nextSibling, results;
+    firstChild = node.firstChild;
+    nextSibling = null;
+    results = [];
+    while (firstChild) {
+      if (firstChild.nodeType === 3) {
+        nextSibling = firstChild.nextSibling;
+        while (nextSibling && nextSibling.nodeType === 3) {
+          firstChild.appendData(nextSibling.data);
+          node.removeChild(nextSibling);
+          nextSibling = firstChild.nextSibling;
+        }
+      } else {
+        this._normalizeTextNodes(firstChild);
+      }
+      results.push(firstChild = firstChild.nextSibling);
+    }
+    return results;
+  },
+  hasAttributes: function(node) {
+    var a, b, c, l;
+    l = this.getOuterHtml(node).replace(node.innerHTML, "");
+    a = /=["][^"]/.test(l);
+    b = /=['][^']/.test(l);
+    c = /=[^'"]/.test(l);
+    return a || b || c;
+  },
+  getOuterHtml: function(node) {
+    var b, c;
+    if (node.outerHTML) {
+      return node.outerHTML;
+    } else {
+      b = node.cloneNode(true);
+      c = document.createElement("div");
+      c.appendChild(b);
+      return c.innerHTML;
+    }
+  }
+};
+
+Simditor.CommandUtil = CommandUtil;
 
 Button = (function(superClass) {
   extend(Button, superClass);
@@ -6469,7 +6879,7 @@ FormatPaintButton = (function(superClass) {
   };
 
   FormatPaintButton.prototype._formatPainterApply = function() {
-    var command, stripCondition;
+    var formatPainterCommand, options, settings, stripCommand, stripCondition;
     stripCondition = (function(_this) {
       return function(node) {
         if (_this.editor.util.isTag(node, 'a')) {
@@ -6478,10 +6888,18 @@ FormatPaintButton = (function(superClass) {
         return !_this.editor.util.isTextNode(node) && !_this.editor.util.isBlockNode(node) && _this.editor.util.canHaveChildren(node);
       };
     })(this);
-    command = new Simditor.StripElementCommand(this.editor, {
+    stripCommand = new Simditor.StripElementCommand(this.editor, {
       stripCondition: stripCondition
     });
-    return command.onExecute();
+    stripCommand.onExecute();
+    settings = {
+      formatting: this._format
+    };
+    options = {
+      title: "Apply Format"
+    };
+    formatPainterCommand = new Simditor.FormatPainterCommand(this.editor, settings, options);
+    return formatPainterCommand.onExecute();
   };
 
   FormatPaintButton.prototype._registerEvent = function() {
@@ -6562,6 +6980,16 @@ InlineCommand = (function(superClass) {
     canUnexecute: false
   };
 
+  InlineCommand.prototype.c = function(node) {
+    var util;
+    util = this.get_editor().util;
+    return this.d(node) || (util.isTextNode(node) && util.isTextNodeEmpty(node) && (/\n|\r/.test(node.nodeValue) || (node.previousSibling && !this.d(node.previousSibling)) || (node.nextSibling && !this.d(node.nextSibling))));
+  };
+
+  InlineCommand.prototype.d = function(node) {
+    return node && node.className === this.markerClass;
+  };
+
   function InlineCommand(editor, settings, options) {
     this.settings = settings || {};
     this.options = $.extend(this.options, options || {});
@@ -6578,10 +7006,11 @@ InlineCommand = (function(superClass) {
   };
 
   InlineCommand.prototype.executeInlineCommand = function() {
-    var boundary, editor, fragments;
+    var boundary, editor, fragments, state;
     editor = this.get_editor();
     this.range = this.getEditorRange();
     this.collapsedRange = this.range.collapsed;
+    state = this.getState();
     if (this.collapsedRange && this.isGreedy()) {
       boundary = this.getWordBoundaries(this.range.startContainer, this.range.startOffset);
       this.range.setStart(this.range.startContainer, boundary.left);
@@ -6597,9 +7026,15 @@ InlineCommand = (function(superClass) {
     }
     this.storeRangeByFragments(fragments);
     this.rangeChanged = false;
-    this.removeFormatting = this.shouldRemoveFormatting();
+    this.removeFormatting = this.shouldRemoveFormatting(state);
     if (this.removeFormatting) {
-      return this.removeFormat(fragments);
+      this.removeFormat(fragments);
+    } else {
+      this.formatFragments(fragments);
+    }
+    this.consolidate();
+    if (!this.rangeChanged) {
+      return this.restoreRange();
     }
   };
 
@@ -6663,6 +7098,18 @@ InlineCommand = (function(superClass) {
     return this.shouldCollectNode();
   };
 
+  InlineCommand.prototype.consolidate = function(domRange) {
+    var area, consolidator;
+    consolidator = new Simditor.Consolidator(this.get_editor());
+    area = this.getContentElement();
+    consolidator.consolidateMarkedEdges(area);
+    if (domRange) {
+      return consolidator.normalize(domRange.commonAncestorContainer);
+    } else {
+      return consolidator.normalize(area);
+    }
+  };
+
   InlineCommand.prototype.getEditorRange = function() {
     return Simditor.DomRange.toDomRange(this.get_editor(), this.get_editor().selection.range());
   };
@@ -6694,8 +7141,8 @@ InlineCommand = (function(superClass) {
     return marker;
   };
 
-  InlineCommand.prototype.shouldRemoveFormatting = function() {
-    return true;
+  InlineCommand.prototype.shouldRemoveFormatting = function(state) {
+    return state === 1;
   };
 
   InlineCommand.prototype.removeFormat = function(fragments) {
@@ -6804,6 +7251,61 @@ InlineCommand = (function(superClass) {
     return true;
   };
 
+  InlineCommand.prototype.restoreRange = function() {
+    var consolidator, e, endMarker, marker, next, range, startMarker;
+    range = this.range;
+    marker = $("." + this.markerClass, this.get_editor().body[0]);
+    consolidator = new Simditor.Consolidator();
+    if (marker.length) {
+      startMarker = marker[0];
+      next = startMarker.nextSibling;
+      endMarker = marker[1];
+      if ((this.get_editor().util.isTextNode(next) && this.get_editor().util.isTextNodeEmpty(next) && endMarker.previousSibling === next) || (startMarker === endMarker.previousSibling)) {
+        $(endMarker).remove();
+        this.restoreCollapsedRange(startMarker);
+      } else {
+        if (!consolidator.normalizeTextEdge(startMarker, range, true)) {
+          if (this.isSameFormatNode(startMarker.nextSibling)) {
+            range.setStart(startMarker.nextSibling, 0);
+          } else {
+            range.setStartAfter(marker[0]);
+          }
+        }
+        if (!consolidator.normalizeTextEdge(endMarker, range, false)) {
+          if (this.isSameFormatNode(endMarker.previousSibling)) {
+            range.setEnd(endMarker.previousSibling, endMarker.previousSibling.childNodes.length);
+          } else {
+            range.setEndBefore(marker[1]);
+          }
+        }
+        range.select();
+      }
+      return marker.remove();
+    } else {
+      try {
+        if (this.rangeMemento) {
+          return this.rangeMemento.restoreToRange(this.getEditorRange());
+        }
+      } catch (_error) {
+        e = _error;
+      }
+    }
+  };
+
+  InlineCommand.prototype.restoreCollapsedRange = function(marker) {};
+
+  InlineCommand.prototype.getContentElement = function() {
+    return this.get_editor().body[0];
+  };
+
+  InlineCommand.prototype.isEmptyInlineFragment = function(fragment) {
+    return fragment.all((function(_this) {
+      return function(node) {
+        return _this.c(node);
+      };
+    })(this));
+  };
+
   InlineCommand.prototype.isMarker = function(node) {
     return node && (node === this.startMarker || node === this.endMarker || node.className === this.markerClass);
   };
@@ -6832,7 +7334,9 @@ StripCommand = (function(superClass) {
     StripCommand.__super__.constructor.call(this, editor, settings, this.options);
   }
 
-  StripCommand.prototype.getState = function() {};
+  StripCommand.prototype.getState = function() {
+    return 1;
+  };
 
   StripCommand.prototype.traverseFragments = function(range) {
     if (this.settings.selectAll) {
@@ -6881,6 +7385,18 @@ StripCommand = (function(superClass) {
       this.removeNodeFormatting(g);
       return this.removeEmptyNode(g);
     }
+  };
+
+  StripCommand.prototype.restoreRange = function() {
+    if (this.settings.selectAll) {
+
+    } else {
+      return StripCommand.__super__.restoreRange.call(this);
+    }
+  };
+
+  StripCommand.prototype.getContentElement = function() {
+    return this.settings.contentElement || StripCommand.__super__.getContentElement.call(this);
   };
 
   return StripCommand;
@@ -6998,7 +7514,7 @@ RangeFragmentsTraverser = (function(superClass) {
         node = node.nextSibling;
         continue;
       }
-      fragmentContainer = new Simditor.FragmentContainer();
+      fragmentContainer = new Simditor.FragmentContainer(this.editor);
       nodeTmp = node;
       while (nodeTmp && this.isSuitable(nodeTmp, fn)) {
         if (fn(nodeTmp)) {
@@ -7231,8 +7747,9 @@ Simditor.RangeIterator = RangeIterator;
 FragmentContainer = (function(superClass) {
   extend(FragmentContainer, superClass);
 
-  function FragmentContainer() {
+  function FragmentContainer(editor) {
     this.nodes = [];
+    this.editor = editor;
   }
 
   FragmentContainer.prototype.addNode = function(node) {
@@ -7245,6 +7762,15 @@ FragmentContainer = (function(superClass) {
     } else {
       return null;
     }
+  };
+
+  FragmentContainer.prototype.appendTo = function(node) {
+    var e, ref, results, w;
+    results = [];
+    for (e = w = 0, ref = this.nodes.length - 1; 0 <= ref ? w < ref : w > ref; e = 0 <= ref ? ++w : --w) {
+      results.push(node.appendChild(this.nodes[e]));
+    }
+    return results;
   };
 
   FragmentContainer.prototype.insertBeforeFirst = function(node) {
@@ -7272,6 +7798,14 @@ FragmentContainer = (function(superClass) {
 
   FragmentContainer.prototype.addNodeAt = function(f, e) {
     return this.nodes.splice(e, 0, f);
+  };
+
+  FragmentContainer.prototype.all = function(fn) {
+    return this.editor.util.every(this.nodes, fn);
+  };
+
+  FragmentContainer.prototype.any = function(fn) {
+    return this.editor.util.some(this.nodes, fn);
   };
 
   return FragmentContainer;
@@ -7351,6 +7885,205 @@ DomTreeExtractor = (function(superClass) {
 })(SimpleModule);
 
 Simditor.DomTreeExtractor = DomTreeExtractor;
+
+Consolidator = (function(superClass) {
+  extend(Consolidator, superClass);
+
+  Consolidator.prototype.markerClass = "__telerik_marker";
+
+  Consolidator.c = function(h, i) {
+    if (!h || !i || !h.parentNode || !i.parentNode || Simditor.commandUtil.isTextNode(h)) {
+      return false;
+    }
+    return Simditor.NodeComparer.equalNodes(h, i);
+  };
+
+  Consolidator.prototype.options = {
+    nodeCompare: Consolidator.c
+  };
+
+  function Consolidator(editor, options) {
+    this.options = $.extend(this.options, options || {});
+    this.editor = editor;
+    this.util = Simditor.commandUtil;
+  }
+
+  Consolidator.prototype.consolidateMarkedEdges = function(node) {
+    var markers;
+    markers = this._getMarkers(node);
+    if (markers[0]) {
+      this.consolidateOverMarker(markers[0]);
+    }
+    if (markers[1]) {
+      return this.consolidateOverMarker(markers[1]);
+    }
+  };
+
+  Consolidator.prototype.consolidateOverMarker = function(node) {
+    var nextSibling, nodeCompare, previousSibling;
+    nodeCompare = this.options.nodeCompare;
+    previousSibling = node.previousSibling;
+    nextSibling = node.nextSibling;
+    if (nodeCompare(previousSibling, nextSibling)) {
+      previousSibling.appendChild(node);
+      while (nextSibling.firstChild) {
+        previousSibling.appendChild(nextSibling.firstChild);
+      }
+      nextSibling.parentNode.removeChild(nextSibling);
+      return this.consolidateOverMarker(node);
+    }
+  };
+
+  Consolidator.prototype.normalize = function(node) {
+    return this.util.normalize(node);
+  };
+
+  Consolidator.prototype._getMarkers = function(node) {
+    return $("." + this.markerClass, node);
+  };
+
+  return Consolidator;
+
+})(SimpleModule);
+
+Simditor.Consolidator = Consolidator;
+
+FormatPainterCommand = (function(superClass) {
+  extend(FormatPainterCommand, superClass);
+
+  FormatPainterCommand.wrapperClass = "TELERIK_formatPainterContentWrapper";
+
+  FormatPainterCommand.prototype._attributes = ["class", "style", "size", "color", "face"];
+
+  function FormatPainterCommand(editor, settings, options) {
+    options = $.extend({
+      title: "Format Painter"
+    }, options || {});
+    FormatPainterCommand.__super__.constructor.call(this, editor, settings, options);
+  }
+
+  FormatPainterCommand.prototype.formatFragments = function(fragments) {
+    var formatTree, fragment, results;
+    if (fragments.length && this.settings.formatting) {
+      formatTree = this._createFormattingTree();
+    } else {
+      formatTree = void 0;
+    }
+    results = [];
+    while (fragments.length && formatTree) {
+      fragment = fragments.shift();
+      if (!this.isEmptyInlineFragment(fragment)) {
+        results.push(this.formatFragment(fragment, formatTree));
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
+  };
+
+  FormatPainterCommand.prototype.formatFragment = function(fragment, formatTree) {
+    var cloneNode, computedStyles, diffCss, formatting, parentNode, util, wrapperClass, wrapperNode, wrapperNodeTmp;
+    cloneNode = formatTree.cloneNode(true);
+    wrapperClass = FormatPainterCommand.wrapperClass;
+    wrapperNode = $(cloneNode).find("span." + wrapperClass).removeClass(wrapperClass).get(0);
+    fragment.insertBeforeFirst(cloneNode);
+    fragment.appendTo(wrapperNode);
+    parentNode = cloneNode.parentNode;
+    util = this.get_editor().util;
+    if (util.isBlockNode(cloneNode) && util.isBlockNode(parentNode)) {
+      if (cloneNode.nodeName === parentNode.nodeName || util.isBlockComponent(cloneNode)) {
+        util.removeNode(cloneNode);
+      } else {
+        if (!util.isBlockComponent(parentNode) && util.isHeading(cloneNode)) {
+          if (this.isMarker(cloneNode.previousSibling)) {
+            fragment.insertBeforeFirst(cloneNode.previousSibling);
+          }
+          if (this.isMarker(cloneNode.nextSibling)) {
+            fragment.appendNodeAfter(cloneNode.nextSibling);
+          }
+          this.extractFormatting(parentNode, cloneNode, cloneNode);
+          util.removeNode(parentNode);
+        } else {
+          if (util.isHeading(parentNode) || util.isBlockComponent(parentNode)) {
+            util.removeNode(cloneNode);
+          }
+        }
+      }
+    }
+    formatting = this.settings.formatting;
+    if (formatting && formatting.computedStyles) {
+      computedStyles = formatting.computedStyles;
+    } else {
+      computedStyles = {};
+    }
+    wrapperNodeTmp = wrapperNode;
+    diffCss = this._getStyleDifferences(wrapperNodeTmp, computedStyles);
+    if (diffCss) {
+      return $(wrapperNodeTmp).css(diffCss);
+    } else {
+      return util.removeNode(wrapperNodeTmp);
+    }
+  };
+
+  FormatPainterCommand.prototype._getStyleDifferences = function(node, computedStyles) {
+    var f, h, key, l, value;
+    for (key in computedStyles) {
+      if (!hasProp.call(computedStyles, key)) continue;
+      value = computedStyles[key];
+      l = this.get_editor().util.getComputedStyle(node, key);
+      h = computedStyles[key];
+      if (l !== h) {
+        if (!f) {
+          f = {};
+        }
+        f[key] = h;
+      }
+    }
+    return f;
+  };
+
+  FormatPainterCommand.prototype._createFormattingTree = function() {
+    var elements, formatting, h, m, o, p, ref, tmp, w, wrapper;
+    formatting = this.settings.formatting;
+    if (formatting && formatting.elements) {
+      elements = formatting.elements;
+    } else {
+      elements = [];
+    }
+    wrapper = document.createElement("div");
+    tmp = wrapper;
+    for (p = w = ref = elements.length - 1; ref <= 0 ? w < 0 : w > 0; p = ref <= 0 ? ++w : --w) {
+      m = elements[p];
+      o = document.createElement(m.nodeName);
+      this._setAttributes(o, m);
+      tmp.appendChild(o);
+      tmp = o;
+    }
+    h = document.createElement("span");
+    h.className = FormatPainterCommand.wrapperClass;
+    tmp.appendChild(h);
+    return wrapper.firstChild;
+  };
+
+  FormatPainterCommand.prototype._setAttributes = function(node, attrs) {
+    return this._attributes.forEach((function(_this) {
+      return function(item) {
+        if (attrs[item]) {
+          return node.setAttribute(item, attrs[item]);
+        }
+      };
+    })(this));
+  };
+
+  FormatPainterCommand.prototype.getState = function() {
+    return 0;
+  };
+
+  return FormatPainterCommand;
+
+})(InlineCommand);
+
+Simditor.FormatPainterCommand = FormatPainterCommand;
 
 return Simditor;
 

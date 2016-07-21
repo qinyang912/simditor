@@ -108,7 +108,7 @@ class Util extends SimpleModule
 
   isTextNode: (node) ->
     node = $(node)[0]
-    return node && node.nodeType && (node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8);
+    return node && node.nodeType && (node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8)
 
   canHaveChildren: (node) ->
     node = $(node)[0]
@@ -124,6 +124,15 @@ class Util extends SimpleModule
 
   isList: (node) ->
     return @isTag(node, "ul") || @isTag(node, "ol")
+
+  isHeading: (node) ->
+    node && /^H[1-6]$/i.test(node.nodeName)
+
+  isTableCell: (node) ->
+    @isTag(node, "td") || @isTag(node, "th")
+
+  isBlockComponent: (node) ->
+    @isTag(node, "li") || @isTableCell(node)
 
   isAncestorOf: (m, l) ->
     try
@@ -363,6 +372,24 @@ class Util extends SimpleModule
       firstChild = firstChild.nextSibling
 
     return !firstChild
+
+  every: (nodes, fn) ->
+    length = nodes.length;
+    for m in [0...length-1]
+      if !fn(nodes[m])
+        return false
+    return true
+
+  some: (nodes, fn) ->
+    length = nodes.length
+    for m in [0...length-1]
+      if fn(nodes[m])
+        return true
+    return false
+
+  getComputedStyle: (node, style) ->
+    computedStyle = window.getComputedStyle(node, null)
+    computedStyle.getPropertyValue(style)
 
   hasAttributes: (node) ->
     l = @getOuterHtml(node).replace(node.innerHTML, "")

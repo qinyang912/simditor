@@ -1,7 +1,8 @@
 
 class FragmentContainer extends SimpleModule
-  constructor: ->
+  constructor: (editor) ->
     @nodes = []
+    @editor = editor
 
   addNode: (node) ->
     @nodes.push(node)
@@ -11,6 +12,10 @@ class FragmentContainer extends SimpleModule
       return @nodes[0].parentNode
     else
       return null
+
+  appendTo: (node) ->
+    for e in [0...@nodes.length-1]
+      node.appendChild(@nodes[e])
 
   insertBeforeFirst: (node) ->
     if !@nodes.length
@@ -29,6 +34,12 @@ class FragmentContainer extends SimpleModule
     @nodes.splice(m, 1)
 
   addNodeAt: (f, e) ->
-    @nodes.splice(e, 0, f);
+    @nodes.splice(e, 0, f)
+
+  all: (fn) ->
+    @editor.util.every(@nodes, fn)
+
+  any: (fn) ->
+    @editor.util.some(@nodes, fn)
 
 Simditor.FragmentContainer = FragmentContainer
