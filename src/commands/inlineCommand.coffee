@@ -130,7 +130,10 @@ class InlineCommand extends CommandBase
     return rangeFragmentsTraverse.traversedFragments;
 
   traverseCondition: (node) ->
-    return @shouldCollectNode()
+    return @shouldCollectNode(node)
+
+  shouldCollectNode: (node) ->
+    Simditor.FragmentsCondition.isInlineNode(node) && !Simditor.CommandUtil._isContentAreaLastBr(node) && !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node)
 
   consolidate: (domRange) ->
     consolidator = new Simditor.Consolidator(@get_editor())
@@ -200,8 +203,7 @@ class InlineCommand extends CommandBase
   cleanUpFormat: (fragment) ->
     @cleanUpFragment = fragment
     n = fragment.nodes;
-    for l in [n.length - 1..0]
-      node = n[l]
+    for node, l in n by -1
       if !@_shouldCleanUpNode(node)
         continue
       @removeSameFormatChildren(node)
@@ -217,8 +219,7 @@ class InlineCommand extends CommandBase
       if !isNaN(m) && @shouldRemoveNode(node)
         @cleanUpFragment.removeNodeAt(m)
         childNodes = node.childNodes
-        for n in [childNodes.length - 1..0]
-          child = childNodes[n]
+        for child in childNodes by -1
           @cleanUpFragment.addNodeAt(child, m)
       @removeNodeFormatting(node)
 

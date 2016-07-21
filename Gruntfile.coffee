@@ -58,6 +58,7 @@ module.exports = (grunt) ->
             'src/commands/domTreeExtractor.coffee'
             'src/commands/consolidator.coffee'
             'src/commands/formatPainterCommand.coffee'
+            'src/commands/fragmentsCondition.coffee'
           ]
       site:
         expand: true

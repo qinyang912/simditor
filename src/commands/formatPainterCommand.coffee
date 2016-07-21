@@ -72,12 +72,12 @@ class FormatPainterCommand extends InlineCommand
       elements = []
     wrapper = document.createElement("div");
     tmp = wrapper;
-    for p in [elements.length - 1...0]
-      m = elements[p];
+    for m in elements.slice(0).reverse()
       o = document.createElement(m.nodeName);
       @_setAttributes(o, m);
       tmp.appendChild(o);
       tmp = o;
+      
     h = document.createElement("span");
     h.className = FormatPainterCommand.wrapperClass
     tmp.appendChild(h)

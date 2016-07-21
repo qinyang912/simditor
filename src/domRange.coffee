@@ -31,11 +31,12 @@ class DomRange extends SimpleModule
     preventCalculateEdges: false
 
   constructor: (editor, range, options) ->
+    @util = Simditor.CommandUtil
     @options = $.extend(@options, options || {})
     @range = range
     @editor = editor
     @_initialCalculateEdges()
-    @util = Simditor.CommandUtil
+
 
   setEnd: (node, offset) ->
     @endContainer = node

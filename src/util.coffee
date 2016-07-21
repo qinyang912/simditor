@@ -8,6 +8,7 @@ class Util extends SimpleModule
   _init: ->
     @editor = @_module
     @phBr = '' if @browser.msie and @browser.version < 11
+    Simditor.util = this
 
   phBr: '<br/>'
 

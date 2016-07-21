@@ -211,6 +211,12 @@ CommandUtil =
         @_normalizeTextNodes(firstChild)
       firstChild = firstChild.nextSibling
 
+  _isContentAreaLastBr: (node) ->
+    @isTag(node, "br") && !node.nextSibling && Simditor.util.isEditorContentArea(node.parentNode)
+
+  isWhitespaceBetweenTableCells: (node) ->
+    @isTextNode(node) && @isTextNodeEmpty(node) && $(node.parentNode).is("tr,tbody,thead,tfoot,table")
+
   hasAttributes: (node) ->
     l = @getOuterHtml(node).replace(node.innerHTML, "")
     a = /=["][^"]/.test(l)

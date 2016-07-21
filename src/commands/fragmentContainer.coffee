@@ -14,8 +14,8 @@ class FragmentContainer extends SimpleModule
       return null
 
   appendTo: (node) ->
-    for e in [0...@nodes.length-1]
-      node.appendChild(@nodes[e])
+    for e in @nodes
+      node.appendChild(e)
 
   insertBeforeFirst: (node) ->
     if !@nodes.length
