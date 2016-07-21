@@ -157,11 +157,11 @@ CommandUtil =
   getDefinedAttributes: (n) ->
     l =
       length: 0
-    for m in [0...n.attributes.length-1]
-      k = n.attributes[m]
+    for attr in n.attributes
+      k = attr
       if k.specified && k.nodeName != "style" && !/^sizzle-/.test(k.nodeName)
         l[k.nodeName] = k.nodeValue;
-        l.length++;
+        l.length++
     l
 
   getAttributes: (o, n) ->

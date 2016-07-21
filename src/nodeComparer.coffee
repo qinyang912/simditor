@@ -10,7 +10,7 @@ NodeComparer =
   equalStyle: (h, i) ->
     h.style && i.style && h.style.cssText == i.style.cssText
 
-  equalAttributes: (h, i, m) ->
+  equalAttributes: (h, j, m) ->
     i = @_collectAttributes(h, m)
     k = @_collectAttributes(j, m)
     if i.length != k.length

@@ -24,10 +24,13 @@ class InlineCommand extends CommandBase
     super(@options.title, @options.canUnexecute, editor)
 
   onExecute: ->
-    try
-      return @executeInlineCommand()
-    catch error
-      # a("." + @markerClass, this.get_editor().get_contentArea()).remove()
+    return @executeInlineCommand()
+
+    
+    # try
+    #   return @executeInlineCommand()
+    # catch error
+    #   # a("." + @markerClass, this.get_editor().get_contentArea()).remove()
 
   executeInlineCommand: ->
     editor = @get_editor()
@@ -58,6 +61,9 @@ class InlineCommand extends CommandBase
 
     if !@rangeChanged
       @restoreRange()
+
+    if !@removeFormatting
+      editor.trigger 'valuechanged'      
 
 
     # var j = this
@@ -189,11 +195,11 @@ class InlineCommand extends CommandBase
     last = nodes[nodes.length - 1]
     if @isMarker(first.previousSibling)
       first = first.previousSibling
-    if @isMarker(first.nextSibling)
-      first = first.nextSibling
+    if @isMarker(last.nextSibling)
+      last = last.nextSibling
     return {
       first: first,
-      last: first
+      last: last
     }
 
   removeEmptyNode: (node) ->

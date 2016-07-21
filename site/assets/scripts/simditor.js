@@ -3549,8 +3549,8 @@ NodeComparer = {
   equalStyle: function(h, i) {
     return h.style && i.style && h.style.cssText === i.style.cssText;
   },
-  equalAttributes: function(h, i, m) {
-    var k, key, value;
+  equalAttributes: function(h, j, m) {
+    var i, k, key, value;
     i = this._collectAttributes(h, m);
     k = this._collectAttributes(j, m);
     if (i.length !== k.length) {
@@ -3781,12 +3781,14 @@ CommandUtil = {
     return !firstChild;
   },
   getDefinedAttributes: function(n) {
-    var k, l, m, ref, w;
+    var attr, k, l, len, ref, w;
     l = {
       length: 0
     };
-    for (m = w = 0, ref = n.attributes.length - 1; 0 <= ref ? w < ref : w > ref; m = 0 <= ref ? ++w : --w) {
-      k = n.attributes[m];
+    ref = n.attributes;
+    for (w = 0, len = ref.length; w < len; w++) {
+      attr = ref[w];
+      k = attr;
       if (k.specified && k.nodeName !== "style" && !/^sizzle-/.test(k.nodeName)) {
         l[k.nodeName] = k.nodeValue;
         l.length++;
@@ -6825,7 +6827,7 @@ FormatPaintButton = (function(superClass) {
 
   FormatPaintButton.prototype.icon = 'simditor-r-icon-format_paint';
 
-  FormatPaintButton.prototype.commandList = ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-color', 'background-image', 'background-position', 'background-repeat', 'background-attachment'];
+  FormatPaintButton.prototype.commandList = ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'];
 
   FormatPaintButton.prototype.attrList = ['class', 'style', 'size', 'color', 'face'];
 
@@ -7003,12 +7005,7 @@ InlineCommand = (function(superClass) {
   }
 
   InlineCommand.prototype.onExecute = function() {
-    var error;
-    try {
-      return this.executeInlineCommand();
-    } catch (_error) {
-      error = _error;
-    }
+    return this.executeInlineCommand();
   };
 
   InlineCommand.prototype.executeInlineCommand = function() {
@@ -7040,7 +7037,10 @@ InlineCommand = (function(superClass) {
     }
     this.consolidate();
     if (!this.rangeChanged) {
-      return this.restoreRange();
+      this.restoreRange();
+    }
+    if (!this.removeFormatting) {
+      return editor.trigger('valuechanged');
     }
   };
 
@@ -7183,12 +7183,12 @@ InlineCommand = (function(superClass) {
     if (this.isMarker(first.previousSibling)) {
       first = first.previousSibling;
     }
-    if (this.isMarker(first.nextSibling)) {
-      first = first.nextSibling;
+    if (this.isMarker(last.nextSibling)) {
+      last = last.nextSibling;
     }
     return {
       first: first,
-      last: first
+      last: last
     };
   };
 

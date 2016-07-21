@@ -5,7 +5,7 @@ class FormatPaintButton extends Button
 
   icon: 'simditor-r-icon-format_paint'
 
-  commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-color', 'background-image', 'background-position', 'background-repeat', 'background-attachment']
+  commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'] # 暂时排除 background-color
 
   attrList: ['class', 'style', 'size', 'color', 'face']
 
