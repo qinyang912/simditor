@@ -232,9 +232,9 @@ class InlineCommand extends CommandBase
     q = @get_editor().util.cloneNodeClean(k)
     q.appendChild(p)
     o.appendChild(n)
-    if !h.isNodeEmptyRecursive(o, true)
+    if !Simditor.CommandUtil.isNodeEmptyRecursive(o, true)
       l.insertBefore(o, k)
-    if !h.isNodeEmptyRecursive(q, true)
+    if !Simditor.CommandUtil.isNodeEmptyRecursive(q, true)
       l.insertBefore(q, k.nextSibling)
 
   shouldRemoveNode: ->
@@ -302,6 +302,18 @@ class InlineCommand extends CommandBase
 
   getContentElement: ->
     return @get_editor().body[0]
+
+  isSameFormatNode: (node) ->
+    @isSameTagFormat(node) || @isSameCssFormat(node)
+
+  isSameTagFormat: (node) ->
+    (Simditor.CommandUtil.isTag(node, @settings.tag) || @isAltTagFormat(node)) && (!node.className || @isTrackChangesNode(node))
+
+  isAltTagFormat: (node) ->
+
+  isSameCssFormat: (node) ->
+
+  isTrackChangesNode: (node) ->
 
   isEmptyInlineFragment: (fragment) ->
     fragment.all (node) =>

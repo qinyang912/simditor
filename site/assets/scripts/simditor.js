@@ -7250,10 +7250,10 @@ InlineCommand = (function(superClass) {
     q = this.get_editor().util.cloneNodeClean(k);
     q.appendChild(p);
     o.appendChild(n);
-    if (!h.isNodeEmptyRecursive(o, true)) {
+    if (!Simditor.CommandUtil.isNodeEmptyRecursive(o, true)) {
       l.insertBefore(o, k);
     }
-    if (!h.isNodeEmptyRecursive(q, true)) {
+    if (!Simditor.CommandUtil.isNodeEmptyRecursive(q, true)) {
       return l.insertBefore(q, k.nextSibling);
     }
   };
@@ -7308,6 +7308,20 @@ InlineCommand = (function(superClass) {
   InlineCommand.prototype.getContentElement = function() {
     return this.get_editor().body[0];
   };
+
+  InlineCommand.prototype.isSameFormatNode = function(node) {
+    return this.isSameTagFormat(node) || this.isSameCssFormat(node);
+  };
+
+  InlineCommand.prototype.isSameTagFormat = function(node) {
+    return (Simditor.CommandUtil.isTag(node, this.settings.tag) || this.isAltTagFormat(node)) && (!node.className || this.isTrackChangesNode(node));
+  };
+
+  InlineCommand.prototype.isAltTagFormat = function(node) {};
+
+  InlineCommand.prototype.isSameCssFormat = function(node) {};
+
+  InlineCommand.prototype.isTrackChangesNode = function(node) {};
 
   InlineCommand.prototype.isEmptyInlineFragment = function(fragment) {
     return fragment.all((function(_this) {
