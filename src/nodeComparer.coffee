@@ -1,13 +1,11 @@
 
 NodeComparer =
 
-  util: Simditor.CommandUtil
-
   equalNodes: (h, i) ->
     @equalTag(h, i) && @equalStyle(h, i) && this.equalAttributes(h, i);
 
   equalTag: (h, i) ->
-    @util.isTag(h, i.tagName)
+    Simditor.CommandUtil.isTag(h, i.tagName)
 
   equalStyle: (h, i) ->
     h.style && i.style && h.style.cssText == i.style.cssText
@@ -28,8 +26,8 @@ NodeComparer =
 
   _collectAttributes: (h, i) ->
     if i && i.length > 0
-      @util.getAttributes(h, i)
+      Simditor.CommandUtil.getAttributes(h, i)
     else
-      @util.getDefinedAttributes(h)
+      Simditor.CommandUtil.getDefinedAttributes(h)
 
 Simditor.NodeComparer = NodeComparer

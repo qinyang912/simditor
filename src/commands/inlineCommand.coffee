@@ -310,10 +310,25 @@ class InlineCommand extends CommandBase
     (Simditor.CommandUtil.isTag(node, @settings.tag) || @isAltTagFormat(node)) && (!node.className || @isTrackChangesNode(node))
 
   isAltTagFormat: (node) ->
+    altTags = @settings.altTags;
+    if !altTags || !altTags.length
+      return false
+    for altTag in altTags
+      if Simditor.CommandUtil.isTag(node, altTag)
+        if Simditor.CommandUtil.isTag(node, "font")
+          return @isFormattingFont(node)
+        else
+          return true
+    false
 
   isSameCssFormat: (node) ->
+    settings = @settings
+    cssName = settings.cssName
+    cssValue = settings.cssValue
+    cssName && cssValue && node.style && node.style[cssName].indexOf(cssValue) > -1
 
   isTrackChangesNode: (node) ->
+    # return !!b.TrackChangesUtils && b.TrackChangesUtils.isTrackChangeElement(i);
 
   isEmptyInlineFragment: (fragment) ->
     fragment.all (node) =>
@@ -324,6 +339,9 @@ class InlineCommand extends CommandBase
 
   isComment: (node) ->
     node.nodeType == 8
+
+  isFormattingFont: (node) ->
+    Simditor.CommandUtil.isTag(node, "font") && (@hasStyle(node, @settings.cssName) || @hasAttribute(node, @settings.altTagAttr))
 
   _shouldCleanUpNode: (node) ->
     node && !@isMarker(node) && (!@get_editor().util.isTextNode(node) || @isComment(node))

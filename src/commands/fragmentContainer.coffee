@@ -37,9 +37,9 @@ class FragmentContainer extends SimpleModule
     @nodes.splice(e, 0, f)
 
   all: (fn) ->
-    @editor.util.every(@nodes, fn)
+    Simditor.CommandUtil.every(@nodes, fn)
 
   any: (fn) ->
-    @editor.util.some(@nodes, fn)
+    Simditor.CommandUtil.some(@nodes, fn)
 
 Simditor.FragmentContainer = FragmentContainer

@@ -174,16 +174,14 @@ CommandUtil =
     k
 
   every: (nodes, fn) ->
-    length = nodes.length;
-    for m in [0...length-1]
-      if !fn(nodes[m])
+    for node in nodes
+      if !fn(node)
         return false
     return true
 
   some: (nodes, fn) ->
-    length = nodes.length
-    for m in [0...length-1]
-      if fn(nodes[m])
+    for node in nodes
+      if fn(node)
         return true
     return false
 
