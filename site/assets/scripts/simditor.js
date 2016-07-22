@@ -3629,6 +3629,14 @@ CommandUtil = {
   isList: function(node) {
     return this.isTag(node, "ul") || this.isTag(node, "ol");
   },
+  isPreContent: function(node) {
+    var isUnderPre;
+    isUnderPre = $(node).closest('pre');
+    if (isUnderPre && isUnderPre.length) {
+      return true;
+    }
+    return false;
+  },
   isHeading: function(node) {
     return node && /^H[1-6]$/i.test(node.nodeName);
   },
@@ -7115,7 +7123,7 @@ InlineCommand = (function(superClass) {
   };
 
   InlineCommand.prototype.shouldCollectNode = function(node) {
-    return Simditor.FragmentsCondition.isInlineNode(node) && !Simditor.CommandUtil._isContentAreaLastBr(node) && !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node);
+    return Simditor.FragmentsCondition.isInlineNode(node) && !Simditor.CommandUtil._isContentAreaLastBr(node) && !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node) && !Simditor.CommandUtil.isPreContent(node);
   };
 
   InlineCommand.prototype.consolidate = function(domRange) {
@@ -7407,8 +7415,8 @@ StripCommand = (function(superClass) {
     }
   };
 
-  StripCommand.prototype.shouldCollectNode = function() {
-    return true;
+  StripCommand.prototype.shouldCollectNode = function(node) {
+    return !Simditor.CommandUtil.isPreContent(node);
   };
 
   StripCommand.prototype.getEditorRange = function() {

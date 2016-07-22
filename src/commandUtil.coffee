@@ -29,6 +29,12 @@ CommandUtil =
   isList: (node) ->
     return @isTag(node, "ul") || @isTag(node, "ol")
 
+  isPreContent: (node) -> # 检查这个节点是不是pre，或者是不是在pre节点之下
+    isUnderPre = $(node).closest('pre')
+    if isUnderPre && isUnderPre.length
+      return true
+    false
+
   isHeading: (node) ->
     node && /^H[1-6]$/i.test(node.nodeName)
 

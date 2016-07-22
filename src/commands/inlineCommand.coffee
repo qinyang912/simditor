@@ -26,7 +26,7 @@ class InlineCommand extends CommandBase
   onExecute: ->
     return @executeInlineCommand()
 
-    
+
     # try
     #   return @executeInlineCommand()
     # catch error
@@ -139,7 +139,7 @@ class InlineCommand extends CommandBase
     return @shouldCollectNode(node)
 
   shouldCollectNode: (node) ->
-    Simditor.FragmentsCondition.isInlineNode(node) && !Simditor.CommandUtil._isContentAreaLastBr(node) && !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node)
+    Simditor.FragmentsCondition.isInlineNode(node) && !Simditor.CommandUtil._isContentAreaLastBr(node) && !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node) && !Simditor.CommandUtil.isPreContent(node)
 
   consolidate: (domRange) ->
     consolidator = new Simditor.Consolidator(@get_editor())
