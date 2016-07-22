@@ -22,6 +22,10 @@ module.exports = (grunt) ->
             'src/clipboard.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
+            'src/domRange.coffee'
+            'src/domRangeMemento.coffee'
+            'src/nodeComparer.coffee'
+            'src/commandUtil.coffee'
             'src/buttons/button.coffee'
             'src/buttons/popover.coffee'
             'src/buttons/title.coffee'
@@ -44,6 +48,17 @@ module.exports = (grunt) ->
             'src/buttons/undo.coffee'
             'src/buttons/redo.coffee'
             'src/buttons/format-paint.coffee'
+            'src/commands/commandBase.coffee'
+            'src/commands/inlineCommand.coffee'
+            'src/commands/stripCommand.coffee'
+            'src/commands/stripElementCommand.coffee'
+            'src/commands/rangeFragmentsTraverser.coffee'
+            'src/commands/rangeIterator.coffee'
+            'src/commands/fragmentContainer.coffee'
+            'src/commands/domTreeExtractor.coffee'
+            'src/commands/consolidator.coffee'
+            'src/commands/formatPainterCommand.coffee'
+            'src/commands/fragmentsCondition.coffee'
           ]
       site:
         expand: true
@@ -64,6 +79,12 @@ module.exports = (grunt) ->
         flatten: true
         src: 'spec/src/buttons/*.coffee'
         dest: 'spec/buttons/'
+        ext: '.js'
+      commandSpec:
+        expand: true
+        flatten: true
+        src: 'spec/src/commands/*.coffee'
+        dest: 'spec/commands/'
         ext: '.js'
 
     sass:
@@ -157,7 +178,7 @@ module.exports = (grunt) ->
         files: ['styles/*.scss']
         tasks: ['sass:simditor', 'copy:styles', 'jekyll']
       scripts:
-        files: ['src/*.coffee', 'src/buttons/*.coffee']
+        files: ['src/*.coffee', 'src/buttons/*.coffee', 'src/commands/*.coffee']
         tasks: ['coffee:simditor', 'umd', 'copy:scripts', 'jekyll']
       siteStyles:
         files: ['site/assets/_sass/*.scss']
@@ -174,6 +195,9 @@ module.exports = (grunt) ->
       buttonSpec:
         files: ['spec/src/buttons/*.coffee']
         tasks: ['coffee:buttonSpec']
+      commandSpec:
+        files: ['spec/src/commands/*.coffee']
+        tasks: ['coffee:commandSpec']
 
     jekyll:
       site:

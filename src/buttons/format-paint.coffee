@@ -5,7 +5,9 @@ class FormatPaintButton extends Button
 
   icon: 'simditor-r-icon-format_paint'
 
-  commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-color', 'background-image', 'background-position', 'background-repeat', 'background-attachment']
+  disableTag: 'pre,table'
+
+  commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'] # 暂时排除 background-color
 
   attrList: ['class', 'style', 'size', 'color', 'face']
 
@@ -17,6 +19,9 @@ class FormatPaintButton extends Button
     super()
     @editor.on 'blur', (e) =>
       @_removeEvent()
+
+  _activeStatus: ->
+    console.log('format-paint active status')
 
   _getSelectedElement: ->
     $startNodes = @editor.selection.startNodes()
@@ -43,8 +48,24 @@ class FormatPaintButton extends Button
       list.push(eleAttr)
     return list
 
-  _formatApply: ->
-    console.log('_formatApply ****', @_format)
+  _formatPainterApply: ->
+    stripCondition = (node) =>
+      if @editor.util.isTag(node, 'a')
+        return false
+      return !@editor.util.isTextNode(node) && !@editor.util.isBlockNode(node) && @editor.util.canHaveChildren(node)
+    stripCommand = new Simditor.StripElementCommand @editor,
+      stripCondition: stripCondition
+    stripCommand.onExecute()
+
+    settings = 
+      formatting: @_format
+
+    options = 
+      title: "Apply Format"
+
+    formatPainterCommand = new Simditor.FormatPainterCommand(@editor, settings, options)
+    formatPainterCommand.onExecute()
+
 
   _registerEvent: ->
     @_mousedown = false
@@ -54,7 +75,7 @@ class FormatPaintButton extends Button
     @editor.body.one 'mouseup.format_paint', (e) =>
       @_mouseup = true
       if @_mousedown
-        @_formatApply();
+        @_formatPainterApply();
       @editor.body.removeClass 'simditor-on-format-paint'
 
   _removeEvent: ->
