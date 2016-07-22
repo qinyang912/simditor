@@ -22,7 +22,11 @@ class FormatPainterCommand extends InlineCommand
   formatFragment: (fragment, formatTree) ->
     cloneNode = formatTree.cloneNode(true)
     wrapperClass = FormatPainterCommand.wrapperClass
-    wrapperNode = $(cloneNode).find("span." + wrapperClass).removeClass(wrapperClass).get(0)
+    if $(cloneNode).is('span.' + wrapperClass)
+      wrapperNode = $(cloneNode).removeClass(wrapperClass).get(0)
+    else 
+      wrapperNode = $(cloneNode).find("span." + wrapperClass).removeClass(wrapperClass).get(0)
+    
     fragment.insertBeforeFirst(cloneNode)
     fragment.appendTo(wrapperNode)
     parentNode = cloneNode.parentNode
