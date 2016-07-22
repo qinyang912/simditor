@@ -24,13 +24,13 @@ class InlineCommand extends CommandBase
     super(@options.title, @options.canUnexecute, editor)
 
   onExecute: ->
-    return @executeInlineCommand()
+    # return @executeInlineCommand()
 
 
-    # try
-    #   return @executeInlineCommand()
-    # catch error
-    #   # a("." + @markerClass, this.get_editor().get_contentArea()).remove()
+    try
+      return @executeInlineCommand()
+    catch error
+      # a("." + @markerClass, this.get_editor().get_contentArea()).remove()
 
   executeInlineCommand: ->
     editor = @get_editor()

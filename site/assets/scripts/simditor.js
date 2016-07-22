@@ -7032,7 +7032,12 @@ InlineCommand = (function(superClass) {
   }
 
   InlineCommand.prototype.onExecute = function() {
-    return this.executeInlineCommand();
+    var error;
+    try {
+      return this.executeInlineCommand();
+    } catch (_error) {
+      error = _error;
+    }
   };
 
   InlineCommand.prototype.executeInlineCommand = function() {
