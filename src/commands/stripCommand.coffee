@@ -16,7 +16,9 @@ class StripCommand extends InlineCommand
       super(range)
 
   shouldCollectNode: (node) ->
-    !Simditor.CommandUtil.isPreContent(node) && !Simditor.CommandUtil.isTableContent(node)
+    !Simditor.CommandUtil.isPreContent(node) && 
+    !Simditor.CommandUtil.isTableContent(node) &&
+    !Simditor.CommandUtil.isMentionContent(node)
 
   getEditorRange: ->
     if @settings.selectAll

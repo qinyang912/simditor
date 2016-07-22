@@ -143,7 +143,8 @@ class InlineCommand extends CommandBase
     !Simditor.CommandUtil._isContentAreaLastBr(node) && 
     !Simditor.CommandUtil.isWhitespaceBetweenTableCells(node) && 
     !Simditor.CommandUtil.isPreContent(node) && 
-    !Simditor.CommandUtil.isTableContent(node)
+    !Simditor.CommandUtil.isTableContent(node) &&
+    !Simditor.CommandUtil.isMentionContent(node)
 
   consolidate: (domRange) ->
     consolidator = new Simditor.Consolidator(@get_editor())
