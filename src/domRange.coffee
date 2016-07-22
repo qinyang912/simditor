@@ -131,7 +131,10 @@ class DomRange extends SimpleModule
       range = body.createControlRange()
       for t in [0..length - 1]
         range.addElement(@range.item(t))
-      return range;
+      return range
+
+  isCollapsed: ->
+    @collapsed
 
   _cloneBrowserRange: ->
     if @range.cloneRange
