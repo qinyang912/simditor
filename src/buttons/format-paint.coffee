@@ -20,9 +20,6 @@ class FormatPaintButton extends Button
     @editor.on 'blur', (e) =>
       @_removeEvent()
 
-  _activeStatus: ->
-    console.log('format-paint active status')
-
   _getSelectedElement: ->
     $startNodes = @editor.selection.startNodes()
 

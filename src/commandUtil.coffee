@@ -35,6 +35,12 @@ CommandUtil =
       return true
     false
 
+  isMentionContent: (node) ->
+    isUnderMention = $(node).closest('a.rui-mention')
+    if isUnderMention && isUnderMention.length
+      return true
+    false
+
   isHeading: (node) ->
     node && /^H[1-6]$/i.test(node.nodeName)
 
@@ -45,7 +51,7 @@ CommandUtil =
     isUnderTable = $(node).closest('table, .simditor-table')
     if isUnderTable && isUnderTable.length
       return true
-    else false
+    false
 
   isBlockComponent: (node) ->
     @isTag(node, "li") || @isTableCell(node)
