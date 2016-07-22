@@ -6827,6 +6827,8 @@ FormatPaintButton = (function(superClass) {
 
   FormatPaintButton.prototype.icon = 'simditor-r-icon-format_paint';
 
+  FormatPaintButton.prototype.disableTag = 'pre';
+
   FormatPaintButton.prototype.commandList = ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'];
 
   FormatPaintButton.prototype.attrList = ['class', 'style', 'size', 'color', 'face'];
@@ -6842,6 +6844,10 @@ FormatPaintButton = (function(superClass) {
         return _this._removeEvent();
       };
     })(this));
+  };
+
+  FormatPaintButton.prototype._activeStatus = function() {
+    return console.log('format-paint active status');
   };
 
   FormatPaintButton.prototype._getSelectedElement = function() {

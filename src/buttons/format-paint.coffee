@@ -5,6 +5,8 @@ class FormatPaintButton extends Button
 
   icon: 'simditor-r-icon-format_paint'
 
+  disableTag: 'pre'
+
   commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'] # 暂时排除 background-color
 
   attrList: ['class', 'style', 'size', 'color', 'face']
@@ -17,6 +19,9 @@ class FormatPaintButton extends Button
     super()
     @editor.on 'blur', (e) =>
       @_removeEvent()
+
+  _activeStatus: ->
+    console.log('format-paint active status')
 
   _getSelectedElement: ->
     $startNodes = @editor.selection.startNodes()
