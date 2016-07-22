@@ -5,7 +5,7 @@ class FormatPaintButton extends Button
 
   icon: 'simditor-r-icon-format_paint'
 
-  disableTag: 'pre'
+  disableTag: 'pre,table'
 
   commandList: ['color', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight', 'text-decoration', 'background-image', 'background-position', 'background-repeat', 'background-attachment'] # 暂时排除 background-color
 

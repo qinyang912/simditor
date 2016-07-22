@@ -41,6 +41,12 @@ CommandUtil =
   isTableCell: (node) ->
     @isTag(node, "td") || @isTag(node, "th")
 
+  isTableContent: (node) ->
+    isUnderTable = $(node).closest('table, .simditor-table')
+    if isUnderTable && isUnderTable.length
+      return true
+    else false
+
   isBlockComponent: (node) ->
     @isTag(node, "li") || @isTableCell(node)
 
