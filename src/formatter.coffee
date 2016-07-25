@@ -14,7 +14,7 @@ class Formatter extends SimpleModule
     @_allowedTags = $.merge(
       ['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike',
       'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1',
-      'h2', 'h3', 'h4', 'hr'],
+      'h2', 'h3', 'h4', 'hr', 'inherit'],
       @opts.allowedTags
     )
 
@@ -23,6 +23,8 @@ class Formatter extends SimpleModule
       a: ['href', 'target']
       font: ['color']
       code: ['class']
+      p: ['class']
+      span: ['class', 'contenteditable', 'data-name']
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend

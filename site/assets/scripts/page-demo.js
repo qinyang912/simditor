@@ -17,6 +17,8 @@
         url: '/upload'
       } : false
     });
+    console.log('editor', editor);
+    editor.setValue(editor.getValue() + editor.unSelectionBlock.getAttachHtml() + '<p>sfs</p>');
     $preview = $('#preview');
     if ($preview.length > 0) {
       return editor.on('valuechanged', function(e) {

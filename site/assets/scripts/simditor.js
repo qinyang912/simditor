@@ -49,7 +49,9 @@ Selection = (function(superClass) {
     this.editor.on('selectionchanged', (function(_this) {
       return function(e) {
         _this.reset();
-        return _this._range = _this._selection.getRangeAt(0);
+        if (_this._selection.rangeCount) {
+          return _this._range = _this._selection.getRangeAt(0);
+        }
       };
     })(this));
     return this.editor.on('blur', (function(_this) {
@@ -467,12 +469,14 @@ Formatter = (function(superClass) {
 
   Formatter.prototype._init = function() {
     this.editor = this._module;
-    this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr'], this.opts.allowedTags);
+    this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr', 'inherit'], this.opts.allowedTags);
     this._allowedAttributes = $.extend({
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey'],
       a: ['href', 'target'],
       font: ['color'],
-      code: ['class']
+      code: ['class'],
+      p: ['class'],
+      span: ['class', 'contenteditable', 'data-name']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -2815,9 +2819,61 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.pluginName = 'UnSelectionBlock';
 
+  UnSelectionBlock.className = {
+    wrapper: 'unselection-wrapper',
+    img: 'unselection-img',
+    attach: 'unselection-attach',
+    select: 'unselection-select',
+    content: 'unselection-content'
+  };
+
+  UnSelectionBlock.prototype._selectedWrapper = null;
+
+  UnSelectionBlock.prototype._tpl = {
+    wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <i class='simditor-r-icon-attachment unselection-attach-icon'></i> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation'> <span class='simditor-r-icon-eye unselection-attach-operation-icon' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon' title='下载'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </inherit>"
+  };
+
   UnSelectionBlock.prototype._init = function() {
-    console.log('un selection block init');
-    return this.editor = this._module;
+    console.log('_tpl', this._tpl);
+    this.editor = this._module;
+    return this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
+  };
+
+  UnSelectionBlock.prototype.getAttachHtml = function() {
+    var wrapper;
+    wrapper = this._getWrapper();
+    wrapper.append(this._tpl.attach);
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.prototype.getImgHtml = function() {};
+
+  UnSelectionBlock.prototype._getWrapper = function() {
+    return $(this._tpl.wrapper);
+  };
+
+  UnSelectionBlock.prototype._onSelectionChange = function() {
+    var range, wrapper;
+    range = this.editor.selection.range();
+    if (range && range.endContainer) {
+      wrapper = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
+      if (wrapper.length) {
+        return setTimeout((function(_this) {
+          return function() {
+            _this.editor.blur();
+            _this.editor.selection.clear();
+            _this._selectedWrapper = wrapper;
+            return _this._selectedWrapper.addClass(UnSelectionBlock.className.select);
+          };
+        })(this), 0);
+      } else {
+        if (this._selectedWrapper) {
+          this._selectedWrapper.removeClass(UnSelectionBlock.className.select);
+          return this._selectedWrapper = null;
+        }
+      }
+    }
   };
 
   return UnSelectionBlock;

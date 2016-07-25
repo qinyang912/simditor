@@ -13,6 +13,10 @@ $ ->
     defaultImage: 'assets/images/image.png'
     upload: if location.search == '?upload' then {url: '/upload'} else false
 
+  console.log('editor', editor)
+
+  editor.setValue(editor.getValue() + editor.unSelectionBlock.getAttachHtml() + '<p>sfs</p>')
+
   $preview = $('#preview')
   if $preview.length > 0
     editor.on 'valuechanged', (e) ->

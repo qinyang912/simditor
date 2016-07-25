@@ -23,7 +23,8 @@ class Selection extends SimpleModule
 
     @editor.on 'selectionchanged', (e) =>
       @reset()
-      @_range = @_selection.getRangeAt 0
+      if @_selection.rangeCount
+        @_range = @_selection.getRangeAt 0
 
     @editor.on 'blur', (e) =>
       @reset()

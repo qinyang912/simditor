@@ -140,7 +140,7 @@
 
 @font-face {
   font-family: 'Simditor-R';
-  src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAWEAAsAAAAABTgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAABCAAAAGAAAABgDxH+7WNtYXAAAAFoAAAAZAAAAGT/kaZ0Z2FzcAAAAcwAAAAIAAAACAAAABBnbHlmAAAB1AAAATwAAAE8b3+qomhlYWQAAAMQAAAANgAAADYKMEHaaGhlYQAAA0gAAAAkAAAAJAeAA8hobXR4AAADbAAAABwAAAAcEgABQmxvY2EAAAOIAAAAEAAAABAAlgD4bWF4cAAAA5gAAAAgAAAAIAAJACJuYW1lAAADuAAAAaoAAAGqiaRHVXBvc3QAAAVkAAAAIAAAACAAAwAAAAMDgAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAA4kMDwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEAEgAAAAOAAgAAgAGAAEAIOFa4WbiQ//9//8AAAAAACDhWuFm4kP//f//AAH/4x6qHp8dwwADAAEAAAAAAAAAAAAAAAAAAAABAAH//wAPAAEAAAAAAAAAAAACAAA3OQEAAAAAAQAAAAAAAAAAAAIAADc5AQAAAAABAAAAAAAAAAAAAgAANzkBAAAAAAEAQgEBA6oCgQAWAAABNxEhNy4BIyIOAgcnPgMzMh4CAxKY/oCcLXA/OWdVPhFkFlJvh0orUUtEAeea/oCaJSsjPlYzIEJxUi8QHCkAAAAAAQBWAQEDvgKBABYAAAEyHgIXBy4DIyIGBxchERc+AwIWSoZvUhdkED9VZzk/cC2c/oCYHURLUQJVL1JxQiAzVj4jKyWaAYCaGSkcEAAAAAABAKoAAQOAA1UAHwAAATMRIREUBisBIiY1ESE1IxUUBiMhIiY9ATQ2MyEyFhUDAID+qhgSVhIYAaoqGBL+ABIaGhICABIYAwH+qv6AEhgYEgHWqioSGhoSqhIYGBIAAAABAAAAAQAA5gJZm18PPPUACwQAAAAAANOp/sQAAAAA06n+xAAAAAADvgNVAAAACAACAAAAAAAAAAEAAAPA/8AAAAQAAAAAAAO+AAEAAAAAAAAAAAAAAAAAAAAHBAAAAAAAAAAAAAAAAgAAAAQAAEIEAABWBAAAqgAAAAAACgAUAB4ARgBuAJ4AAQAAAAcAIAABAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA4ArgABAAAAAAABAAoAAAABAAAAAAACAAcAewABAAAAAAADAAoAPwABAAAAAAAEAAoAkAABAAAAAAAFAAsAHgABAAAAAAAGAAoAXQABAAAAAAAKABoArgADAAEECQABABQACgADAAEECQACAA4AggADAAEECQADABQASQADAAEECQAEABQAmgADAAEECQAFABYAKQADAAEECQAGABQAZwADAAEECQAKADQAyFNpbWRpdG9yLVIAUwBpAG0AZABpAHQAbwByAC0AUlZlcnNpb24gMS4wAFYAZQByAHMAaQBvAG4AIAAxAC4AMFNpbWRpdG9yLVIAUwBpAG0AZABpAHQAbwByAC0AUlNpbWRpdG9yLVIAUwBpAG0AZABpAHQAbwByAC0AUlJlZ3VsYXIAUgBlAGcAdQBsAGEAclNpbWRpdG9yLVIAUwBpAG0AZABpAHQAbwByAC0AUkZvbnQgZ2VuZXJhdGVkIGJ5IEljb01vb24uAEYAbwBuAHQAIABnAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAEkAYwBvAE0AbwBvAG4ALgAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=) format("woff");
+  src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAeMAAsAAAAAB0AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAABCAAAAGAAAABgDxIGt2NtYXAAAAFoAAAAhAAAAITFbH9IZ2FzcAAAAewAAAAIAAAACAAAABBnbHlmAAAB9AAAAwwAAAMMp617AWhlYWQAAAUAAAAANgAAADYKa+RiaGhlYQAABTgAAAAkAAAAJAeYA8xobXR4AAAFXAAAACwAAAAsIgADwGxvY2EAAAWIAAAAGAAAABgCYANKbWF4cAAABaAAAAAgAAAAIAAPAEtuYW1lAAAFwAAAAaoAAAGqiaRHVXBvc3QAAAdsAAAAIAAAACAAAwAAAAMDwAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAA6c0DwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEAGgAAAAWABAAAwAGAAEAIOFa4WbiQ+MT6ITo9OnN//3//wAAAAAAIOFa4WbiQ+MT6ITo9OnN//3//wAB/+Meqh6fHcMc9BeEFxUWPQADAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAf//AA8AAQAAAAAAAAAAAAIAADc5AQAAAAABAAAAAAAAAAAAAgAANzkBAAAAAAEAAAAAAAAAAAACAAA3OQEAAAAAAQBCAQEDqgKBABYAAAE3ESE3LgEjIg4CByc+AzMyHgIDEpj+gJwtcD85Z1U+EWQWUm+HSitRS0QB55r+gJolKyM+VjMgQnFSLxAcKQAAAAABAFYBAQO+AoEAFgAAATIeAhcHLgMjIgYHFyERFz4DAhZKhm9SF2QQP1VnOT9wLZz+gJgdREtRAlUvUnFCIDNWPiMrJZoBgJoZKRwQAAAAAAEAqgABA4ADVQAfAAABMxEhERQGKwEiJjURITUjFRQGIyEiJj0BNDYzITIWFQMAgP6qGBJWEhgBqioYEv4AEhoaEgIAEhgDAf6q/oASGBgSAdaqKhIaGhKqEhgYEgAAAAEBAAD2AwACMgAFAAABFzcXCQEBPMTEPP8A/wACMsTEPP8AAQAAAAACANYAKgMqAwAAAwAKAAA3IRUhCQIzESER1gJU/awCVP7W/taqAQCAVgHW/tYBKgEA/wAAAwAqAGsD1gLrAAsAHwAzAAABMhYVFAYjIiY1NDYTMj4CNTQuAiMiDgIVFB4CEzIeAhcOAyMiLgInPgMCADRMSzU0TEs1LE46IiI6TiwsTjoiIjpOLFCSe10cHF17klBQkntdHBxde5ICK0w0NUtLNTRM/qohOk4tLE46IiI6TiwtTjohAhYvVXZGR3VVLy9VdUdGdlUvAAABAH4AHgNdA30ASAAAAScBBhQXFjI3AT4BNCYnLgEiBgcBBjAxDgEUFhceATI2NzgBNzEBJwEGMDEOASImJy4BNDY3OAE3MQE2MhcWFAcBBiInJjQ3AQKaQf67KCgocygBhiEiIiEiVVhUIv5nAS8vLy8vdnt2LwEBF0H+6QEiVFhUISIhISIBAZkocikoKP56DScNDQ0BRQJ5Qf67KHIpKCgBhiJUWFUiISIiIf5nAS92e3YvLy8vLwEBF0H+6QEiISEiIVRYVCIBAZkoKClyKP56DQ0OJg0BRQAAAQAAAAEAAMWpmGdfDzz1AAsEAAAAAADTu8/0AAAAANO7z/QAAAAAA9YDfQAAAAgAAgAAAAAAAAABAAADwP/AAAAEAAAAAAAD1gABAAAAAAAAAAAAAAAAAAAACwQAAAAAAAAAAAAAAAIAAAAEAABCBAAAVgQAAKoEAAEABAAA1gQAACoEAAB+AAAAAAAKABQAHgBGAG4AngCyAMwBGAGGAAEAAAALAEkAAwAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAOAK4AAQAAAAAAAQAKAAAAAQAAAAAAAgAHAHsAAQAAAAAAAwAKAD8AAQAAAAAABAAKAJAAAQAAAAAABQALAB4AAQAAAAAABgAKAF0AAQAAAAAACgAaAK4AAwABBAkAAQAUAAoAAwABBAkAAgAOAIIAAwABBAkAAwAUAEkAAwABBAkABAAUAJoAAwABBAkABQAWACkAAwABBAkABgAUAGcAAwABBAkACgA0AMhTaW1kaXRvci1SAFMAaQBtAGQAaQB0AG8AcgAtAFJWZXJzaW9uIDEuMABWAGUAcgBzAGkAbwBuACAAMQAuADBTaW1kaXRvci1SAFMAaQBtAGQAaQB0AG8AcgAtAFJTaW1kaXRvci1SAFMAaQBtAGQAaQB0AG8AcgAtAFJSZWd1bGFyAFIAZQBnAHUAbABhAHJTaW1kaXRvci1SAFMAaQBtAGQAaQB0AG8AcgAtAFJGb250IGdlbmVyYXRlZCBieSBJY29Nb29uLgBGAG8AbgB0ACAAZwBlAG4AZQByAGEAdABlAGQAIABiAHkAIABJAGMAbwBNAG8AbwBuAC4AAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA) format("woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -158,6 +158,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.simditor-r-icon-arrow_down:before {
+  content: "\e313";
+}
+
+.simditor-r-icon-download:before {
+  content: "\e884";
+}
+
+.simditor-r-icon-eye:before {
+  content: "\e8f4";
+}
+
 .simditor-r-icon-format_paint:before {
   content: "\e243";
 }
@@ -168,6 +180,10 @@
 
 .simditor-r-icon-undo:before {
   content: "\e166";
+}
+
+.simditor-r-icon-attachment:before {
+  content: "\e9cd";
 }
 
 .simditor {
@@ -696,6 +712,82 @@
   color: #333;
   outline: none;
   word-wrap: break-word;
+}
+.simditor .simditor-body .unselection-wrapper, .editor-style .unselection-wrapper {
+  text-align: center;
+  padding: 0px 100px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-content, .editor-style .unselection-wrapper .unselection-content {
+  cursor: default;
+}
+.simditor .simditor-body .unselection-wrapper.unselection-select .unselection-content, .editor-style .unselection-wrapper.unselection-select .unselection-content {
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid #bababa !important;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach, .editor-style .unselection-wrapper .unselection-attach {
+  display: inline-block;
+  height: 36px;
+  width: 300px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #e9e9e9;
+  position: relative;
+  text-align: left;
+  color: #575757;
+  font-size: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-icon, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-icon {
+  display: inline-block;
+  height: 100%;
+  font-size: 18px;
+  line-height: 34px;
+  width: 30px;
+  text-align: center;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-name], .editor-style .unselection-wrapper .unselection-attach [data-name] {
+  position: absolute;
+  font-size: 12px;
+  left: 35px;
+  right: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  bottom: 0px;
+  top: 0px;
+  line-height: 36px;
+  transition: right 0.2s;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-name]:before, .editor-style .unselection-wrapper .unselection-attach [data-name]:before {
+  content: attr(data-name);
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  font-size: 0px;
+  transform: translateX(85px);
+  transition: transform 0.2s;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-operation-icon, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-operation-icon {
+  display: inline-block;
+  height: 100%;
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+  line-height: 35px;
+  cursor: pointer;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach:hover [data-name], .editor-style .unselection-wrapper .unselection-attach:hover [data-name] {
+  right: 85px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach:hover .unselection-attach-operation {
+  transform: translateX(0px);
+}
+.simditor .simditor-body .unselection-wrapper inherit, .editor-style .unselection-wrapper inherit {
+  display: block;
 }
 .simditor .simditor-body > :first-child, .editor-style > :first-child {
   margin-top: 0 !important;
