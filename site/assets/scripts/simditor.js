@@ -476,7 +476,7 @@ Formatter = (function(superClass) {
       font: ['color'],
       code: ['class'],
       p: ['class'],
-      span: ['class', 'contenteditable', 'data-name']
+      span: ['class', 'contenteditable', 'data-name', 'href']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -492,7 +492,11 @@ Formatter = (function(superClass) {
       h4: ['margin-left', 'text-align']
     }, this.opts.allowedStyles);
     return this.editor.body.on('click', 'a', function(e) {
-      return false;
+      if ($(e.target).hasClass('unselection-attach-download')) {
+        return true;
+      } else {
+        return false;
+      }
     });
   };
 
@@ -2824,7 +2828,8 @@ UnSelectionBlock = (function(superClass) {
     img: 'unselection-img',
     attach: 'unselection-attach',
     select: 'unselection-select',
-    content: 'unselection-content'
+    content: 'unselection-content',
+    preview: 'unselection-attach-preview'
   };
 
   UnSelectionBlock.attr = {
@@ -2835,13 +2840,15 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.prototype._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation'> <span class='simditor-r-icon-eye unselection-attach-operation-icon' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon' title='下载'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
     console.log('_tpl', this._tpl);
     this.editor = this._module;
-    return this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
+    this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
+    this._preview();
+    return this._patchFirefox();
   };
 
   UnSelectionBlock.prototype.getAttachHtml = function() {
@@ -2865,19 +2872,100 @@ UnSelectionBlock = (function(superClass) {
       if (wrapper.length) {
         return setTimeout((function(_this) {
           return function() {
-            _this.editor.blur();
-            _this.editor.selection.clear();
-            _this._selectedWrapper = wrapper;
-            return _this._selectedWrapper.attr(UnSelectionBlock.attr.select, 'true');
+            return _this._selectWrapper(wrapper);
           };
         })(this), 0);
       } else {
         if (this._selectedWrapper) {
-          this._selectedWrapper.removeAttr(UnSelectionBlock.attr.select);
+          this._selectCurrent(false);
           return this._selectedWrapper = null;
         }
       }
     }
+  };
+
+  UnSelectionBlock.prototype._selectCurrent = function(type) {
+    if (type == null) {
+      type = true;
+    }
+    if (this._selectedWrapper) {
+      if (type) {
+        return this._selectedWrapper.attr(UnSelectionBlock.attr.select, 'true');
+      } else {
+        return this._selectedWrapper.removeAttr(UnSelectionBlock.attr.select);
+      }
+    }
+  };
+
+  UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
+    this.editor.blur();
+    this.editor.selection.clear();
+    this._selectCurrent(false);
+    this._selectedWrapper = wrapper;
+    return this._selectCurrent();
+  };
+
+  UnSelectionBlock.prototype._patchFirefox = function() {
+    if (this.editor.util.browser.firefox) {
+      return this.editor.body.on('click', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+        return function(e) {
+          var wrapper;
+          wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+          console.log('firfox wrapper', wrapper);
+          if (wrapper.length) {
+            return setTimeout(function() {
+              return _this._selectWrapper(wrapper);
+            }, 0);
+          }
+        };
+      })(this));
+    }
+  };
+
+  UnSelectionBlock.prototype._preview = function() {
+    if (!$.fn.magnificPopup) {
+      return;
+    }
+    console.log('preview', $.fn.magnificPopup);
+    return this.editor.body.magnificPopup({
+      delegate: "." + UnSelectionBlock.className.preview,
+      type: 'image',
+      preloader: true,
+      removalDelay: 1000,
+      mainClass: 'mfp-fade',
+      tLoading: 'Loading...',
+      zoom: {
+        enabled: true,
+        duration: 300,
+        easing: 'ease-in-out',
+        opener: (function(_this) {
+          return function(openerElement) {
+            return openerElement;
+          };
+        })(this)
+      },
+      callbacks: {
+        beforeOpen: function() {},
+        open: function() {},
+        close: function() {},
+        elementParse: function() {}
+      },
+      gallery: {
+        enabled: true,
+        preload: [0, 2],
+        navigateByImgClick: false,
+        tPrev: '上一个',
+        tNext: '下一个'
+      },
+      image: {
+        titleSrc: 'title',
+        tError: '<a href="%url%">The image</a> could not be loaded.'
+      },
+      iframe: {},
+      ajax: {
+        tError: '<a href="%url%">The content</a> could not be loaded.'
+      }
+    });
   };
 
   return UnSelectionBlock;

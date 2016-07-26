@@ -779,6 +779,7 @@
   text-align: center;
   line-height: 35px;
   cursor: pointer;
+  color: #575757;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-attach:hover [data-name], .editor-style .unselection-wrapper .unselection-attach:hover [data-name] {
   right: 85px;
