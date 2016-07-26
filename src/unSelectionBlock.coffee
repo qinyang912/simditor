@@ -11,6 +11,7 @@ class UnSelectionBlock extends SimpleModule
     select: 'unselection-select'
     content: 'unselection-content'
     preview: 'unselection-attach-preview'
+    _delete: 'unselection-attach-delete'
 
   @attr:
     select: 'data-unselection-select'
@@ -28,7 +29,11 @@ class UnSelectionBlock extends SimpleModule
             <span class='unselection-attach-operation' contenteditable='false'>
               <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span>
               <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a>
-              <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span>
+              <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
+                <span class='unselection-attach-menu'>
+                  <span class='unselection-attach-menu-item unselection-attach-delete'>删除</span>
+                </span>
+              </span>
             </span>
           </span>
         </span>
@@ -47,6 +52,12 @@ class UnSelectionBlock extends SimpleModule
       else
         @_unSelectionClick = false
       return
+
+    @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
+      wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
+      if wrapper.length
+        wrapper.remove()
+        
 
     $(document).on 'keyup.unSelection', (e) =>
       console.log('e', e)

@@ -2836,7 +2836,8 @@ UnSelectionBlock = (function(superClass) {
     attach: 'unselection-attach',
     select: 'unselection-select',
     content: 'unselection-content',
-    preview: 'unselection-attach-preview'
+    preview: 'unselection-attach-preview',
+    _delete: 'unselection-attach-delete'
   };
 
   UnSelectionBlock.attr = {
@@ -2847,7 +2848,7 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.prototype._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete'>删除</span> </span> </span> </span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2866,6 +2867,15 @@ UnSelectionBlock = (function(superClass) {
           _this._selectCurrent(false);
         } else {
           _this._unSelectionClick = false;
+        }
+      };
+    })(this));
+    this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
+      return function(e) {
+        var wrapper;
+        wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+        if (wrapper.length) {
+          return wrapper.remove();
         }
       };
     })(this));

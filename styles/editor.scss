@@ -635,7 +635,7 @@ $simditor-button-width: 46px;
       color: #575757;
       font-size: 0px;
       white-space: nowrap;
-      overflow: hidden;
+      // overflow: hidden;
       .unselection-attach-icon {
         display: inline-block;
         height: 100%;
@@ -677,6 +677,31 @@ $simditor-button-width: 46px;
           line-height: 35px;
           cursor: pointer;
           color: #575757;
+        }
+        .unselection-attach-more {
+          position: relative;
+          .unselection-attach-menu {
+            display: none;
+            top: 100%;
+            position: absolute;
+            right: 0px;
+            line-height: 26px;
+            box-shadow: 0 3px 9px 0px rgba(0, 0, 0, 0.21);
+            .unselection-attach-menu-item {
+              padding: 7px 10px;
+              font-size: 12px;
+              background: #fff;
+              transition: background 0.2s;
+              &:hover {
+                background: #f9f9f9;
+              }
+            }
+          }
+          &:hover {
+            .unselection-attach-menu {
+              display: inline-block;
+            }
+          }
         }
       }
       &:hover {
