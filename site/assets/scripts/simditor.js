@@ -2827,11 +2827,15 @@ UnSelectionBlock = (function(superClass) {
     content: 'unselection-content'
   };
 
+  UnSelectionBlock.attr = {
+    select: 'data-unselection-select'
+  };
+
   UnSelectionBlock.prototype._selectedWrapper = null;
 
   UnSelectionBlock.prototype._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <i class='simditor-r-icon-attachment unselection-attach-icon'></i> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation'> <span class='simditor-r-icon-eye unselection-attach-operation-icon' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon' title='下载'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation'> <span class='simditor-r-icon-eye unselection-attach-operation-icon' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon' title='下载'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2864,12 +2868,12 @@ UnSelectionBlock = (function(superClass) {
             _this.editor.blur();
             _this.editor.selection.clear();
             _this._selectedWrapper = wrapper;
-            return _this._selectedWrapper.addClass(UnSelectionBlock.className.select);
+            return _this._selectedWrapper.attr(UnSelectionBlock.attr.select, 'true');
           };
         })(this), 0);
       } else {
         if (this._selectedWrapper) {
-          this._selectedWrapper.removeClass(UnSelectionBlock.className.select);
+          this._selectedWrapper.removeAttr(UnSelectionBlock.attr.select);
           return this._selectedWrapper = null;
         }
       }

@@ -10,6 +10,9 @@ class UnSelectionBlock extends SimpleModule
     select: 'unselection-select'
     content: 'unselection-content'
 
+  @attr:
+    select: 'data-unselection-select'
+
   _selectedWrapper: null
 
   _tpl:
@@ -17,7 +20,7 @@ class UnSelectionBlock extends SimpleModule
     attach: "
       <inherit>
         <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}' contenteditable='false'>
-          <i class='simditor-r-icon-attachment unselection-attach-icon'></i>
+          <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
           <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span>
           <span class='unselection-attach-operation'>
             <span class='simditor-r-icon-eye unselection-attach-operation-icon' title='预览'></span>
@@ -54,9 +57,9 @@ class UnSelectionBlock extends SimpleModule
           @editor.blur()
           @editor.selection.clear()
           @_selectedWrapper = wrapper
-          @_selectedWrapper.addClass UnSelectionBlock.className.select
+          @_selectedWrapper.attr UnSelectionBlock.attr.select, 'true'
         , 0
       else
         if @_selectedWrapper
-          @_selectedWrapper.removeClass UnSelectionBlock.className.select
+          @_selectedWrapper.removeAttr UnSelectionBlock.attr.select
           @_selectedWrapper = null
