@@ -89,6 +89,14 @@ class Keystroke extends SimpleModule
         @editor.selection.restore()
         return true
 
+      # 如果前面一个root节点是不可选块，则在按backspace的时候，直接选中不可选块，而不是执行默认的删除操作
+      if $prevBlockEl.is('.unselection-wrapper') and @editor.selection.rangeAtStartOf $rootBlock
+        @editor.selection.setRangeAtStartOf $prevBlockEl
+        if @editor.util.browser.firefox
+          @editor.trigger 'selectionchanged'
+        e.preventDefault()
+        return false
+
       # fix the span bug in webkit browsers
       $blockEl = @editor.selection.blockNodes().last()
       isWebkit = @editor.util.browser.webkit
