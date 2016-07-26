@@ -5,6 +5,7 @@ class UnSelectionBlock extends SimpleModule
 
   @className:
     wrapper: 'unselection-wrapper'
+    inlineWrapper: 'unselection-inline-wrapper'
     img: 'unselection-img'
     attach: 'unselection-attach'
     select: 'unselection-select'
@@ -20,23 +21,39 @@ class UnSelectionBlock extends SimpleModule
     wrapper: "<p class='#{UnSelectionBlock.className.wrapper}'></p>"
     attach: "
       <inherit>
-        <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}'>
-          <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
-          <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span>
-          <span class='unselection-attach-operation' contenteditable='false'>
-            <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span>
-            <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a>
-            <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span>
+        <span class='#{UnSelectionBlock.className.inlineWrapper}'>
+          <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}' contenteditable='false'>
+            <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
+            <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span>
+            <span class='unselection-attach-operation' contenteditable='false'>
+              <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span>
+              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a>
+              <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon' title='更多'></span>
+            </span>
           </span>
         </span>
       </inherit>"
 
   _init: ->
-    console.log('_tpl', @_tpl)
     @editor = @_module
     @editor.on 'selectionchanged', @_onSelectionChange.bind(@)
     @_preview()
     @_patchFirefox()
+    $(document).on 'click.unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
+      @_unSelectionClick = true
+    $(document).on 'click.unSelection', (e) =>
+      if !@_unSelectionClick      
+        @_selectCurrent(false)
+      else
+        @_unSelectionClick = false
+
+    $(document).on 'keyup.unSelection', (e) =>
+      if @_selectedWrapper
+        switch e.which
+          when 13 then @_skipToNextNewLine()
+          when 40 then @_skipToNextLine()
+          when 38 then @_skipToPrevLine()
+          when 8 then @_delete()
 
   getAttachHtml: ->
     wrapper = @_getWrapper()
@@ -45,6 +62,28 @@ class UnSelectionBlock extends SimpleModule
     $(document.createElement('div')).append(wrapper).html()
 
   getImgHtml: ->
+
+  _skipToPrevLine: () ->
+    wrapper = @_selectedWrapper[0]
+    previousSibling = wrapper.previousSibling
+    if previousSibling
+      range = document.createRange()
+      @editor.selection.setRangeAtEndOf previousSibling, range
+
+  _skipToNextLine: () ->
+    wrapper = @_selectedWrapper[0]
+    nextSibling = wrapper.nextSibling
+    if nextSibling
+      range = document.createRange()
+      @editor.selection.setRangeAtStartOf nextSibling, range
+
+  _skipToNextNewLine: ->
+    p = document.createElement('p')
+    p.innerHTML = '<br>'
+    wrapper = @_selectedWrapper
+    wrapper.after(p)
+    range = document.createRange()
+    @editor.selection.setRangeAtStartOf p, range
 
   _getWrapper: ->
     $(@_tpl.wrapper)
@@ -60,7 +99,6 @@ class UnSelectionBlock extends SimpleModule
       else
         if @_selectedWrapper
           @_selectCurrent false
-          @_selectedWrapper = null
 
   _selectCurrent: (type = true) ->
     if @_selectedWrapper
@@ -68,6 +106,7 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper.attr UnSelectionBlock.attr.select, 'true'
       else
         @_selectedWrapper.removeAttr UnSelectionBlock.attr.select
+        @_selectedWrapper = null
 
   _selectWrapper: (wrapper) ->
     @editor.blur()
@@ -78,18 +117,18 @@ class UnSelectionBlock extends SimpleModule
 
   _patchFirefox: -> #针对firefox的一些补丁
     if @editor.util.browser.firefox
-      @editor.body.on 'click', ".#{UnSelectionBlock.className.wrapper}", (e) =>
+      @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
         wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
-        console.log('firfox wrapper', wrapper)   
         if wrapper.length
           setTimeout =>
             @_selectWrapper(wrapper)
           , 0
 
+  _delete: ->
+
   _preview: ->
     # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持
     return unless $.fn.magnificPopup
-    console.log('preview', $.fn.magnificPopup)
     @editor.body.magnificPopup
       delegate: ".#{UnSelectionBlock.className.preview}"
       type: 'image'

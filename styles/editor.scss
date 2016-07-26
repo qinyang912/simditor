@@ -615,6 +615,10 @@ $simditor-button-width: 46px;
   .unselection-wrapper {
     text-align: center;
     padding: 0px 100px;
+    .unselection-inline-wrapper {
+      display: inline-block;
+      width: 100%;
+    }
     .unselection-content {
       cursor: default;
     }
