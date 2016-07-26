@@ -42,9 +42,7 @@ class Formatter extends SimpleModule
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->
-      if $(e.target).hasClass('unselection-attach-download') # 如果是点击的附件下载按钮，则不阻止
-        return true
-      else
+      if !$(e.target).hasClass('unselection-attach-download') # 如果是点击的附件下载按钮，则不阻止
         return false
 
   decorate: ($el = @editor.body) ->

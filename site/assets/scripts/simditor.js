@@ -492,9 +492,7 @@ Formatter = (function(superClass) {
       h4: ['margin-left', 'text-align']
     }, this.opts.allowedStyles);
     return this.editor.body.on('click', 'a', function(e) {
-      if ($(e.target).hasClass('unselection-attach-download')) {
-        return true;
-      } else {
+      if (!$(e.target).hasClass('unselection-attach-download')) {
         return false;
       }
     });
@@ -2857,21 +2855,24 @@ UnSelectionBlock = (function(superClass) {
     $(document).on('click.unSelection', (function(_this) {
       return function(e) {
         if (!_this._unSelectionClick) {
-          return _this._selectCurrent(false);
+          _this._selectCurrent(false);
         } else {
-          return _this._unSelectionClick = false;
+          _this._unSelectionClick = false;
         }
       };
     })(this));
     return $(document).on('keyup.unSelection', (function(_this) {
       return function(e) {
+        console.log('e', e);
         if (_this._selectedWrapper) {
           switch (e.which) {
             case 13:
               return _this._skipToNextNewLine();
             case 40:
+            case 39:
               return _this._skipToNextLine();
             case 38:
+            case 37:
               return _this._skipToPrevLine();
             case 8:
               return _this._delete();
@@ -2934,7 +2935,7 @@ UnSelectionBlock = (function(superClass) {
           return function() {
             return _this._selectWrapper(wrapper);
           };
-        })(this), 0);
+        })(this), 150);
       } else {
         if (this._selectedWrapper) {
           return this._selectCurrent(false);

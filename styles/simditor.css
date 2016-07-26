@@ -754,7 +754,7 @@
   position: absolute;
   font-size: 12px;
   left: 35px;
-  right: 0px;
+  right: 85px;
   overflow: hidden;
   text-overflow: ellipsis;
   bottom: 0px;
@@ -766,13 +766,12 @@
   content: attr(data-name);
 }
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation {
-  display: inline-block;
+  display: none;
   position: absolute;
   right: 0px;
   top: 0px;
   bottom: 0px;
   font-size: 0px;
-  transform: translateX(85px);
   transition: transform 0.2s;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-operation-icon, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-operation-icon {
@@ -785,11 +784,8 @@
   cursor: pointer;
   color: #575757;
 }
-.simditor .simditor-body .unselection-wrapper .unselection-attach:hover [data-name], .editor-style .unselection-wrapper .unselection-attach:hover [data-name] {
-  right: 85px;
-}
 .simditor .simditor-body .unselection-wrapper .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach:hover .unselection-attach-operation {
-  transform: translateX(0px);
+  display: inline-block;
 }
 .simditor .simditor-body .unselection-wrapper inherit, .editor-style .unselection-wrapper inherit {
   display: block;

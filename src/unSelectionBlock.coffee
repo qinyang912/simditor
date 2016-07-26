@@ -46,13 +46,15 @@ class UnSelectionBlock extends SimpleModule
         @_selectCurrent(false)
       else
         @_unSelectionClick = false
+      return
 
     $(document).on 'keyup.unSelection', (e) =>
+      console.log('e', e)
       if @_selectedWrapper
         switch e.which
           when 13 then @_skipToNextNewLine()
-          when 40 then @_skipToNextLine()
-          when 38 then @_skipToPrevLine()
+          when 40, 39 then @_skipToNextLine()
+          when 38, 37 then @_skipToPrevLine()
           when 8 then @_delete()
 
   getAttachHtml: ->
@@ -95,7 +97,7 @@ class UnSelectionBlock extends SimpleModule
       if wrapper.length
         setTimeout =>
           @_selectWrapper(wrapper)
-        , 0
+        , 150
       else
         if @_selectedWrapper
           @_selectCurrent false

@@ -648,7 +648,7 @@ $simditor-button-width: 46px;
         position: absolute;
         font-size: 12px;
         left: 35px;
-        right: 0px;
+        right: 85px;
         overflow: hidden;
         text-overflow: ellipsis;
         bottom: 0px;
@@ -661,14 +661,12 @@ $simditor-button-width: 46px;
       }
 
       .unselection-attach-operation {
-        // display: none;
-        display: inline-block;
+        display: none;
         position: absolute;
         right: 0px;
         top: 0px;
         bottom: 0px;
         font-size: 0px;
-        transform: translateX(85px);
         transition: transform 0.2s;
         .unselection-attach-operation-icon {
           display: inline-block;
@@ -682,11 +680,8 @@ $simditor-button-width: 46px;
         }
       }
       &:hover {
-        [data-name] {
-          right: 85px;
-        }
         .unselection-attach-operation {
-          transform: translateX(0px);
+          display: inline-block;
         }
       }
     }
