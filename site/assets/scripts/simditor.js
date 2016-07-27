@@ -476,7 +476,7 @@ Formatter = (function(superClass) {
       font: ['color'],
       code: ['class'],
       p: ['class'],
-      span: ['class', 'contenteditable', 'data-name', 'href']
+      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -1104,7 +1104,7 @@ Keystroke = (function(superClass) {
     }
     this.add('backspace', '*', (function(_this) {
       return function(e) {
-        var $blockEl, $prevBlockEl, $rootBlock, isWebkit;
+        var $blockEl, $prevBlockEl, $rootBlock, $unSelectionWrapper, isWebkit;
         $rootBlock = _this.editor.selection.rootNodes().first();
         $prevBlockEl = $rootBlock.prev();
         if ($prevBlockEl.is('hr') && _this.editor.selection.rangeAtStartOf($rootBlock)) {
@@ -1113,8 +1113,13 @@ Keystroke = (function(superClass) {
           _this.editor.selection.restore();
           return true;
         }
-        if ($prevBlockEl.is('.unselection-wrapper') && _this.editor.selection.rangeAtStartOf($rootBlock)) {
-          _this.editor.selection.setRangeAtStartOf($prevBlockEl);
+        if ($prevBlockEl.closest('.unselection-wrapper').length) {
+          $unSelectionWrapper = $prevBlockEl.closest('.unselection-wrapper');
+        } else if ($prevBlockEl.find('.unselection-wrapper').length) {
+          $unSelectionWrapper = $prevBlockEl.find('.unselection-wrapper').last();
+        }
+        if ($unSelectionWrapper && _this.editor.selection.rangeAtStartOf($rootBlock)) {
+          _this.editor.selection.setRangeAtStartOf($unSelectionWrapper);
           if (_this.editor.util.browser.firefox) {
             _this.editor.trigger('selectionchanged');
           }
@@ -1740,6 +1745,37 @@ Util = (function(superClass) {
       return false;
     }
     return new RegExp("^(" + (this.blockNodes.join('|')) + ")$").test(node.nodeName.toLowerCase());
+  };
+
+  Util.prototype.getNextNode = function(node) {
+    var $next, $node;
+    $node = $(node);
+    $next = $node.next();
+    while (!$next.length && !$node.is(this.editor.body)) {
+      $node = $node.parent();
+      $next = $node.next();
+    }
+    return $next[0];
+  };
+
+  Util.prototype.getPrevNode = function(node) {
+    var $node, $prev;
+    $node = $(node);
+    $prev = $node.prev();
+    while (!$prev.length && !$node.is(this.editor.body)) {
+      $node = $node.parent();
+      $prev = $node.prev();
+    }
+    return $prev[0];
+  };
+
+  Util.prototype.getRootNodeFromNode = function(node) {
+    var $node;
+    $node = $(node);
+    while (!$node.parent().is(this.editor.body)) {
+      $node = $node.parent();
+    }
+    return $node[0];
   };
 
   Util.prototype.isTextNode = function(node) {
@@ -2841,14 +2877,16 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.attr = {
-    select: 'data-unselection-select'
+    select: 'data-unselection-select',
+    bucket: 'data-bucket',
+    key: 'data-key-name'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
 
-  UnSelectionBlock.prototype._tpl = {
+  UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete'>删除</span> </span> </span> </span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span> </span> </span> </span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2875,7 +2913,16 @@ UnSelectionBlock = (function(superClass) {
         var wrapper;
         wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
         if (wrapper.length) {
-          return wrapper.remove();
+          return _this._delete(wrapper);
+        }
+      };
+    })(this));
+    $(document).on('keydown.unSelection', (function(_this) {
+      return function(e) {
+        if (_this._selectedWrapper) {
+          if (e.which === 8) {
+            return e.preventDefault();
+          }
         }
       };
     })(this));
@@ -2893,17 +2940,37 @@ UnSelectionBlock = (function(superClass) {
             case 37:
               return _this._skipToPrevLine();
             case 8:
-              return _this._delete();
+              _this._delete();
+              return e.preventDefault();
           }
         }
       };
     })(this));
   };
 
-  UnSelectionBlock.prototype.getAttachHtml = function() {
-    var wrapper;
-    wrapper = this._getWrapper();
-    wrapper.append(this._tpl.attach);
+  UnSelectionBlock.getAttachHtml = function(data) {
+    var $download, $name, $operate, $preview, wrapper;
+    wrapper = UnSelectionBlock._getWrapper();
+    wrapper.append(UnSelectionBlock._tpl.attach);
+    if (data && data.file) {
+      $operate = wrapper.find('.unselection-attach-operation');
+      $preview = wrapper.find('.unselection-attach-preview');
+      $download = wrapper.find('.unselection-attach-download');
+      $name = wrapper.find('[data-name]');
+      $operate.attr(UnSelectionBlock.attr.bucket, data.bucket);
+      $operate.attr(UnSelectionBlock.attr.key, data.file.filePath);
+      $name.attr('data-name', data.file.name);
+      $download.attr('href', data.file.realPath);
+      $download.attr('download', data.file.name);
+      if (data.previewFile) {
+        $preview.attr('href', data.viewPath);
+        if (data.framePreviewFile) {
+          $preview.addClass('mfp-iframe');
+        }
+      } else {
+        $preview.remove();
+      }
+    }
     return $(document.createElement('div')).append(wrapper).html();
   };
 
@@ -2912,7 +2979,7 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.prototype._skipToPrevLine = function() {
     var previousSibling, range, wrapper;
     wrapper = this._selectedWrapper[0];
-    previousSibling = wrapper.previousSibling;
+    previousSibling = this.editor.util.getPrevNode(wrapper);
     if (previousSibling) {
       range = document.createRange();
       return this.editor.selection.setRangeAtEndOf(previousSibling, range);
@@ -2922,7 +2989,7 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.prototype._skipToNextLine = function() {
     var nextSibling, range, wrapper;
     wrapper = this._selectedWrapper[0];
-    nextSibling = wrapper.nextSibling;
+    nextSibling = this.editor.util.getNextNode(wrapper);
     if (nextSibling) {
       range = document.createRange();
       return this.editor.selection.setRangeAtStartOf(nextSibling, range);
@@ -2933,22 +3000,30 @@ UnSelectionBlock = (function(superClass) {
     var p, range, wrapper;
     p = document.createElement('p');
     p.innerHTML = '<br>';
-    wrapper = this._selectedWrapper;
+    wrapper = this.editor.util.getRootNodeFromNode(this._selectedWrapper);
+    wrapper = $(wrapper);
     wrapper.after(p);
     range = document.createRange();
     return this.editor.selection.setRangeAtStartOf(p, range);
   };
 
-  UnSelectionBlock.prototype._getWrapper = function() {
-    return $(this._tpl.wrapper);
+  UnSelectionBlock._getWrapper = function() {
+    return $(UnSelectionBlock._tpl.wrapper);
   };
 
   UnSelectionBlock.prototype._onSelectionChange = function() {
-    var range, wrapper;
+    var range, wrapper, wrapper1, wrapper2;
     range = this.editor.selection.range();
+    console.log('range', range);
     if (range && range.endContainer) {
-      wrapper = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
-      if (wrapper.length) {
+      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
+      wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();
+      if (wrapper1.length) {
+        wrapper = wrapper1;
+      } else if (wrapper2.length) {
+        wrapper = wrapper2;
+      }
+      if (wrapper) {
         return setTimeout((function(_this) {
           return function() {
             return _this._selectWrapper(wrapper);
@@ -3000,7 +3075,21 @@ UnSelectionBlock = (function(superClass) {
     }
   };
 
-  UnSelectionBlock.prototype._delete = function() {};
+  UnSelectionBlock.prototype._delete = function(wrapper) {
+    var previousSibling, range;
+    if (wrapper == null) {
+      wrapper = this._selectedWrapper;
+    }
+    if (wrapper) {
+      previousSibling = wrapper[0].previousSibling;
+      wrapper.remove();
+      if (previousSibling) {
+        range = document.createRange();
+        this.editor.selection.setRangeAtEndOf(previousSibling, range);
+      }
+      return this.editor.trigger('valuechanged');
+    }
+  };
 
   UnSelectionBlock.prototype._preview = function() {
     if (!$.fn.magnificPopup) {

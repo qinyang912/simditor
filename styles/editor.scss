@@ -687,6 +687,7 @@ $simditor-button-width: 46px;
             right: 0px;
             line-height: 26px;
             box-shadow: 0 3px 9px 0px rgba(0, 0, 0, 0.21);
+            z-index: 1;
             .unselection-attach-menu-item {
               padding: 7px 10px;
               font-size: 12px;

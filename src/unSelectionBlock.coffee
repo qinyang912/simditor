@@ -15,23 +15,25 @@ class UnSelectionBlock extends SimpleModule
 
   @attr:
     select: 'data-unselection-select'
+    bucket: 'data-bucket'
+    key: 'data-key-name'
 
   _selectedWrapper: null
 
-  _tpl:
+  @_tpl:
     wrapper: "<p class='#{UnSelectionBlock.className.wrapper}'></p>"
     attach: "
       <inherit>
         <span class='#{UnSelectionBlock.className.inlineWrapper}'>
           <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}' contenteditable='false'>
             <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
-            <span data-name='我草你name我草你name我草你name我草你name我草你name我草你name我草你name.zip'></span>
+            <span data-name=''></span>
             <span class='unselection-attach-operation' contenteditable='false'>
-              <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></span>
-              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png' href='http://rishiqing-file.oss-cn-beijing.aliyuncs.com/20160615104351QQ20160613-0%402x.png?Expires=1469588493&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=QxF6VkVzic2WUg%2BqlxEfgyc97Tk%3D'></a>
+              <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span>
+              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a>
               <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
                 <span class='unselection-attach-menu'>
-                  <span class='unselection-attach-menu-item unselection-attach-delete'>删除</span>
+                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span>
                 </span>
               </span>
             </span>
@@ -56,8 +58,12 @@ class UnSelectionBlock extends SimpleModule
     @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
       wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
       if wrapper.length
-        wrapper.remove()
+        @_delete(wrapper)
         
+    $(document).on 'keydown.unSelection', (e) =>
+      if @_selectedWrapper
+        if e.which == 8
+          e.preventDefault()
 
     $(document).on 'keyup.unSelection', (e) =>
       console.log('e', e)
@@ -66,11 +72,34 @@ class UnSelectionBlock extends SimpleModule
           when 13 then @_skipToNextNewLine()
           when 40, 39 then @_skipToNextLine()
           when 38, 37 then @_skipToPrevLine()
-          when 8 then @_delete()
+          when 8 
+            @_delete() 
+            e.preventDefault()
 
-  getAttachHtml: ->
-    wrapper = @_getWrapper()
-    wrapper.append @_tpl.attach
+  @getAttachHtml: (data) ->
+    wrapper = UnSelectionBlock._getWrapper()
+    wrapper.append UnSelectionBlock._tpl.attach
+    if data && data.file
+      $operate = wrapper.find('.unselection-attach-operation')
+      $preview = wrapper.find('.unselection-attach-preview')
+      $download = wrapper.find('.unselection-attach-download')
+      $name = wrapper.find('[data-name]')
+
+      $operate.attr(UnSelectionBlock.attr.bucket, data.bucket)
+      $operate.attr(UnSelectionBlock.attr.key, data.file.filePath)
+
+      $name.attr('data-name', data.file.name)
+
+      $download.attr('href', data.file.realPath)
+      $download.attr('download', data.file.name)
+
+      if data.previewFile
+        $preview.attr('href', data.viewPath)
+        if data.framePreviewFile
+          $preview.addClass 'mfp-iframe'
+      else 
+        $preview.remove()
+
 
     $(document.createElement('div')).append(wrapper).html()
 
@@ -78,14 +107,14 @@ class UnSelectionBlock extends SimpleModule
 
   _skipToPrevLine: () ->
     wrapper = @_selectedWrapper[0]
-    previousSibling = wrapper.previousSibling
+    previousSibling = @editor.util.getPrevNode wrapper
     if previousSibling
       range = document.createRange()
       @editor.selection.setRangeAtEndOf previousSibling, range
 
   _skipToNextLine: () ->
     wrapper = @_selectedWrapper[0]
-    nextSibling = wrapper.nextSibling
+    nextSibling = @editor.util.getNextNode wrapper
     if nextSibling
       range = document.createRange()
       @editor.selection.setRangeAtStartOf nextSibling, range
@@ -93,19 +122,26 @@ class UnSelectionBlock extends SimpleModule
   _skipToNextNewLine: ->
     p = document.createElement('p')
     p.innerHTML = '<br>'
-    wrapper = @_selectedWrapper
+    wrapper = @editor.util.getRootNodeFromNode(@_selectedWrapper)
+    wrapper = $(wrapper)
     wrapper.after(p)
     range = document.createRange()
     @editor.selection.setRangeAtStartOf p, range
 
-  _getWrapper: ->
-    $(@_tpl.wrapper)
+  @_getWrapper: ->
+    $(UnSelectionBlock._tpl.wrapper)
 
   _onSelectionChange: ->
     range = @editor.selection.range()
+    console.log('range', range);
     if range and range.endContainer
-      wrapper = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper)
-      if wrapper.length
+      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper)
+      wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last()
+      if wrapper1.length
+        wrapper = wrapper1
+      else if wrapper2.length
+        wrapper = wrapper2
+      if wrapper
         setTimeout =>
           @_selectWrapper(wrapper)
         , 150
@@ -137,7 +173,14 @@ class UnSelectionBlock extends SimpleModule
             @_selectWrapper(wrapper)
           , 0
 
-  _delete: ->
+  _delete: (wrapper = @_selectedWrapper) ->
+    if wrapper
+      previousSibling = wrapper[0].previousSibling
+      wrapper.remove()
+      if previousSibling
+        range = document.createRange()
+        @editor.selection.setRangeAtEndOf previousSibling, range
+      @editor.trigger 'valuechanged'
 
   _preview: ->
     # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持

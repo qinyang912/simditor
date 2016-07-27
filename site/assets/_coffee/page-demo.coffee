@@ -15,7 +15,16 @@ $ ->
 
   console.log('editor', editor)
 
-  editor.setValue(editor.getValue() + editor.unSelectionBlock.getAttachHtml() + '<p>sfs</p>')
+  attachHtml = Simditor.UnSelectionBlock.getAttachHtml 
+    previewFile: false
+    viewPath: 'http:www.baidu.com'
+    bucket: 'rishiqing-file'
+    file:
+      name: 'dddd.png'
+      filePath: '34123413dddd.png'
+      realPath: 'http:www.baidu.com'
+
+  editor.setValue(editor.getValue() + attachHtml + '<p>sfs</p>')
 
   $preview = $('#preview')
   if $preview.length > 0
