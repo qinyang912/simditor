@@ -107,6 +107,28 @@ class Util extends SimpleModule
 
     new RegExp("^(#{@blockNodes.join('|')})$").test node.nodeName.toLowerCase()
 
+  getNextNode: (node) -> # 获取某个node的下一个node
+    $node = $(node)
+    $next = $node.next()
+    while !$next.length and !$node.is(@editor.body)
+      $node = $node.parent()
+      $next = $node.next()
+    $next[0]
+
+  getPrevNode: (node) ->
+    $node = $(node)
+    $prev = $node.prev()
+    while !$prev.length and !$node.is(@editor.body)
+      $node = $node.parent()
+      $prev = $node.prev()
+    $prev[0]
+
+  getRootNodeFromNode: (node) -> # 从某一个节点起，获取最靠近@editor.body的根节点
+    $node = $(node)
+    while !$node.parent().is(@editor.body)
+      $node = $node.parent()
+    $node[0]
+
   isTextNode: (node) ->
     node = $(node)[0]
     return node && node.nodeType && (node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8)

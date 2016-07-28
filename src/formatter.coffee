@@ -14,7 +14,7 @@ class Formatter extends SimpleModule
     @_allowedTags = $.merge(
       ['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike',
       'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1',
-      'h2', 'h3', 'h4', 'hr'],
+      'h2', 'h3', 'h4', 'hr', 'inherit'],
       @opts.allowedTags
     )
 
@@ -23,6 +23,8 @@ class Formatter extends SimpleModule
       a: ['href', 'target']
       font: ['color']
       code: ['class']
+      p: ['class']
+      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend
@@ -40,7 +42,8 @@ class Formatter extends SimpleModule
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->
-      false
+      if !$(e.target).hasClass('unselection-attach-download') # 如果是点击的附件下载按钮，则不阻止
+        return false
 
   decorate: ($el = @editor.body) ->
     @editor.trigger 'decorate', [$el]

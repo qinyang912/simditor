@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -49,7 +49,9 @@ Selection = (function(superClass) {
     this.editor.on('selectionchanged', (function(_this) {
       return function(e) {
         _this.reset();
-        return _this._range = _this._selection.getRangeAt(0);
+        if (_this._selection.rangeCount) {
+          return _this._range = _this._selection.getRangeAt(0);
+        }
       };
     })(this));
     return this.editor.on('blur', (function(_this) {
@@ -467,12 +469,14 @@ Formatter = (function(superClass) {
 
   Formatter.prototype._init = function() {
     this.editor = this._module;
-    this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr'], this.opts.allowedTags);
+    this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr', 'inherit'], this.opts.allowedTags);
     this._allowedAttributes = $.extend({
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey'],
       a: ['href', 'target'],
       font: ['color'],
-      code: ['class']
+      code: ['class'],
+      p: ['class'],
+      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -488,7 +492,9 @@ Formatter = (function(superClass) {
       h4: ['margin-left', 'text-align']
     }, this.opts.allowedStyles);
     return this.editor.body.on('click', 'a', function(e) {
-      return false;
+      if (!$(e.target).hasClass('unselection-attach-download')) {
+        return false;
+      }
     });
   };
 
@@ -1098,7 +1104,7 @@ Keystroke = (function(superClass) {
     }
     this.add('backspace', '*', (function(_this) {
       return function(e) {
-        var $blockEl, $prevBlockEl, $rootBlock, isWebkit;
+        var $blockEl, $prevBlockEl, $rootBlock, $unSelectionWrapper, isWebkit;
         $rootBlock = _this.editor.selection.rootNodes().first();
         $prevBlockEl = $rootBlock.prev();
         if ($prevBlockEl.is('hr') && _this.editor.selection.rangeAtStartOf($rootBlock)) {
@@ -1106,6 +1112,19 @@ Keystroke = (function(superClass) {
           $prevBlockEl.remove();
           _this.editor.selection.restore();
           return true;
+        }
+        if ($prevBlockEl.closest('.unselection-wrapper').length) {
+          $unSelectionWrapper = $prevBlockEl.closest('.unselection-wrapper');
+        } else if ($prevBlockEl.find('.unselection-wrapper').length) {
+          $unSelectionWrapper = $prevBlockEl.find('.unselection-wrapper').last();
+        }
+        if ($unSelectionWrapper && _this.editor.selection.rangeAtStartOf($rootBlock)) {
+          _this.editor.selection.setRangeAtStartOf($unSelectionWrapper);
+          if (_this.editor.util.browser.firefox) {
+            _this.editor.trigger('selectionchanged');
+          }
+          e.preventDefault();
+          return false;
         }
         $blockEl = _this.editor.selection.blockNodes().last();
         isWebkit = _this.editor.util.browser.webkit;
@@ -1726,6 +1745,37 @@ Util = (function(superClass) {
       return false;
     }
     return new RegExp("^(" + (this.blockNodes.join('|')) + ")$").test(node.nodeName.toLowerCase());
+  };
+
+  Util.prototype.getNextNode = function(node) {
+    var $next, $node;
+    $node = $(node);
+    $next = $node.next();
+    while (!$next.length && !$node.is(this.editor.body)) {
+      $node = $node.parent();
+      $next = $node.next();
+    }
+    return $next[0];
+  };
+
+  Util.prototype.getPrevNode = function(node) {
+    var $node, $prev;
+    $node = $(node);
+    $prev = $node.prev();
+    while (!$prev.length && !$node.is(this.editor.body)) {
+      $node = $node.parent();
+      $prev = $node.prev();
+    }
+    return $prev[0];
+  };
+
+  Util.prototype.getRootNodeFromNode = function(node) {
+    var $node;
+    $node = $(node);
+    while (!$node.parent().is(this.editor.body)) {
+      $node = $node.parent();
+    }
+    return $node[0];
   };
 
   Util.prototype.isTextNode = function(node) {
@@ -2806,6 +2856,290 @@ Clipboard = (function(superClass) {
 
 })(SimpleModule);
 
+UnSelectionBlock = (function(superClass) {
+  extend(UnSelectionBlock, superClass);
+
+  function UnSelectionBlock() {
+    return UnSelectionBlock.__super__.constructor.apply(this, arguments);
+  }
+
+  UnSelectionBlock.pluginName = 'UnSelectionBlock';
+
+  UnSelectionBlock.className = {
+    wrapper: 'unselection-wrapper',
+    inlineWrapper: 'unselection-inline-wrapper',
+    img: 'unselection-img',
+    attach: 'unselection-attach',
+    select: 'unselection-select',
+    content: 'unselection-content',
+    preview: 'unselection-attach-preview',
+    _delete: 'unselection-attach-delete'
+  };
+
+  UnSelectionBlock.attr = {
+    select: 'data-unselection-select',
+    bucket: 'data-bucket',
+    key: 'data-key-name'
+  };
+
+  UnSelectionBlock.prototype._selectedWrapper = null;
+
+  UnSelectionBlock._tpl = {
+    wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span> </span> </span> </span> </span> </span> </inherit>"
+  };
+
+  UnSelectionBlock.prototype._init = function() {
+    this.editor = this._module;
+    this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
+    this._preview();
+    this._patchFirefox();
+    $(document).on('click.unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+      return function(e) {
+        return _this._unSelectionClick = true;
+      };
+    })(this));
+    $(document).on('click.unSelection', (function(_this) {
+      return function(e) {
+        if (!_this._unSelectionClick) {
+          _this._selectCurrent(false);
+        } else {
+          _this._unSelectionClick = false;
+        }
+      };
+    })(this));
+    this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
+      return function(e) {
+        var wrapper;
+        wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+        if (wrapper.length) {
+          return _this._delete(wrapper);
+        }
+      };
+    })(this));
+    $(document).on('keydown.unSelection', (function(_this) {
+      return function(e) {
+        if (_this._selectedWrapper) {
+          if (e.which === 8) {
+            return e.preventDefault();
+          }
+        }
+      };
+    })(this));
+    return $(document).on('keyup.unSelection', (function(_this) {
+      return function(e) {
+        console.log('e', e);
+        if (_this._selectedWrapper) {
+          switch (e.which) {
+            case 13:
+              return _this._skipToNextNewLine();
+            case 40:
+            case 39:
+              return _this._skipToNextLine();
+            case 38:
+            case 37:
+              return _this._skipToPrevLine();
+            case 8:
+              _this._delete();
+              return e.preventDefault();
+          }
+        }
+      };
+    })(this));
+  };
+
+  UnSelectionBlock.getAttachHtml = function(data) {
+    var $download, $name, $operate, $preview, wrapper;
+    wrapper = UnSelectionBlock._getWrapper();
+    wrapper.append(UnSelectionBlock._tpl.attach);
+    if (data && data.file) {
+      $operate = wrapper.find('.unselection-attach-operation');
+      $preview = wrapper.find('.unselection-attach-preview');
+      $download = wrapper.find('.unselection-attach-download');
+      $name = wrapper.find('[data-name]');
+      $operate.attr(UnSelectionBlock.attr.bucket, data.bucket);
+      $operate.attr(UnSelectionBlock.attr.key, data.file.filePath);
+      $name.attr('data-name', data.file.name);
+      $download.attr('href', data.file.realPath);
+      $download.attr('download', data.file.name);
+      if (data.previewFile) {
+        $preview.attr('href', data.viewPath);
+        if (data.framePreviewFile) {
+          $preview.addClass('mfp-iframe');
+        }
+      } else {
+        $preview.remove();
+      }
+    }
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.prototype.getImgHtml = function() {};
+
+  UnSelectionBlock.prototype._skipToPrevLine = function() {
+    var previousSibling, range, wrapper;
+    wrapper = this._selectedWrapper[0];
+    previousSibling = this.editor.util.getPrevNode(wrapper);
+    if (previousSibling) {
+      range = document.createRange();
+      return this.editor.selection.setRangeAtEndOf(previousSibling, range);
+    }
+  };
+
+  UnSelectionBlock.prototype._skipToNextLine = function() {
+    var nextSibling, range, wrapper;
+    wrapper = this._selectedWrapper[0];
+    nextSibling = this.editor.util.getNextNode(wrapper);
+    if (nextSibling) {
+      range = document.createRange();
+      return this.editor.selection.setRangeAtStartOf(nextSibling, range);
+    }
+  };
+
+  UnSelectionBlock.prototype._skipToNextNewLine = function() {
+    var p, range, wrapper;
+    p = document.createElement('p');
+    p.innerHTML = '<br>';
+    wrapper = this.editor.util.getRootNodeFromNode(this._selectedWrapper);
+    wrapper = $(wrapper);
+    wrapper.after(p);
+    range = document.createRange();
+    return this.editor.selection.setRangeAtStartOf(p, range);
+  };
+
+  UnSelectionBlock._getWrapper = function() {
+    return $(UnSelectionBlock._tpl.wrapper);
+  };
+
+  UnSelectionBlock.prototype._onSelectionChange = function() {
+    var range, wrapper, wrapper1, wrapper2;
+    range = this.editor.selection.range();
+    console.log('range', range);
+    if (range && range.endContainer) {
+      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
+      wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();
+      if (wrapper1.length) {
+        wrapper = wrapper1;
+      } else if (wrapper2.length) {
+        wrapper = wrapper2;
+      }
+      if (wrapper) {
+        return setTimeout((function(_this) {
+          return function() {
+            return _this._selectWrapper(wrapper);
+          };
+        })(this), 150);
+      } else {
+        if (this._selectedWrapper) {
+          return this._selectCurrent(false);
+        }
+      }
+    }
+  };
+
+  UnSelectionBlock.prototype._selectCurrent = function(type) {
+    if (type == null) {
+      type = true;
+    }
+    if (this._selectedWrapper) {
+      if (type) {
+        return this._selectedWrapper.attr(UnSelectionBlock.attr.select, 'true');
+      } else {
+        this._selectedWrapper.removeAttr(UnSelectionBlock.attr.select);
+        return this._selectedWrapper = null;
+      }
+    }
+  };
+
+  UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
+    this.editor.blur();
+    this.editor.selection.clear();
+    this._selectCurrent(false);
+    this._selectedWrapper = wrapper;
+    return this._selectCurrent();
+  };
+
+  UnSelectionBlock.prototype._patchFirefox = function() {
+    if (this.editor.util.browser.firefox) {
+      return this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+        return function(e) {
+          var wrapper;
+          wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+          if (wrapper.length) {
+            return setTimeout(function() {
+              return _this._selectWrapper(wrapper);
+            }, 0);
+          }
+        };
+      })(this));
+    }
+  };
+
+  UnSelectionBlock.prototype._delete = function(wrapper) {
+    var previousSibling, range;
+    if (wrapper == null) {
+      wrapper = this._selectedWrapper;
+    }
+    if (wrapper) {
+      previousSibling = wrapper[0].previousSibling;
+      wrapper.remove();
+      if (previousSibling) {
+        range = document.createRange();
+        this.editor.selection.setRangeAtEndOf(previousSibling, range);
+      }
+      return this.editor.trigger('valuechanged');
+    }
+  };
+
+  UnSelectionBlock.prototype._preview = function() {
+    if (!$.fn.magnificPopup) {
+      return;
+    }
+    return this.editor.body.magnificPopup({
+      delegate: "." + UnSelectionBlock.className.preview,
+      type: 'image',
+      preloader: true,
+      removalDelay: 1000,
+      mainClass: 'mfp-fade',
+      tLoading: 'Loading...',
+      zoom: {
+        enabled: true,
+        duration: 300,
+        easing: 'ease-in-out',
+        opener: (function(_this) {
+          return function(openerElement) {
+            return openerElement;
+          };
+        })(this)
+      },
+      callbacks: {
+        beforeOpen: function() {},
+        open: function() {},
+        close: function() {},
+        elementParse: function() {}
+      },
+      gallery: {
+        enabled: true,
+        preload: [0, 2],
+        navigateByImgClick: false,
+        tPrev: '上一个',
+        tNext: '下一个'
+      },
+      image: {
+        titleSrc: 'title',
+        tError: '<a href="%url%">The image</a> could not be loaded.'
+      },
+      iframe: {},
+      ajax: {
+        tError: '<a href="%url%">The content</a> could not be loaded.'
+      }
+    });
+  };
+
+  return UnSelectionBlock;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -2818,6 +3152,8 @@ Simditor = (function(superClass) {
   Simditor.connect(InputManager);
 
   Simditor.connect(Selection);
+
+  Simditor.connect(UnSelectionBlock);
 
   Simditor.connect(UndoManager);
 
