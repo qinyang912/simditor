@@ -3117,8 +3117,10 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
-    this.editor.blur();
-    this.editor.selection.clear();
+    if (!this.editor.util.browser.msie) {
+      this.editor.blur();
+      this.editor.selection.clear();
+    }
     this._selectCurrent(false);
     this._selectedWrapper = wrapper;
     return this._selectCurrent();
@@ -6079,6 +6081,9 @@ ImageButton = (function(superClass) {
           return;
         }
         if (xhr.statusText === 'abort') {
+          return;
+        }
+        if (xhr.statusCode === 403) {
           return;
         }
         if (xhr.responseText) {

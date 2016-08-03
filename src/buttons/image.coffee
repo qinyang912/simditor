@@ -244,6 +244,8 @@ class ImageButton extends Button
       return unless file.inline
       return if xhr.statusText == 'abort'
 
+      return if xhr.statusCode == 403
+
       if xhr.responseText
         try
           result = $.parseJSON xhr.responseText

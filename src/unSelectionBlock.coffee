@@ -199,8 +199,9 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper = null
 
   _selectWrapper: (wrapper) ->
-    @editor.blur()
-    @editor.selection.clear()
+    if !@editor.util.browser.msie
+      @editor.blur()
+      @editor.selection.clear()
     @_selectCurrent false
     @_selectedWrapper = wrapper
     @_selectCurrent()
