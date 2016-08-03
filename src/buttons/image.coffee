@@ -209,7 +209,12 @@ class ImageButton extends Button
                 $img.removeData 'mask'
                 $img.addClass 'oss-file'
                 $img.attr 'data-bucket', 'rishiqing-file'
-                $img.attr 'data-key-name', result.key 
+                $img.attr 'data-key-name', result.key
+                $img.attr 'data-name', data.name
+
+                $wrapper = $img.data 'wrapper'
+                if $wrapper
+                  Simditor.UnSelectionBlock.addFileIdForWrapper $wrapper, data.id
 
                 @editor.trigger 'valuechanged'
                 if @editor.body.find('img.uploading').length < 1
@@ -348,13 +353,14 @@ class ImageButton extends Button
     rootNode = @editor.selection.rootNodes().last()
     console.log('rootNode', rootNode, @editor.util.isEmptyNode(rootNode))
     if rootNode.is('p') and @editor.util.isEmptyNode rootNode
-      $wrapper = Simditor.UnSelectionBlock.createWrapperByP rootNode
+      $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP rootNode
       $wrapper.empty()
       $wrapper.append $img
     else
-      $wrapper = Simditor.UnSelectionBlock.getWrapper()
-      $wrapper.append $img
+      $wrapper = Simditor.UnSelectionBlock.getImgWrapperWithImg $img
       rootNode.after($wrapper)
+
+    $img.data 'wrapper', $wrapper
 
     # range.insertNode $img[0]
     @editor.selection.setRangeAfter $img, range

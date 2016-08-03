@@ -22,6 +22,7 @@ class UnSelectionBlock extends SimpleModule
     fileName: 'data-file-name'
     fileSrc: 'data-file-src'
     attach: 'data-attach'
+    img: 'data-img'
 
   _selectedWrapper: null
 
@@ -109,6 +110,7 @@ class UnSelectionBlock extends SimpleModule
   @getImgHtml: (data) ->
     wrapper = UnSelectionBlock.getWrapper(data)
     wrapper.append UnSelectionBlock._tpl.img
+    wrapper.attr UnSelectionBlock.attr.img, true
     if data && data.file
       $img = wrapper.find('img');
       $img.attr('src', data.file.realPath)
@@ -128,6 +130,20 @@ class UnSelectionBlock extends SimpleModule
     p.addClass UnSelectionBlock.className.wrapper
     p.attr UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator()
     p
+
+  @createImgWrapperByP: (p) ->
+    $wrapper = UnSelectionBlock.createWrapperByP p
+    $wrapper.attr UnSelectionBlock.attr.img, true
+    $wrapper
+
+  @getImgWrapperWithImg: (img) ->
+    $wrapper = UnSelectionBlock.getWrapper()
+    $wrapper.attr UnSelectionBlock.attr.img, true
+    $wrapper.append $(img)
+    $wrapper
+
+  @addFileIdForWrapper: ($wrapper, id) ->
+    $wrapper.attr UnSelectionBlock.attr.fileId, id
 
   @_guidGenerator: ->
     S4 = () =>

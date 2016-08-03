@@ -471,11 +471,11 @@ Formatter = (function(superClass) {
     this.editor = this._module;
     this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr', 'inherit'], this.opts.allowedTags);
     this._allowedAttributes = $.extend({
-      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey'],
+      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name'],
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach'],
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img'],
       span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
@@ -2894,7 +2894,8 @@ UnSelectionBlock = (function(superClass) {
     fileId: 'data-file-id',
     fileName: 'data-file-name',
     fileSrc: 'data-file-src',
-    attach: 'data-attach'
+    attach: 'data-attach',
+    img: 'data-img'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
@@ -2986,6 +2987,7 @@ UnSelectionBlock = (function(superClass) {
     var $img, wrapper;
     wrapper = UnSelectionBlock.getWrapper(data);
     wrapper.append(UnSelectionBlock._tpl.img);
+    wrapper.attr(UnSelectionBlock.attr.img, true);
     if (data && data.file) {
       $img = wrapper.find('img');
       $img.attr('src', data.file.realPath);
@@ -3013,6 +3015,25 @@ UnSelectionBlock = (function(superClass) {
     p.addClass(UnSelectionBlock.className.wrapper);
     p.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
     return p;
+  };
+
+  UnSelectionBlock.createImgWrapperByP = function(p) {
+    var $wrapper;
+    $wrapper = UnSelectionBlock.createWrapperByP(p);
+    $wrapper.attr(UnSelectionBlock.attr.img, true);
+    return $wrapper;
+  };
+
+  UnSelectionBlock.getImgWrapperWithImg = function(img) {
+    var $wrapper;
+    $wrapper = UnSelectionBlock.getWrapper();
+    $wrapper.attr(UnSelectionBlock.attr.img, true);
+    $wrapper.append($(img));
+    return $wrapper;
+  };
+
+  UnSelectionBlock.addFileIdForWrapper = function($wrapper, id) {
+    return $wrapper.attr(UnSelectionBlock.attr.fileId, id);
   };
 
   UnSelectionBlock._guidGenerator = function() {
@@ -6003,7 +6024,7 @@ ImageButton = (function(superClass) {
                 console.log('save in server ', data);
                 img_path = data.realPath;
                 return _this.loadImage($img, img_path, function() {
-                  var $mask;
+                  var $mask, $wrapper;
                   $img.removeData('file');
                   $img.removeClass('uploading').removeClass('loading');
                   $mask = $img.data('mask');
@@ -6014,6 +6035,11 @@ ImageButton = (function(superClass) {
                   $img.addClass('oss-file');
                   $img.attr('data-bucket', 'rishiqing-file');
                   $img.attr('data-key-name', result.key);
+                  $img.attr('data-name', data.name);
+                  $wrapper = $img.data('wrapper');
+                  if ($wrapper) {
+                    Simditor.UnSelectionBlock.addFileIdForWrapper($wrapper, data.id);
+                  }
                   _this.editor.trigger('valuechanged');
                   if (_this.editor.body.find('img.uploading').length < 1) {
                     return _this.editor.uploader.trigger('uploadready', [file, result]);
@@ -6170,14 +6196,14 @@ ImageButton = (function(superClass) {
     rootNode = this.editor.selection.rootNodes().last();
     console.log('rootNode', rootNode, this.editor.util.isEmptyNode(rootNode));
     if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
-      $wrapper = Simditor.UnSelectionBlock.createWrapperByP(rootNode);
+      $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP(rootNode);
       $wrapper.empty();
       $wrapper.append($img);
     } else {
-      $wrapper = Simditor.UnSelectionBlock.getWrapper();
-      $wrapper.append($img);
+      $wrapper = Simditor.UnSelectionBlock.getImgWrapperWithImg($img);
       rootNode.after($wrapper);
     }
+    $img.data('wrapper', $wrapper);
     this.editor.selection.setRangeAfter($img, range);
     this.editor.trigger('valuechanged');
     return $img;
