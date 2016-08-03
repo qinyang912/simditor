@@ -17,6 +17,11 @@ class UnSelectionBlock extends SimpleModule
     select: 'data-unselection-select'
     bucket: 'data-bucket'
     key: 'data-key-name'
+    unique: 'data-unique-id'
+    fileId: 'data-file-id'
+    fileName: 'data-file-name'
+    fileSrc: 'data-file-src'
+    attach: 'data-attach'
 
   _selectedWrapper: null
 
@@ -40,6 +45,7 @@ class UnSelectionBlock extends SimpleModule
           </span>
         </span>
       </inherit>"
+    img: "<img src='' alt=''>"
 
   _init: ->
     @editor = @_module
@@ -77,8 +83,9 @@ class UnSelectionBlock extends SimpleModule
             e.preventDefault()
 
   @getAttachHtml: (data) ->
-    wrapper = UnSelectionBlock._getWrapper()
+    wrapper = UnSelectionBlock._getWrapper(data)
     wrapper.append UnSelectionBlock._tpl.attach
+    wrapper.attr(UnSelectionBlock.attr.attach, true)
     if data && data.file
       $operate = wrapper.find('.unselection-attach-operation')
       $preview = wrapper.find('.unselection-attach-preview')
@@ -103,7 +110,29 @@ class UnSelectionBlock extends SimpleModule
 
     $(document.createElement('div')).append(wrapper).html()
 
-  getImgHtml: ->
+  @getImgHtml: (data) ->
+    wrapper = UnSelectionBlock._getWrapper(data)
+    wrapper.append UnSelectionBlock._tpl.img
+    if data && data.file
+      $img = wrapper.find('img');
+      $img.attr('src', data.file.realPath)
+      $img.attr('alt', data.file.name)
+      $img.attr(UnSelectionBlock.attr.bucket, data.bucket)
+      $img.attr(UnSelectionBlock.attr.key, data.file.filePath)
+      
+    $(document.createElement('div')).append(wrapper).html()
+
+  @_getWrapper: (data) ->
+    wrapper = $(UnSelectionBlock._tpl.wrapper)
+    wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
+    wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
+    # wrapper.attr(UnSelectionBlock.attr.fileName, data.file.name)
+    # wrapper.attr(UnSelectionBlock.attr.fileSrc, data.file.realPath)
+
+  @_guidGenerator: ->
+    S4 = () =>
+      (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+    (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
 
   _skipToPrevLine: () ->
     wrapper = @_selectedWrapper[0]
@@ -128,12 +157,8 @@ class UnSelectionBlock extends SimpleModule
     range = document.createRange()
     @editor.selection.setRangeAtStartOf p, range
 
-  @_getWrapper: ->
-    $(UnSelectionBlock._tpl.wrapper)
-
   _onSelectionChange: ->
     range = @editor.selection.range()
-    console.log('range', range);
     if range and range.endContainer
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper)
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last()

@@ -475,7 +475,7 @@ Formatter = (function(superClass) {
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class'],
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach'],
       span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
@@ -1751,9 +1751,12 @@ Util = (function(superClass) {
     var $next, $node;
     $node = $(node);
     $next = $node.next();
-    while (!$next.length && !$node.is(this.editor.body)) {
+    if (!$next.length) {
       $node = $node.parent();
-      $next = $node.next();
+      while (!$next.length && !$node.is(this.editor.body)) {
+        $next = $node.next();
+        $node = $node.parent();
+      }
     }
     return $next[0];
   };
@@ -1762,9 +1765,12 @@ Util = (function(superClass) {
     var $node, $prev;
     $node = $(node);
     $prev = $node.prev();
-    while (!$prev.length && !$node.is(this.editor.body)) {
+    if (!$prev.length) {
       $node = $node.parent();
-      $prev = $node.prev();
+      while (!$prev.length && !$node.is(this.editor.body)) {
+        $prev = $node.prev();
+        $node = $node.parent();
+      }
     }
     return $prev[0];
   };
@@ -2879,14 +2885,20 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.attr = {
     select: 'data-unselection-select',
     bucket: 'data-bucket',
-    key: 'data-key-name'
+    key: 'data-key-name',
+    unique: 'data-unique-id',
+    fileId: 'data-file-id',
+    fileName: 'data-file-name',
+    fileSrc: 'data-file-src',
+    attach: 'data-attach'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
 
   UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span> </span> </span> </span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span> </span> </span> </span> </span> </span> </inherit>",
+    img: "<img src='' alt=''>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2950,8 +2962,9 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.getAttachHtml = function(data) {
     var $download, $name, $operate, $preview, wrapper;
-    wrapper = UnSelectionBlock._getWrapper();
+    wrapper = UnSelectionBlock._getWrapper(data);
     wrapper.append(UnSelectionBlock._tpl.attach);
+    wrapper.attr(UnSelectionBlock.attr.attach, true);
     if (data && data.file) {
       $operate = wrapper.find('.unselection-attach-operation');
       $preview = wrapper.find('.unselection-attach-preview');
@@ -2974,7 +2987,36 @@ UnSelectionBlock = (function(superClass) {
     return $(document.createElement('div')).append(wrapper).html();
   };
 
-  UnSelectionBlock.prototype.getImgHtml = function() {};
+  UnSelectionBlock.getImgHtml = function(data) {
+    var $img, wrapper;
+    wrapper = UnSelectionBlock._getWrapper(data);
+    wrapper.append(UnSelectionBlock._tpl.img);
+    if (data && data.file) {
+      $img = wrapper.find('img');
+      $img.attr('src', data.file.realPath);
+      $img.attr('alt', data.file.name);
+      $img.attr(UnSelectionBlock.attr.bucket, data.bucket);
+      $img.attr(UnSelectionBlock.attr.key, data.file.filePath);
+    }
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock._getWrapper = function(data) {
+    var wrapper;
+    wrapper = $(UnSelectionBlock._tpl.wrapper);
+    wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
+    return wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+  };
+
+  UnSelectionBlock._guidGenerator = function() {
+    var S4;
+    S4 = (function(_this) {
+      return function() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+      };
+    })(this);
+    return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
+  };
 
   UnSelectionBlock.prototype._skipToPrevLine = function() {
     var previousSibling, range, wrapper;
@@ -3007,14 +3049,9 @@ UnSelectionBlock = (function(superClass) {
     return this.editor.selection.setRangeAtStartOf(p, range);
   };
 
-  UnSelectionBlock._getWrapper = function() {
-    return $(UnSelectionBlock._tpl.wrapper);
-  };
-
   UnSelectionBlock.prototype._onSelectionChange = function() {
     var range, wrapper, wrapper1, wrapper2;
     range = this.editor.selection.range();
-    console.log('range', range);
     if (range && range.endContainer) {
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();

@@ -110,17 +110,21 @@ class Util extends SimpleModule
   getNextNode: (node) -> # 获取某个node的下一个node
     $node = $(node)
     $next = $node.next()
-    while !$next.length and !$node.is(@editor.body)
+    if !$next.length
       $node = $node.parent()
-      $next = $node.next()
+      while !$next.length and !$node.is(@editor.body)
+        $next = $node.next()
+        $node = $node.parent()
     $next[0]
 
   getPrevNode: (node) ->
     $node = $(node)
     $prev = $node.prev()
-    while !$prev.length and !$node.is(@editor.body)
+    if !$prev.length
       $node = $node.parent()
-      $prev = $node.prev()
+      while !$prev.length and !$node.is(@editor.body)
+        $prev = $node.prev()
+        $node = $node.parent()
     $prev[0]
 
   getRootNodeFromNode: (node) -> # 从某一个节点起，获取最靠近@editor.body的根节点

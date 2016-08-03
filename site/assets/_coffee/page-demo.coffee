@@ -23,6 +23,7 @@ $ ->
       name: 'dddd.png'
       filePath: '34123413dddd.png'
       realPath: 'http:www.baidu.com'
+      id: 12341
 
   editor.setValue(editor.getValue() + attachHtml + '<p>sfs</p>')
 
