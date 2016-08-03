@@ -717,6 +717,9 @@
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
   border: 1px solid #bababa !important;
 }
+.simditor .simditor-body [data-unselection-select] img, .editor-style [data-unselection-select] img {
+  box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
+}
 .simditor .simditor-body .unselection-wrapper, .editor-style .unselection-wrapper {
   text-align: center;
   padding: 0px 100px;
