@@ -65,15 +65,10 @@ class UnSelectionBlock extends SimpleModule
       wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
       if wrapper.length
         @_delete(wrapper)
-        
+
     $(document).on 'keydown.simditor-unSelection', (e) =>
       if @_selectedWrapper
-        if e.which == 8
-          e.preventDefault()
-
-    $(document).on 'keyup.simditor-unSelection', (e) =>
-      console.log('e', e)
-      if @_selectedWrapper
+        e.preventDefault()
         switch e.which
           when 13 then @_skipToNextNewLine()
           when 40, 39 then @_skipToNextLine()
@@ -81,6 +76,7 @@ class UnSelectionBlock extends SimpleModule
           when 8 
             @_delete() 
             e.preventDefault()
+
 
   @getAttachHtml: (data) ->
     wrapper = UnSelectionBlock.getWrapper(data)

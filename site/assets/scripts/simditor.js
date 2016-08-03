@@ -2929,19 +2929,10 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    $(document).on('keydown.simditor-unSelection', (function(_this) {
+    return $(document).on('keydown.simditor-unSelection', (function(_this) {
       return function(e) {
         if (_this._selectedWrapper) {
-          if (e.which === 8) {
-            return e.preventDefault();
-          }
-        }
-      };
-    })(this));
-    return $(document).on('keyup.simditor-unSelection', (function(_this) {
-      return function(e) {
-        console.log('e', e);
-        if (_this._selectedWrapper) {
+          e.preventDefault();
           switch (e.which) {
             case 13:
               return _this._skipToNextNewLine();
