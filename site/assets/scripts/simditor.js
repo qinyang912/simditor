@@ -2906,12 +2906,12 @@ UnSelectionBlock = (function(superClass) {
     this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
     this._preview();
     this._patchFirefox();
-    $(document).on('click.unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+    $(document).on('click.simditor-unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
       return function(e) {
         return _this._unSelectionClick = true;
       };
     })(this));
-    $(document).on('click.unSelection', (function(_this) {
+    $(document).on('click.simditor-unSelection', (function(_this) {
       return function(e) {
         if (!_this._unSelectionClick) {
           _this._selectCurrent(false);
@@ -2920,7 +2920,7 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
       return function(e) {
         var wrapper;
         wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
@@ -2929,7 +2929,7 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    $(document).on('keydown.unSelection', (function(_this) {
+    $(document).on('keydown.simditor-unSelection', (function(_this) {
       return function(e) {
         if (_this._selectedWrapper) {
           if (e.which === 8) {
@@ -2938,7 +2938,7 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    return $(document).on('keyup.unSelection', (function(_this) {
+    return $(document).on('keyup.simditor-unSelection', (function(_this) {
       return function(e) {
         console.log('e', e);
         if (_this._selectedWrapper) {
@@ -3408,6 +3408,7 @@ Simditor = (function(superClass) {
     this.el.remove();
     $(document).off('.simditor-' + this.id);
     $(window).off('.simditor-' + this.id);
+    $(document).off('.simditor-unSelection');
     return this.off();
   };
 

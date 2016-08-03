@@ -52,26 +52,26 @@ class UnSelectionBlock extends SimpleModule
     @editor.on 'selectionchanged', @_onSelectionChange.bind(@)
     @_preview()
     @_patchFirefox()
-    $(document).on 'click.unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
+    $(document).on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
       @_unSelectionClick = true
-    $(document).on 'click.unSelection', (e) =>
+    $(document).on 'click.simditor-unSelection', (e) =>
       if !@_unSelectionClick      
         @_selectCurrent(false)
       else
         @_unSelectionClick = false
       return
 
-    @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
       wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
       if wrapper.length
         @_delete(wrapper)
         
-    $(document).on 'keydown.unSelection', (e) =>
+    $(document).on 'keydown.simditor-unSelection', (e) =>
       if @_selectedWrapper
         if e.which == 8
           e.preventDefault()
 
-    $(document).on 'keyup.unSelection', (e) =>
+    $(document).on 'keyup.simditor-unSelection', (e) =>
       console.log('e', e)
       if @_selectedWrapper
         switch e.which
@@ -126,8 +126,6 @@ class UnSelectionBlock extends SimpleModule
     wrapper = $(UnSelectionBlock._tpl.wrapper)
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
     wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
-    # wrapper.attr(UnSelectionBlock.attr.fileName, data.file.name)
-    # wrapper.attr(UnSelectionBlock.attr.fileSrc, data.file.realPath)
 
   @_guidGenerator: ->
     S4 = () =>

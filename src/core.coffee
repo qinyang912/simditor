@@ -206,4 +206,5 @@ class Simditor extends SimpleModule
     @el.remove()
     $(document).off '.simditor-' + @id
     $(window).off '.simditor-' + @id
+    $(document).off '.simditor-unSelection'
     @off()
