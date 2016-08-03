@@ -131,9 +131,9 @@ class UndoManager extends SimpleModule
     currentState = @currentState()
     return unless currentState
     html = @editor.body.html()
+    currentState.caret = @caretPosition()
     return if currentState.html != html
     currentState.html = html
-    currentState.caret = @caretPosition()
 
   _getNodeOffset: (node, index) ->
     if $.isNumeric index
