@@ -345,7 +345,18 @@ class ImageButton extends Button
       #@editor.selection.setRangeAtStartOf $block, range
 
     $img = $('<img/>').attr('alt', name)
-    range.insertNode $img[0]
+    rootNode = @editor.selection.rootNodes().last()
+    console.log('rootNode', rootNode, @editor.util.isEmptyNode(rootNode))
+    if rootNode.is('p') and @editor.util.isEmptyNode rootNode
+      $wrapper = Simditor.UnSelectionBlock.createWrapperByP rootNode
+      $wrapper.empty()
+      $wrapper.append $img
+    else
+      $wrapper = Simditor.UnSelectionBlock.getWrapper()
+      $wrapper.append $img
+      rootNode.after($wrapper)
+
+    # range.insertNode $img[0]
     @editor.selection.setRangeAfter $img, range
     @editor.trigger 'valuechanged'
 

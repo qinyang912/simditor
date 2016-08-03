@@ -83,7 +83,7 @@ class UnSelectionBlock extends SimpleModule
             e.preventDefault()
 
   @getAttachHtml: (data) ->
-    wrapper = UnSelectionBlock._getWrapper(data)
+    wrapper = UnSelectionBlock.getWrapper(data)
     wrapper.append UnSelectionBlock._tpl.attach
     wrapper.attr(UnSelectionBlock.attr.attach, true)
     if data && data.file
@@ -111,7 +111,7 @@ class UnSelectionBlock extends SimpleModule
     $(document.createElement('div')).append(wrapper).html()
 
   @getImgHtml: (data) ->
-    wrapper = UnSelectionBlock._getWrapper(data)
+    wrapper = UnSelectionBlock.getWrapper(data)
     wrapper.append UnSelectionBlock._tpl.img
     if data && data.file
       $img = wrapper.find('img');
@@ -122,10 +122,16 @@ class UnSelectionBlock extends SimpleModule
       
     $(document.createElement('div')).append(wrapper).html()
 
-  @_getWrapper: (data) ->
+  @getWrapper: (data = {file:{}}) ->
     wrapper = $(UnSelectionBlock._tpl.wrapper)
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
     wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
+
+  @createWrapperByP: (p) -> # 通过一个p标签，来创建一个包裹标签
+    p = $(p)
+    p.addClass UnSelectionBlock.className.wrapper
+    p.attr UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator()
+    p
 
   @_guidGenerator: ->
     S4 = () =>

@@ -2962,7 +2962,7 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.getAttachHtml = function(data) {
     var $download, $name, $operate, $preview, wrapper;
-    wrapper = UnSelectionBlock._getWrapper(data);
+    wrapper = UnSelectionBlock.getWrapper(data);
     wrapper.append(UnSelectionBlock._tpl.attach);
     wrapper.attr(UnSelectionBlock.attr.attach, true);
     if (data && data.file) {
@@ -2989,7 +2989,7 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.getImgHtml = function(data) {
     var $img, wrapper;
-    wrapper = UnSelectionBlock._getWrapper(data);
+    wrapper = UnSelectionBlock.getWrapper(data);
     wrapper.append(UnSelectionBlock._tpl.img);
     if (data && data.file) {
       $img = wrapper.find('img');
@@ -3001,11 +3001,23 @@ UnSelectionBlock = (function(superClass) {
     return $(document.createElement('div')).append(wrapper).html();
   };
 
-  UnSelectionBlock._getWrapper = function(data) {
+  UnSelectionBlock.getWrapper = function(data) {
     var wrapper;
+    if (data == null) {
+      data = {
+        file: {}
+      };
+    }
     wrapper = $(UnSelectionBlock._tpl.wrapper);
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
     return wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+  };
+
+  UnSelectionBlock.createWrapperByP = function(p) {
+    p = $(p);
+    p.addClass(UnSelectionBlock.className.wrapper);
+    p.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
+    return p;
   };
 
   UnSelectionBlock._guidGenerator = function() {
@@ -6149,7 +6161,7 @@ ImageButton = (function(superClass) {
   };
 
   ImageButton.prototype.createImage = function(name) {
-    var $img, range;
+    var $img, $wrapper, range, rootNode;
     if (name == null) {
       name = 'Image';
     }
@@ -6160,7 +6172,17 @@ ImageButton = (function(superClass) {
     range.deleteContents();
     this.editor.selection.range(range);
     $img = $('<img/>').attr('alt', name);
-    range.insertNode($img[0]);
+    rootNode = this.editor.selection.rootNodes().last();
+    console.log('rootNode', rootNode, this.editor.util.isEmptyNode(rootNode));
+    if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
+      $wrapper = Simditor.UnSelectionBlock.createWrapperByP(rootNode);
+      $wrapper.empty();
+      $wrapper.append($img);
+    } else {
+      $wrapper = Simditor.UnSelectionBlock.getWrapper();
+      $wrapper.append($img);
+      rootNode.after($wrapper);
+    }
     this.editor.selection.setRangeAfter($img, range);
     this.editor.trigger('valuechanged');
     return $img;
