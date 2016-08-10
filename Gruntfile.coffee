@@ -21,6 +21,7 @@ module.exports = (grunt) ->
             'src/indentation.coffee'
             'src/clipboard.coffee'
             'src/unSelectionBlock.coffee'
+            'src/wordNum.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
             'src/domRange.coffee'

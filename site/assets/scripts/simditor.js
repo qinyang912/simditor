@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util,
+var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -476,7 +476,7 @@ Formatter = (function(superClass) {
       font: ['color'],
       code: ['class'],
       p: ['class'],
-      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
+      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -2886,7 +2886,7 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span> </span> </span> </span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -3140,6 +3140,78 @@ UnSelectionBlock = (function(superClass) {
 
 })(SimpleModule);
 
+WordNum = (function(superClass) {
+  extend(WordNum, superClass);
+
+  function WordNum() {
+    return WordNum.__super__.constructor.apply(this, arguments);
+  }
+
+  WordNum.pluginName = 'WordNum';
+
+  WordNum.chineseExp = /[\u4e00-\u9fa5]+/g;
+
+  WordNum.englishExp = /([a-z|0-9]+)/ig;
+
+  WordNum.prototype._totalNum = 0;
+
+  WordNum.prototype._selectNum = 0;
+
+  WordNum.calculateWord = function(text) {
+    var c, chineseList, chineseNum, englishList, englishNum, len, w;
+    chineseNum = 0;
+    englishNum = 0;
+    if (!text) {
+      return 0;
+    }
+    chineseList = text.match(WordNum.chineseExp);
+    if (chineseList && chineseList.length) {
+      for (w = 0, len = chineseList.length; w < len; w++) {
+        c = chineseList[w];
+        chineseNum += c.length;
+      }
+    }
+    englishList = text.match(WordNum.englishExp);
+    if (englishList && englishList.length) {
+      englishNum = englishList.length;
+    }
+    return chineseNum + englishNum;
+  };
+
+  WordNum.prototype._init = function() {
+    this.editor = this._module;
+    this.throttledCalculateWord = this.editor.util.throttle((function(_this) {
+      return function() {
+        return _this._calculateWord();
+      };
+    })(this), 2000);
+    return this.editor.on('valuechanged', (function(_this) {
+      return function(e, src) {
+        return _this.throttledCalculateWord();
+      };
+    })(this));
+  };
+
+  WordNum.prototype._calculateWord = function() {
+    var $div, text, totalNum;
+    $div = $(document.createElement('div'));
+    $div.append(this.editor.getValue());
+    text = $div.text();
+    totalNum = WordNum.calculateWord(text);
+    if (this._totalNum !== totalNum) {
+      this._totalNum = totalNum;
+      return this.editor.trigger('wordnumchange', totalNum);
+    }
+  };
+
+  WordNum.prototype.getWordNum = function() {
+    return this._totalNum;
+  };
+
+  return WordNum;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -3166,6 +3238,8 @@ Simditor = (function(superClass) {
   Simditor.connect(Indentation);
 
   Simditor.connect(Clipboard);
+
+  Simditor.connect(WordNum);
 
   Simditor.count = 0;
 
@@ -3324,6 +3398,10 @@ Simditor = (function(superClass) {
     val = $.trim(cloneBody.html());
     this.textarea.val(val);
     return val;
+  };
+
+  Simditor.prototype.getWordNum = function() {
+    return this.wordNum.getWordNum();
   };
 
   Simditor.prototype.focus = function() {

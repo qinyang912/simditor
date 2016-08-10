@@ -33,7 +33,7 @@ class UnSelectionBlock extends SimpleModule
               <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a>
               <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
                 <span class='unselection-attach-menu'>
-                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'>删除</span>
+                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span>
                 </span>
               </span>
             </span>
