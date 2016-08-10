@@ -804,6 +804,9 @@
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:hover, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:hover {
   background: #f9f9f9;
 }
+.simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:before, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:before {
+  content: attr(title);
+}
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more:hover .unselection-attach-menu, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more:hover .unselection-attach-menu {
   display: inline-block;
 }

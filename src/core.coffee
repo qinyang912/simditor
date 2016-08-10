@@ -10,6 +10,7 @@ class Simditor extends SimpleModule
   @connect Toolbar
   @connect Indentation
   @connect Clipboard
+  @connect WordNum
 
   @count: 0
 
@@ -162,6 +163,9 @@ class Simditor extends SimpleModule
     val = $.trim(cloneBody.html())
     @textarea.val val
     val
+
+  getWordNum: ->
+    @wordNum.getWordNum()
 
   focus: ->
     unless @body.is(':visible') and @body.is('[contenteditable]')

@@ -696,6 +696,9 @@ $simditor-button-width: 46px;
               &:hover {
                 background: #f9f9f9;
               }
+              &:before {
+                content: attr(title);
+              }
             }
           }
           &:hover {
