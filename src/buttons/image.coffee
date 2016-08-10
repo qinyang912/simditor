@@ -172,7 +172,6 @@ class ImageButton extends Button
     @editor.uploader.on 'uploadsuccess', (e, file, result) =>
       return unless file.inline
 
-      console.log('upload success result', result)
       $img = file.img
       return unless $img.hasClass('uploading') and $img.parent().length > 0
 
@@ -197,7 +196,6 @@ class ImageButton extends Button
               fileName: file.name
               filePath: result.key
             success: (data) =>
-              console.log('save in server ', data);
               img_path = data.realPath;
               @loadImage $img, img_path, =>
                 $img.removeData 'file'
@@ -353,7 +351,6 @@ class ImageButton extends Button
 
     $img = $('<img/>').attr('alt', name)
     rootNode = @editor.selection.rootNodes().last()
-    console.log('rootNode', rootNode, @editor.util.isEmptyNode(rootNode))
     if rootNode.is('p') and @editor.util.isEmptyNode rootNode
       $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP rootNode
       $wrapper.empty()

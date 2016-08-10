@@ -24,7 +24,7 @@ class Formatter extends SimpleModule
       font: ['color']
       code: ['class']
       p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img']
-      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name']
+      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend
