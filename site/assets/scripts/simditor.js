@@ -3168,7 +3168,7 @@ WordNum = (function(superClass) {
     }
     $div = $(document.createElement('div'));
     $div.append(html);
-    $div.find(WordNum.blockNodes.join(',')).after('<br/>');
+    $div.find(WordNum.blockNodes.join(',')).after('<p>&nbsp;</p>');
     text = $div[0].innerText;
     chineseList = text.match(WordNum.chineseExp);
     if (chineseList && chineseList.length) {
