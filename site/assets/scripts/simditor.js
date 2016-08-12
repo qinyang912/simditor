@@ -3153,17 +3153,23 @@ WordNum = (function(superClass) {
 
   WordNum.englishExp = /([a-z|0-9]+)/ig;
 
+  WordNum.blockNodes = ["div", "p", "ul", "ol", "li", "blockquote", "hr", "pre", "h1", "h2", "h3", "h4", "h5", "table"];
+
   WordNum.prototype._totalNum = 0;
 
   WordNum.prototype._selectNum = 0;
 
-  WordNum.calculateWord = function(text) {
-    var c, chineseList, chineseNum, englishList, englishNum, len, w;
+  WordNum.calculateWord = function(html) {
+    var $div, c, chineseList, chineseNum, englishList, englishNum, len, text, w;
     chineseNum = 0;
     englishNum = 0;
-    if (!text) {
+    if (!html) {
       return 0;
     }
+    $div = $(document.createElement('div'));
+    $div.append(html);
+    $div.find(WordNum.blockNodes.join(',')).after('<br/>');
+    text = $div[0].innerText;
     chineseList = text.match(WordNum.chineseExp);
     if (chineseList && chineseList.length) {
       for (w = 0, len = chineseList.length; w < len; w++) {
@@ -3193,11 +3199,8 @@ WordNum = (function(superClass) {
   };
 
   WordNum.prototype._calculateWord = function() {
-    var $div, text, totalNum;
-    $div = $(document.createElement('div'));
-    $div.append(this.editor.getValue());
-    text = $div.text();
-    totalNum = WordNum.calculateWord(text);
+    var totalNum;
+    totalNum = WordNum.calculateWord(this.editor.getValue());
     if (this._totalNum !== totalNum) {
       this._totalNum = totalNum;
       return this.editor.trigger('wordnumchange', totalNum);
