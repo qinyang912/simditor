@@ -471,11 +471,11 @@ Formatter = (function(superClass) {
     this.editor = this._module;
     this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr', 'inherit'], this.opts.allowedTags);
     this._allowedAttributes = $.extend({
-      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey'],
+      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name'],
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class'],
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img'],
       span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
@@ -907,20 +907,24 @@ InputManager = (function(superClass) {
     return setTimeout((function(_this) {
       return function() {
         var $blockEl, range;
-        range = _this.editor.selection._selection.getRangeAt(0);
-        if (range.startContainer === _this.editor.body[0]) {
-          if (_this.lastCaretPosition) {
-            _this.editor.undoManager.caretPosition(_this.lastCaretPosition);
-          } else {
-            $blockEl = _this.editor.body.children().first();
-            range = document.createRange();
-            _this.editor.selection.setRangeAtStartOf($blockEl, range);
-          }
+        if (_this.editor.selection._selection.rangeCount) {
+          range = _this.editor.selection._selection.getRangeAt(0);
         }
-        _this.lastCaretPosition = null;
-        _this.editor.triggerHandler('focus');
-        if (!_this.editor.util.support.onselectionchange) {
-          return _this.throttledSelectionChanged();
+        if (range) {
+          if (range.startContainer === _this.editor.body[0]) {
+            if (_this.lastCaretPosition) {
+              _this.editor.undoManager.caretPosition(_this.lastCaretPosition);
+            } else {
+              $blockEl = _this.editor.body.children().first();
+              range = document.createRange();
+              _this.editor.selection.setRangeAtStartOf($blockEl, range);
+            }
+          }
+          _this.lastCaretPosition = null;
+          _this.editor.triggerHandler('focus');
+          if (!_this.editor.util.support.onselectionchange) {
+            return _this.throttledSelectionChanged();
+          }
         }
       };
     })(this), 0);
@@ -1474,11 +1478,11 @@ UndoManager = (function(superClass) {
       return;
     }
     html = this.editor.body.html();
+    currentState.caret = this.caretPosition();
     if (currentState.html !== html) {
       return;
     }
-    currentState.html = html;
-    return currentState.caret = this.caretPosition();
+    return currentState.html = html;
   };
 
   UndoManager.prototype._getNodeOffset = function(node, index) {
@@ -1751,9 +1755,12 @@ Util = (function(superClass) {
     var $next, $node;
     $node = $(node);
     $next = $node.next();
-    while (!$next.length && !$node.is(this.editor.body)) {
+    if (!$next.length) {
       $node = $node.parent();
-      $next = $node.next();
+      while (!$next.length && !$node.is(this.editor.body)) {
+        $next = $node.next();
+        $node = $node.parent();
+      }
     }
     return $next[0];
   };
@@ -1762,9 +1769,12 @@ Util = (function(superClass) {
     var $node, $prev;
     $node = $(node);
     $prev = $node.prev();
-    while (!$prev.length && !$node.is(this.editor.body)) {
+    if (!$prev.length) {
       $node = $node.parent();
-      $prev = $node.prev();
+      while (!$prev.length && !$node.is(this.editor.body)) {
+        $prev = $node.prev();
+        $node = $node.parent();
+      }
     }
     return $prev[0];
   };
@@ -2879,14 +2889,21 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.attr = {
     select: 'data-unselection-select',
     bucket: 'data-bucket',
-    key: 'data-key-name'
+    key: 'data-key-name',
+    unique: 'data-unique-id',
+    fileId: 'data-file-id',
+    fileName: 'data-file-name',
+    fileSrc: 'data-file-src',
+    attach: 'data-attach',
+    img: 'data-img'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
 
   UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
+    img: "<img src='' alt=''>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2894,12 +2911,12 @@ UnSelectionBlock = (function(superClass) {
     this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
     this._preview();
     this._patchFirefox();
-    $(document).on('click.unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+    $(document).on('click.simditor-unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
       return function(e) {
         return _this._unSelectionClick = true;
       };
     })(this));
-    $(document).on('click.unSelection', (function(_this) {
+    $(document).on('click.simditor-unSelection', (function(_this) {
       return function(e) {
         if (!_this._unSelectionClick) {
           _this._selectCurrent(false);
@@ -2908,7 +2925,7 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
       return function(e) {
         var wrapper;
         wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
@@ -2917,19 +2934,10 @@ UnSelectionBlock = (function(superClass) {
         }
       };
     })(this));
-    $(document).on('keydown.unSelection', (function(_this) {
+    return $(document).on('keydown.simditor-unSelection', (function(_this) {
       return function(e) {
         if (_this._selectedWrapper) {
-          if (e.which === 8) {
-            return e.preventDefault();
-          }
-        }
-      };
-    })(this));
-    return $(document).on('keyup.unSelection', (function(_this) {
-      return function(e) {
-        console.log('e', e);
-        if (_this._selectedWrapper) {
+          e.preventDefault();
           switch (e.which) {
             case 13:
               return _this._skipToNextNewLine();
@@ -2950,8 +2958,9 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.getAttachHtml = function(data) {
     var $download, $name, $operate, $preview, wrapper;
-    wrapper = UnSelectionBlock._getWrapper();
+    wrapper = UnSelectionBlock.getWrapper(data);
     wrapper.append(UnSelectionBlock._tpl.attach);
+    wrapper.attr(UnSelectionBlock.attr.attach, true);
     if (data && data.file) {
       $operate = wrapper.find('.unselection-attach-operation');
       $preview = wrapper.find('.unselection-attach-preview');
@@ -2974,7 +2983,68 @@ UnSelectionBlock = (function(superClass) {
     return $(document.createElement('div')).append(wrapper).html();
   };
 
-  UnSelectionBlock.prototype.getImgHtml = function() {};
+  UnSelectionBlock.getImgHtml = function(data) {
+    var $img, wrapper;
+    wrapper = UnSelectionBlock.getWrapper(data);
+    wrapper.append(UnSelectionBlock._tpl.img);
+    wrapper.attr(UnSelectionBlock.attr.img, true);
+    if (data && data.file) {
+      $img = wrapper.find('img');
+      $img.attr('src', data.file.realPath);
+      $img.attr('alt', data.file.name);
+      $img.attr(UnSelectionBlock.attr.bucket, data.bucket);
+      $img.attr(UnSelectionBlock.attr.key, data.file.filePath);
+    }
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.getWrapper = function(data) {
+    var wrapper;
+    if (data == null) {
+      data = {
+        file: {}
+      };
+    }
+    wrapper = $(UnSelectionBlock._tpl.wrapper);
+    wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
+    return wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+  };
+
+  UnSelectionBlock.createWrapperByP = function(p) {
+    p = $(p);
+    p.addClass(UnSelectionBlock.className.wrapper);
+    p.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
+    return p;
+  };
+
+  UnSelectionBlock.createImgWrapperByP = function(p) {
+    var $wrapper;
+    $wrapper = UnSelectionBlock.createWrapperByP(p);
+    $wrapper.attr(UnSelectionBlock.attr.img, true);
+    return $wrapper;
+  };
+
+  UnSelectionBlock.getImgWrapperWithImg = function(img) {
+    var $wrapper;
+    $wrapper = UnSelectionBlock.getWrapper();
+    $wrapper.attr(UnSelectionBlock.attr.img, true);
+    $wrapper.append($(img));
+    return $wrapper;
+  };
+
+  UnSelectionBlock.addFileIdForWrapper = function($wrapper, id) {
+    return $wrapper.attr(UnSelectionBlock.attr.fileId, id);
+  };
+
+  UnSelectionBlock._guidGenerator = function() {
+    var S4;
+    S4 = (function(_this) {
+      return function() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+      };
+    })(this);
+    return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
+  };
 
   UnSelectionBlock.prototype._skipToPrevLine = function() {
     var previousSibling, range, wrapper;
@@ -3007,14 +3077,9 @@ UnSelectionBlock = (function(superClass) {
     return this.editor.selection.setRangeAtStartOf(p, range);
   };
 
-  UnSelectionBlock._getWrapper = function() {
-    return $(UnSelectionBlock._tpl.wrapper);
-  };
-
   UnSelectionBlock.prototype._onSelectionChange = function() {
     var range, wrapper, wrapper1, wrapper2;
     range = this.editor.selection.range();
-    console.log('range', range);
     if (range && range.endContainer) {
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();
@@ -3052,8 +3117,10 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
-    this.editor.blur();
-    this.editor.selection.clear();
+    if (!this.editor.util.browser.msie) {
+      this.editor.blur();
+      this.editor.selection.clear();
+    }
     this._selectCurrent(false);
     this._selectedWrapper = wrapper;
     return this._selectCurrent();
@@ -3452,6 +3519,7 @@ Simditor = (function(superClass) {
     this.el.remove();
     $(document).off('.simditor-' + this.id);
     $(window).off('.simditor-' + this.id);
+    $(document).off('.simditor-unSelection');
     return this.off();
   };
 
@@ -6007,7 +6075,6 @@ ImageButton = (function(superClass) {
         if (!file.inline) {
           return;
         }
-        console.log('upload success result', result);
         $img = file.img;
         if (!($img.hasClass('uploading') && $img.parent().length > 0)) {
           return;
@@ -6036,10 +6103,9 @@ ImageButton = (function(superClass) {
                 filePath: result.key
               },
               success: function(data) {
-                console.log('save in server ', data);
                 img_path = data.realPath;
                 return _this.loadImage($img, img_path, function() {
-                  var $mask;
+                  var $mask, $wrapper;
                   $img.removeData('file');
                   $img.removeClass('uploading').removeClass('loading');
                   $mask = $img.data('mask');
@@ -6050,6 +6116,11 @@ ImageButton = (function(superClass) {
                   $img.addClass('oss-file');
                   $img.attr('data-bucket', 'rishiqing-file');
                   $img.attr('data-key-name', result.key);
+                  $img.attr('data-name', data.name);
+                  $wrapper = $img.data('wrapper');
+                  if ($wrapper) {
+                    Simditor.UnSelectionBlock.addFileIdForWrapper($wrapper, data.id);
+                  }
                   _this.editor.trigger('valuechanged');
                   if (_this.editor.body.find('img.uploading').length < 1) {
                     return _this.editor.uploader.trigger('uploadready', [file, result]);
@@ -6089,6 +6160,9 @@ ImageButton = (function(superClass) {
           return;
         }
         if (xhr.statusText === 'abort') {
+          return;
+        }
+        if (xhr.statusCode === 403) {
           return;
         }
         if (xhr.responseText) {
@@ -6192,7 +6266,7 @@ ImageButton = (function(superClass) {
   };
 
   ImageButton.prototype.createImage = function(name) {
-    var $img, range;
+    var $img, $wrapper, range, rootNode;
     if (name == null) {
       name = 'Image';
     }
@@ -6203,7 +6277,16 @@ ImageButton = (function(superClass) {
     range.deleteContents();
     this.editor.selection.range(range);
     $img = $('<img/>').attr('alt', name);
-    range.insertNode($img[0]);
+    rootNode = this.editor.selection.rootNodes().last();
+    if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
+      $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP(rootNode);
+      $wrapper.empty();
+      $wrapper.append($img);
+    } else {
+      $wrapper = Simditor.UnSelectionBlock.getImgWrapperWithImg($img);
+      rootNode.after($wrapper);
+    }
+    $img.data('wrapper', $wrapper);
     this.editor.selection.setRangeAfter($img, range);
     this.editor.trigger('valuechanged');
     return $img;

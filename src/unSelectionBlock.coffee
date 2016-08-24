@@ -17,6 +17,12 @@ class UnSelectionBlock extends SimpleModule
     select: 'data-unselection-select'
     bucket: 'data-bucket'
     key: 'data-key-name'
+    unique: 'data-unique-id'
+    fileId: 'data-file-id'
+    fileName: 'data-file-name'
+    fileSrc: 'data-file-src'
+    attach: 'data-attach'
+    img: 'data-img'
 
   _selectedWrapper: null
 
@@ -40,34 +46,30 @@ class UnSelectionBlock extends SimpleModule
           </span>
         </span>
       </inherit>"
+    img: "<img src='' alt=''>"
 
   _init: ->
     @editor = @_module
     @editor.on 'selectionchanged', @_onSelectionChange.bind(@)
     @_preview()
     @_patchFirefox()
-    $(document).on 'click.unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
+    $(document).on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
       @_unSelectionClick = true
-    $(document).on 'click.unSelection', (e) =>
+    $(document).on 'click.simditor-unSelection', (e) =>
       if !@_unSelectionClick      
         @_selectCurrent(false)
       else
         @_unSelectionClick = false
       return
 
-    @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
       wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
       if wrapper.length
         @_delete(wrapper)
-        
-    $(document).on 'keydown.unSelection', (e) =>
-      if @_selectedWrapper
-        if e.which == 8
-          e.preventDefault()
 
-    $(document).on 'keyup.unSelection', (e) =>
-      console.log('e', e)
+    $(document).on 'keydown.simditor-unSelection', (e) =>
       if @_selectedWrapper
+        e.preventDefault()
         switch e.which
           when 13 then @_skipToNextNewLine()
           when 40, 39 then @_skipToNextLine()
@@ -76,9 +78,11 @@ class UnSelectionBlock extends SimpleModule
             @_delete() 
             e.preventDefault()
 
+
   @getAttachHtml: (data) ->
-    wrapper = UnSelectionBlock._getWrapper()
+    wrapper = UnSelectionBlock.getWrapper(data)
     wrapper.append UnSelectionBlock._tpl.attach
+    wrapper.attr(UnSelectionBlock.attr.attach, true)
     if data && data.file
       $operate = wrapper.find('.unselection-attach-operation')
       $preview = wrapper.find('.unselection-attach-preview')
@@ -103,7 +107,48 @@ class UnSelectionBlock extends SimpleModule
 
     $(document.createElement('div')).append(wrapper).html()
 
-  getImgHtml: ->
+  @getImgHtml: (data) ->
+    wrapper = UnSelectionBlock.getWrapper(data)
+    wrapper.append UnSelectionBlock._tpl.img
+    wrapper.attr UnSelectionBlock.attr.img, true
+    if data && data.file
+      $img = wrapper.find('img');
+      $img.attr('src', data.file.realPath)
+      $img.attr('alt', data.file.name)
+      $img.attr(UnSelectionBlock.attr.bucket, data.bucket)
+      $img.attr(UnSelectionBlock.attr.key, data.file.filePath)
+      
+    $(document.createElement('div')).append(wrapper).html()
+
+  @getWrapper: (data = {file:{}}) ->
+    wrapper = $(UnSelectionBlock._tpl.wrapper)
+    wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
+    wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
+
+  @createWrapperByP: (p) -> # 通过一个p标签，来创建一个包裹标签
+    p = $(p)
+    p.addClass UnSelectionBlock.className.wrapper
+    p.attr UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator()
+    p
+
+  @createImgWrapperByP: (p) ->
+    $wrapper = UnSelectionBlock.createWrapperByP p
+    $wrapper.attr UnSelectionBlock.attr.img, true
+    $wrapper
+
+  @getImgWrapperWithImg: (img) ->
+    $wrapper = UnSelectionBlock.getWrapper()
+    $wrapper.attr UnSelectionBlock.attr.img, true
+    $wrapper.append $(img)
+    $wrapper
+
+  @addFileIdForWrapper: ($wrapper, id) ->
+    $wrapper.attr UnSelectionBlock.attr.fileId, id
+
+  @_guidGenerator: ->
+    S4 = () =>
+      (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+    (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
 
   _skipToPrevLine: () ->
     wrapper = @_selectedWrapper[0]
@@ -128,12 +173,8 @@ class UnSelectionBlock extends SimpleModule
     range = document.createRange()
     @editor.selection.setRangeAtStartOf p, range
 
-  @_getWrapper: ->
-    $(UnSelectionBlock._tpl.wrapper)
-
   _onSelectionChange: ->
     range = @editor.selection.range()
-    console.log('range', range);
     if range and range.endContainer
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper)
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last()
@@ -158,8 +199,9 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper = null
 
   _selectWrapper: (wrapper) ->
-    @editor.blur()
-    @editor.selection.clear()
+    if !@editor.util.browser.msie
+      @editor.blur()
+      @editor.selection.clear()
     @_selectCurrent false
     @_selectedWrapper = wrapper
     @_selectCurrent()

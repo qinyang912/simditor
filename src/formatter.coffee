@@ -19,11 +19,11 @@ class Formatter extends SimpleModule
     )
 
     @_allowedAttributes = $.extend
-      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey']
+      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name']
       a: ['href', 'target']
       font: ['color']
       code: ['class']
-      p: ['class']
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img']
       span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
     , @opts.allowedAttributes
 

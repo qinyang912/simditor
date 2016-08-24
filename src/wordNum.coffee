@@ -1,4 +1,3 @@
-
 class WordNum extends SimpleModule
 
   @pluginName: 'WordNum' # 目前只支持中文和英文的计算
@@ -62,5 +61,3 @@ class WordNum extends SimpleModule
 
   getWordNum: ->
     @_totalNum
-
-

@@ -611,6 +611,12 @@ $simditor-button-width: 46px;
       box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
       border: 1px solid #bababa !important;
     }
+    img {
+      box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
+    }
+  }
+  [data-img] {
+    padding: 0px !important;
   }
   .unselection-wrapper {
     text-align: center;
