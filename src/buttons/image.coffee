@@ -109,8 +109,10 @@ class ImageButton extends Button
 
     createInput()
 
-    $uploadItem.on 'click mousedown', 'input[type=file]', (e) ->
-      e.stopPropagation()
+    $uploadItem.on 'click', (e) ->
+      e.stopPropagation();
+    $uploadItem.on 'mousedown', (e) ->
+      e.preventDefault()
 
     $uploadItem.on 'change', 'input[type=file]', (e) =>
       if @editor.inputManager.focused

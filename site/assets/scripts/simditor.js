@@ -5996,8 +5996,11 @@ ImageButton = (function(superClass) {
       };
     })(this);
     createInput();
-    $uploadItem.on('click mousedown', 'input[type=file]', function(e) {
+    $uploadItem.on('click', function(e) {
       return e.stopPropagation();
+    });
+    $uploadItem.on('mousedown', function(e) {
+      return e.preventDefault();
     });
     $uploadItem.on('change', 'input[type=file]', (function(_this) {
       return function(e) {
