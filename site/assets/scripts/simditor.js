@@ -6010,13 +6010,11 @@ ImageButton = (function(superClass) {
           });
           createInput();
         } else {
-          _this.editor.one('focus', function(e) {
-            _this.editor.uploader.upload($input, {
-              inline: true
-            });
-            return createInput();
-          });
           _this.editor.focus();
+          _this.editor.uploader.upload($input, {
+            inline: true
+          });
+          createInput();
         }
         return _this.wrapper.removeClass('menu-on');
       };
