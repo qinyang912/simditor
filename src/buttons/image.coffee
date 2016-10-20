@@ -121,12 +121,11 @@ class ImageButton extends Button
         })
         createInput()
       else
-        @editor.one 'focus', (e) =>
-          @editor.uploader.upload($input, {
-            inline: true
-          })
-          createInput()
         @editor.focus()
+        @editor.uploader.upload($input, {
+          inline: true
+        })
+        createInput()
       @wrapper.removeClass('menu-on')
 
 
