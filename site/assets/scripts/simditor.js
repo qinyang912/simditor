@@ -3504,7 +3504,7 @@ Simditor = (function(superClass) {
   Simditor.prototype.hidePopover = function() {
     return this.el.find('.simditor-popover').each(function(i, popover) {
       popover = $(popover).data('popover');
-      if (popover.active) {
+      if (popover && popover.active) {
         return popover.hide();
       }
     });

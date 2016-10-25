@@ -191,7 +191,7 @@ class Simditor extends SimpleModule
   hidePopover: ()->
     @el.find('.simditor-popover').each (i, popover) ->
       popover = $(popover).data('popover')
-      popover.hide() if popover.active
+      popover.hide() if popover and popover.active
 
   destroy: ->
     @triggerHandler 'destroy'
