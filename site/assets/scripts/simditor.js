@@ -6783,7 +6783,7 @@ TableButton = (function(superClass) {
   };
 
   TableButton.prototype.initResize = function($table) {
-    var $colgroup, $resizeHandle, $wrapper;
+    var $colgroup, $resizeHandle, $wrapper, editor;
     $wrapper = $table.parent('.simditor-table');
     $colgroup = $table.find('colgroup');
     if ($colgroup.length < 1) {
@@ -6798,6 +6798,7 @@ TableButton = (function(superClass) {
       "class": 'simditor-resize-handle',
       contenteditable: 'false'
     }).appendTo($wrapper);
+    editor = this.editor;
     $wrapper.on('mousemove', 'td, th', function(e) {
       var $col, $td, index, ref, ref1, x;
       if ($wrapper.hasClass('resizing')) {
@@ -6860,7 +6861,8 @@ TableButton = (function(superClass) {
       });
       $(document).one('mouseup.simditor-resize-table', function(e) {
         $(document).off('.simditor-resize-table');
-        return $wrapper.removeClass('resizing');
+        $wrapper.removeClass('resizing');
+        return editor.trigger('valuechanged');
       });
       $wrapper.addClass('resizing');
       return false;

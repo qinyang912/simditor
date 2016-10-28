@@ -113,7 +113,7 @@ class TableButton extends Button
       class: 'simditor-resize-handle'
       contenteditable: 'false'
     .appendTo($wrapper)
-
+    editor = @editor
     $wrapper.on 'mousemove', 'td, th', (e) ->
       return if $wrapper.hasClass('resizing')
       $td = $(e.currentTarget)
@@ -177,6 +177,7 @@ class TableButton extends Button
       $(document).one 'mouseup.simditor-resize-table', (e) ->
         $(document).off '.simditor-resize-table'
         $wrapper.removeClass 'resizing'
+        editor.trigger 'valuechanged'
 
       $wrapper.addClass 'resizing'
       false
