@@ -129,7 +129,7 @@ class Util extends SimpleModule
 
   getRootNodeFromNode: (node) -> # 从某一个节点起，获取最靠近@editor.body的根节点
     $node = $(node)
-    while !$node.parent().is(@editor.body)
+    while $node.length and !$node.parent().is(@editor.body)
       $node = $node.parent()
     $node[0]
 

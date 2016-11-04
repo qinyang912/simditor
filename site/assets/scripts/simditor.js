@@ -1782,7 +1782,7 @@ Util = (function(superClass) {
   Util.prototype.getRootNodeFromNode = function(node) {
     var $node;
     $node = $(node);
-    while (!$node.parent().is(this.editor.body)) {
+    while ($node.length && !$node.parent().is(this.editor.body)) {
       $node = $node.parent();
     }
     return $node[0];
