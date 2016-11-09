@@ -2420,7 +2420,9 @@ Toolbar = (function(superClass) {
       }
     }
     if (this.moreOptionList.length) {
-      return this.moreOption.show();
+      return this.moreOption.css({
+        'display': ''
+      });
     } else {
       return this.moreOption.hide();
     }

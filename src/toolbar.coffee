@@ -168,7 +168,7 @@ class Toolbar extends SimpleModule
           first.detach()
           @moreOption.before first
     if @moreOptionList.length
-      @moreOption.show()
+      @moreOption.css({ 'display': '' })
     else 
       @moreOption.hide()
 
