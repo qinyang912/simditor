@@ -173,8 +173,14 @@ class Toolbar extends SimpleModule
       @moreOption.hide()
 
   _resize: ->
+    $(window).off "resize.simditor-more-option"
     $(window).on "resize.simditor-more-option", (e) =>
-      setTimeout @_renderMoreOption.bind(@), 0
+      if @resizeTimer
+        clearTimeout @resizeTimer
+      @resizeTimer = setTimeout =>
+        @resizeTimer = null
+        @_renderMoreOption()
+      , 0
 
   findButton: (name) ->
     button = @list.find('.toolbar-item-' + name).data('button')

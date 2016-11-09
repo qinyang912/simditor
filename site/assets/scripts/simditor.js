@@ -2429,9 +2429,16 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._resize = function() {
+    $(window).off("resize.simditor-more-option");
     return $(window).on("resize.simditor-more-option", (function(_this) {
       return function(e) {
-        return setTimeout(_this._renderMoreOption.bind(_this), 0);
+        if (_this.resizeTimer) {
+          clearTimeout(_this.resizeTimer);
+        }
+        return _this.resizeTimer = setTimeout(function() {
+          _this.resizeTimer = null;
+          return _this._renderMoreOption();
+        }, 0);
       };
     })(this));
   };
