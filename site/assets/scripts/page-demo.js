@@ -15,9 +15,9 @@
       defaultImage: 'assets/images/image.png',
       upload: location.search === '?upload' ? {
         url: '/upload'
-      } : false
+      } : false,
+      defaultLinkHref: 'https://www.rishiqing.com'
     });
-    console.log('editor', editor);
     attachHtml = Simditor.UnSelectionBlock.getAttachHtml({
       previewFile: false,
       viewPath: 'http:www.baidu.com',

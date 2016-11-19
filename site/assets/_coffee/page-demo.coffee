@@ -11,9 +11,8 @@ $ ->
     toolbar: toolbar
     pasteImage: true
     defaultImage: 'assets/images/image.png'
-    upload: if location.search == '?upload' then {url: '/upload'} else false
-
-  console.log('editor', editor)
+    upload: if location.search == '?upload' then {url: '/upload'} else false,
+    defaultLinkHref: 'https://www.rishiqing.com'
 
   attachHtml = Simditor.UnSelectionBlock.getAttachHtml 
     previewFile: false

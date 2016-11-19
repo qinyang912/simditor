@@ -42,8 +42,10 @@ class Formatter extends SimpleModule
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->
-      if !$(e.target).hasClass('unselection-attach-download') # 如果是点击的附件下载按钮，则不阻止
-        return false
+      if $(e.target).hasClass('unselection-attach-download') # 如果是点击的附件下载按钮，则不阻止
+        return true
+      href = $(@).prop('href')
+      window.open(href) # 只在新窗口打开页面
 
   decorate: ($el = @editor.body) ->
     @editor.trigger 'decorate', [$el]
