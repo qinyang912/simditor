@@ -14,6 +14,9 @@ class LinkButton extends Button
     @editor.body.on 'mouseenter', 'a:not(.unselection-attach-download)', (e) =>
       @popover.show $(e.target)
 
+    @editor.body.on 'click', (e) =>
+      @popover.hide()
+
   render: (args...) ->
     super args...
     @popover = new LinkPopover

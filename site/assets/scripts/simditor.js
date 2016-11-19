@@ -5714,9 +5714,14 @@ LinkButton = (function(superClass) {
 
   LinkButton.prototype._init = function() {
     LinkButton.__super__._init.call(this);
-    return this.editor.body.on('mouseenter', 'a:not(.unselection-attach-download)', (function(_this) {
+    this.editor.body.on('mouseenter', 'a:not(.unselection-attach-download)', (function(_this) {
       return function(e) {
         return _this.popover.show($(e.target));
+      };
+    })(this));
+    return this.editor.body.on('click', (function(_this) {
+      return function(e) {
+        return _this.popover.hide();
       };
     })(this));
   };
