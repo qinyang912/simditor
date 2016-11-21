@@ -5716,12 +5716,22 @@ LinkButton = (function(superClass) {
     LinkButton.__super__._init.call(this);
     this.editor.body.on('mouseenter', 'a:not(.unselection-attach-download)', (function(_this) {
       return function(e) {
-        return _this.popover.show($(e.target));
+        var $node;
+        $node = $(e.target);
+        $node.data('data-popover-show', true);
+        return setTimeout(function() {
+          return ($node.data('data-popover-show')) && _this.popover.show($(e.target));
+        }, 500);
       };
     })(this));
-    return this.editor.body.on('click', (function(_this) {
+    return this.editor.body.on('mouseleave', 'a:not(.unselection-attach-download)', (function(_this) {
       return function(e) {
-        return _this.popover.hide();
+        var $node;
+        $node = $(e.target);
+        $node.data('data-popover-show', false);
+        return setTimeout(function() {
+          return (!$node.data('data-popover-show')) && _this.popover.hide();
+        }, 500);
       };
     })(this));
   };
@@ -5861,7 +5871,22 @@ LinkPopover = (function(superClass) {
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     LinkPopover.__super__.show.apply(this, args);
     this.textEl.val(this.target.text());
-    return this.urlEl.val(this.target.attr('href'));
+    this.urlEl.val(this.target.attr('href'));
+    this.el.off('mouseenter.hover-to-show');
+    this.el.off('mouseleave.hover-to-show');
+    this.el.on('mouseenter.hover-to-show', (function(_this) {
+      return function() {
+        return _this.target.data('data-popover-show', true);
+      };
+    })(this));
+    return this.el.on('mouseleave.hover-to-show', (function(_this) {
+      return function(e) {
+        _this.target.data('data-popover-show', false);
+        return setTimeout(function() {
+          return _this.target && (!_this.target.data('data-popover-show')) && _this.hide();
+        }, 500);
+      };
+    })(this));
   };
 
   return LinkPopover;

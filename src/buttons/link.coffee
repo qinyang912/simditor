@@ -12,10 +12,18 @@ class LinkButton extends Button
   _init: () ->
     super()
     @editor.body.on 'mouseenter', 'a:not(.unselection-attach-download)', (e) =>
-      @popover.show $(e.target)
+      $node = $(e.target)
+      $node.data 'data-popover-show', true
+      setTimeout () =>
+        ($node.data 'data-popover-show') && @popover.show $(e.target)
+      , 500
 
-    @editor.body.on 'click', (e) =>
-      @popover.hide()
+    @editor.body.on 'mouseleave', 'a:not(.unselection-attach-download)', (e) =>
+      $node = $(e.target)
+      $node.data 'data-popover-show', false
+      setTimeout () =>
+        (!$node.data 'data-popover-show') && @popover.hide()
+      , 500
 
   render: (args...) ->
     super args...
@@ -133,7 +141,15 @@ class LinkPopover extends Popover
     super args...
     @textEl.val @target.text()
     @urlEl.val @target.attr('href')
-
+    @el.off 'mouseenter.hover-to-show'
+    @el.off 'mouseleave.hover-to-show'
+    @el.on 'mouseenter.hover-to-show', () =>
+      @target.data 'data-popover-show', true
+    @el.on 'mouseleave.hover-to-show', (e) =>
+      @target.data 'data-popover-show', false
+      setTimeout () =>
+        @target && (!@target.data 'data-popover-show') && @hide()
+      , 500
 
 
 Simditor.Toolbar.addButton LinkButton
