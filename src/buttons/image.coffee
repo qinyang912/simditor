@@ -351,18 +351,22 @@ class ImageButton extends Button
       #@editor.selection.setRangeAtStartOf $block, range
 
     $img = $('<img/>').attr('alt', name)
-    $newLine = $('<p><br></p>');
+    $newLine = $('<p><br></p>')
     rootNode = @editor.selection.rootNodes().last()
+    $totalWrap = null
     if rootNode.is('p') and @editor.util.isEmptyNode rootNode
       $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP rootNode
       $wrapper.empty()
       $wrapper.append $img
-      rootNode.after($newLine)
+      $totalWrap = rootNode;
     else
       $wrapper = Simditor.UnSelectionBlock.getImgWrapperWithImg $img
       rootNode.after($wrapper)
-      $wrapper.after($newLine)
+      $totalWrap = $wrapper;
 
+    $totalWrap.after($newLine);
+    if @editor.body.children().first().is($totalWrap)
+      $totalWrap.before($('<p><br></p>'))
 
     $img.data 'wrapper', $wrapper
 

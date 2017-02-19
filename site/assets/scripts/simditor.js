@@ -919,10 +919,8 @@ InputManager = (function(superClass) {
               _this.editor.undoManager.caretPosition(_this.lastCaretPosition);
             } else {
               $blockEl = _this.editor.body.children().first();
-              if ($blockEl[0]) {
-                range = document.createRange();
-                _this.editor.selection.setRangeAtStartOf($blockEl, range);
-              }
+              range = document.createRange();
+              _this.editor.selection.setRangeAtStartOf($blockEl, range);
             }
           }
           _this.lastCaretPosition = null;
@@ -6321,7 +6319,7 @@ ImageButton = (function(superClass) {
   };
 
   ImageButton.prototype.createImage = function(name) {
-    var $img, $newLine, $wrapper, range, rootNode;
+    var $img, $newLine, $totalWrap, $wrapper, range, rootNode;
     if (name == null) {
       name = 'Image';
     }
@@ -6334,15 +6332,20 @@ ImageButton = (function(superClass) {
     $img = $('<img/>').attr('alt', name);
     $newLine = $('<p><br></p>');
     rootNode = this.editor.selection.rootNodes().last();
+    $totalWrap = null;
     if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
       $wrapper = Simditor.UnSelectionBlock.createImgWrapperByP(rootNode);
       $wrapper.empty();
       $wrapper.append($img);
-      rootNode.after($newLine);
+      $totalWrap = rootNode;
     } else {
       $wrapper = Simditor.UnSelectionBlock.getImgWrapperWithImg($img);
       rootNode.after($wrapper);
-      $wrapper.after($newLine);
+      $totalWrap = $wrapper;
+    }
+    $totalWrap.after($newLine);
+    if (this.editor.body.children().first().is($totalWrap)) {
+      $totalWrap.before($('<p><br></p>'));
     }
     $img.data('wrapper', $wrapper);
     this.editor.selection.setRangeAtStartOf($newLine, range);
