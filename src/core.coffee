@@ -145,17 +145,17 @@ class Simditor extends SimpleModule
     @formatter.autolink cloneBody
 
     # remove empty `p` tag at the start/end of content
-    children = cloneBody.children()
-    lastP = children.last 'p'
-    firstP = children.first 'p'
-    while lastP.is('p') and @util.isEmptyNode(lastP)
-      emptyP = lastP
-      lastP = lastP.prev 'p'
-      emptyP.remove()
-    while firstP.is('p') and @util.isEmptyNode(firstP)
-      emptyP = firstP
-      firstP = lastP.next 'p'
-      emptyP.remove()
+    # children = cloneBody.children()
+    # lastP = children.last 'p'
+    # firstP = children.first 'p'
+    # while lastP.is('p') and @util.isEmptyNode(lastP)
+    #   emptyP = lastP
+    #   lastP = lastP.prev 'p'
+    #   emptyP.remove()
+    # while firstP.is('p') and @util.isEmptyNode(firstP)
+    #   emptyP = firstP
+    #   firstP = lastP.next 'p'
+    #   emptyP.remove()
 
     # remove images being uploaded
     cloneBody.find('img.uploading').remove()
