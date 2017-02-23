@@ -3129,13 +3129,21 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
-    if (!this.editor.util.browser.msie) {
-      this.editor.blur();
-      this.editor.selection.clear();
+    var html, p;
+    html = wrapper.html();
+    if (html === '' || html === '<br>') {
+      p = $('<p/>').append(this.editor.util.phBr);
+      wrapper.replaceWith(p);
+      return this.editor.selection.setRangeAtStartOf(p);
+    } else {
+      if (!this.editor.util.browser.msie) {
+        this.editor.blur();
+        this.editor.selection.clear();
+      }
+      this._selectCurrent(false);
+      this._selectedWrapper = wrapper;
+      return this._selectCurrent();
     }
-    this._selectCurrent(false);
-    this._selectedWrapper = wrapper;
-    return this._selectCurrent();
   };
 
   UnSelectionBlock.prototype._patchFirefox = function() {
@@ -3458,11 +3466,24 @@ Simditor = (function(superClass) {
   };
 
   Simditor.prototype.sync = function() {
-    var cloneBody, val;
+    var children, cloneBody, emptyP, firstP, lastP, val;
     cloneBody = this.body.clone();
     this.formatter.undecorate(cloneBody);
     this.formatter.format(cloneBody);
     this.formatter.autolink(cloneBody);
+    children = cloneBody.children();
+    lastP = children.last('p');
+    firstP = children.first('p');
+    while (lastP.is('p') && this.util.isEmptyNode(lastP)) {
+      emptyP = lastP;
+      lastP = lastP.prev('p');
+      emptyP.remove();
+    }
+    while (firstP.is('p') && this.util.isEmptyNode(firstP)) {
+      emptyP = firstP;
+      firstP = lastP.next('p');
+      emptyP.remove();
+    }
     cloneBody.find('img.uploading').remove();
     val = $.trim(cloneBody.html());
     this.textarea.val(val);
@@ -6331,9 +6352,6 @@ ImageButton = (function(superClass) {
       $totalWrap = $wrapper;
     }
     $totalWrap.after($newLine);
-    if (this.editor.body.children().first().is($totalWrap)) {
-      $totalWrap.before($('<p><br></p>'));
-    }
     $img.data('wrapper', $wrapper);
     this.editor.selection.setRangeAtStartOf($newLine, range);
     this.editor.trigger('valuechanged');

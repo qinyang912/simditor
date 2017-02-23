@@ -365,8 +365,6 @@ class ImageButton extends Button
       $totalWrap = $wrapper;
 
     $totalWrap.after($newLine);
-    if @editor.body.children().first().is($totalWrap)
-      $totalWrap.before($('<p><br></p>'))
 
     $img.data 'wrapper', $wrapper
 

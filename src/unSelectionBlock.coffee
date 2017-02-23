@@ -199,12 +199,18 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper = null
 
   _selectWrapper: (wrapper) ->
-    if !@editor.util.browser.msie
-      @editor.blur()
-      @editor.selection.clear()
-    @_selectCurrent false
-    @_selectedWrapper = wrapper
-    @_selectCurrent()
+    html = wrapper.html()
+    if html == '' or html == '<br>' # 当内容为空的时候，说明这个wrapper正在被删除，则直接用一个全新的p标签来替换wrapper
+      p = $('<p/>').append(@editor.util.phBr)
+      wrapper.replaceWith p
+      @editor.selection.setRangeAtStartOf p
+    else
+      if !@editor.util.browser.msie
+        @editor.blur()
+        @editor.selection.clear()
+      @_selectCurrent false
+      @_selectedWrapper = wrapper
+      @_selectCurrent()
 
   _patchFirefox: -> #针对firefox的一些补丁
     if @editor.util.browser.firefox
