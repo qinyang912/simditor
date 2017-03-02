@@ -1037,7 +1037,7 @@ Keystroke = (function(superClass) {
   };
 
   Keystroke.prototype.respondTo = function(e) {
-    var base, key, ref, result;
+    var base, key, nodes, ref, result;
     key = (ref = this.editor.hotkeys.constructor.keyNameMap[e.which]) != null ? ref.toLowerCase() : void 0;
     if (!key) {
       return;
@@ -1045,19 +1045,22 @@ Keystroke = (function(superClass) {
     if (key in this._keystrokeHandlers) {
       result = typeof (base = this._keystrokeHandlers[key])['*'] === "function" ? base['*'](e) : void 0;
       if (!result) {
-        this.editor.selection.startNodes().each((function(_this) {
-          return function(i, node) {
-            var handler, ref1;
-            if (node.nodeType !== Node.ELEMENT_NODE) {
-              return;
-            }
-            handler = (ref1 = _this._keystrokeHandlers[key]) != null ? ref1[node.tagName.toLowerCase()] : void 0;
-            result = typeof handler === "function" ? handler(e, $(node)) : void 0;
-            if (result === true || result === false) {
-              return false;
-            }
-          };
-        })(this));
+        nodes = this.editor.selection.startNodes();
+        if (nodes) {
+          nodes.each((function(_this) {
+            return function(i, node) {
+              var handler, ref1;
+              if (node.nodeType !== Node.ELEMENT_NODE) {
+                return;
+              }
+              handler = (ref1 = _this._keystrokeHandlers[key]) != null ? ref1[node.tagName.toLowerCase()] : void 0;
+              result = typeof handler === "function" ? handler(e, $(node)) : void 0;
+              if (result === true || result === false) {
+                return false;
+              }
+            };
+          })(this));
+        }
       }
       if (result) {
         return true;

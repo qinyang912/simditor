@@ -29,16 +29,18 @@ class Keystroke extends SimpleModule
       result = @_keystrokeHandlers[key]['*']?(e)
 
       unless result
-        @editor.selection.startNodes().each (i, node) =>
-          return unless node.nodeType == Node.ELEMENT_NODE
-          handler = @_keystrokeHandlers[key]?[node.tagName.toLowerCase()]
-          result = handler?(e, $(node))
+        nodes = @editor.selection.startNodes()
+        if nodes
+          nodes.each (i, node) =>
+            return unless node.nodeType == Node.ELEMENT_NODE
+            handler = @_keystrokeHandlers[key]?[node.tagName.toLowerCase()]
+            result = handler?(e, $(node))
 
-          # different result means:
-          # 1. true, handler done, stop browser default action and traverse up
-          # 2. false, stop traverse up
-          # 3. undefined, continue traverse up
-          false if result == true or result == false
+            # different result means:
+            # 1. true, handler done, stop browser default action and traverse up
+            # 2. false, stop traverse up
+            # 3. undefined, continue traverse up
+            false if result == true or result == false
 
       return true if result
 
