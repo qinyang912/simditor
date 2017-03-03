@@ -235,6 +235,10 @@ class UndoManager extends SimpleModule
         return
 
       range = document.createRange()
+      startOffset = startContainer.length if startOffset > startContainer.length 
+      endOffset = endContainer.length if endOffset > endContainer.length
+      startOffset = 0 if startContainer.nodeType == 1
+      endOffset = 0 if endContainer.nodeType == 1
       range.setStart(startContainer, startOffset)
       range.setEnd(endContainer, endOffset)
 
