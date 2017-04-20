@@ -12,6 +12,10 @@ class UnSelectionBlock extends SimpleModule
     content: 'unselection-content'
     preview: 'unselection-attach-preview'
     _delete: 'unselection-attach-delete'
+    progress: 'unSelection-attach-progress'
+
+  @selector:
+    content: '.unselection-content'
 
   @attr:
     select: 'data-unselection-select'
@@ -34,6 +38,7 @@ class UnSelectionBlock extends SimpleModule
           <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}' contenteditable='false'>
             <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
             <span data-name=''></span>
+            <span data-size='24M'></span>
             <span class='unselection-attach-operation' contenteditable='false'>
               <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span>
               <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a>
@@ -47,6 +52,7 @@ class UnSelectionBlock extends SimpleModule
         </span>
       </inherit>"
     img: "<img src='' alt=''>"
+    uploader: "<span data-progress=''><span></span></span>"
 
   _init: ->
     @editor = @_module
@@ -78,21 +84,23 @@ class UnSelectionBlock extends SimpleModule
             @_delete() 
             e.preventDefault()
 
-
-  @getAttachHtml: (data) ->
-    wrapper = UnSelectionBlock.getWrapper(data)
+  @fillDataToAttach: (data, wrapper) ->
     wrapper.append UnSelectionBlock._tpl.attach
-    wrapper.attr(UnSelectionBlock.attr.attach, true)
+    wrapper.attr UnSelectionBlock.attr.attach, true
     if data && data.file
       $operate = wrapper.find('.unselection-attach-operation')
       $preview = wrapper.find('.unselection-attach-preview')
       $download = wrapper.find('.unselection-attach-download')
       $name = wrapper.find('[data-name]')
+      $size = wrapper.find('[data-size]')
 
       $operate.attr(UnSelectionBlock.attr.bucket, data.bucket)
       $operate.attr(UnSelectionBlock.attr.key, data.file.filePath)
 
       $name.attr('data-name', data.file.name)
+      $name.attr('title', data.file.name)
+
+      $size.attr('data-size', UnSelectionBlock.getFileSize(data.file.size))
 
       $download.attr('href', data.file.realPath)
       $download.attr('download', data.file.name)
@@ -103,9 +111,24 @@ class UnSelectionBlock extends SimpleModule
           $preview.addClass 'mfp-iframe'
       else 
         $preview.remove()
+  @getFileSize: (bytes) ->
+    sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+    return '0 B' if bytes == 0
+    radix = Math.floor(Math.log(bytes) / Math.log(1024))
+    i = parseInt(radix, 10)
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i]
 
 
+  @getAttachHtml: (data) ->
+    wrapper = UnSelectionBlock.getWrapper(data)
+    UnSelectionBlock.fillDataToAttach data, wrapper
     $(document.createElement('div')).append(wrapper).html()
+
+  @getAttachUploaderHtml: (data, wrapper) ->
+    wrapper = if wrapper then UnSelectionBlock.createWrapperByP wrapper.empty() else UnSelectionBlock.getWrapper(data)
+    UnSelectionBlock.fillDataToAttach data, wrapper
+    wrapper.find(UnSelectionBlock.selector.content).append UnSelectionBlock._tpl.uploader
+    wrapper
 
   @getImgHtml: (data) ->
     wrapper = UnSelectionBlock.getWrapper(data)
@@ -123,7 +146,8 @@ class UnSelectionBlock extends SimpleModule
   @getWrapper: (data = {file:{}}) ->
     wrapper = $(UnSelectionBlock._tpl.wrapper)
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
-    wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
+    id = if data.file and data.file.id then data.file.id else ''
+    wrapper.attr(UnSelectionBlock.attr.fileId, id)
 
   @createWrapperByP: (p) -> # 通过一个p标签，来创建一个包裹标签
     p = $(p)
@@ -134,6 +158,11 @@ class UnSelectionBlock extends SimpleModule
   @createImgWrapperByP: (p) ->
     $wrapper = UnSelectionBlock.createWrapperByP p
     $wrapper.attr UnSelectionBlock.attr.img, true
+    $wrapper
+
+  @createAttachWrapperByP: (p) ->
+    $wrapper = UnSelectionBlock.createWrapperByP p
+    $wrapper.attr UnSelectionBlock.attr.attach, true
     $wrapper
 
   @getImgWrapperWithImg: (img) ->

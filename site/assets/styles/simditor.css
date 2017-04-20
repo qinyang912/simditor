@@ -420,6 +420,14 @@
   font-size: 100px;
   cursor: pointer;
 }
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-attach input[type=file], .simditor .more-option > ul > li > .toolbar-item.toolbar-item-attach input[type=file] {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
 .simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-fontScale.active-font span:before, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-fontScale.active-font span:before {
   font-size: 19px;
   font-weight: bold;
@@ -770,6 +778,36 @@
 .simditor .simditor-body .unselection-wrapper .unselection-attach [data-name]:before, .editor-style .unselection-wrapper .unselection-attach [data-name]:before {
   content: attr(data-name);
 }
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-progress], .editor-style .unselection-wrapper .unselection-attach [data-progress] {
+  display: block;
+  position: absolute;
+  height: 6px;
+  width: 102px;
+  bottom: 3px;
+  left: 33px;
+  background: #F0F0F0;
+  border-radius: 3px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-progress] > span, .editor-style .unselection-wrapper .unselection-attach [data-progress] > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #5BBBFF;
+  width: 0%;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-size], .editor-style .unselection-wrapper .unselection-attach [data-size] {
+  position: absolute;
+  display: inline-block;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  font-size: 12px;
+  line-height: 36px;
+  padding-right: 10px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-attach [data-size]:before, .editor-style .unselection-wrapper .unselection-attach [data-size]:before {
+  content: attr(data-size);
+}
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation {
   display: none;
   position: absolute;
@@ -816,11 +854,14 @@
 .simditor .simditor-body .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more:hover .unselection-attach-menu, .editor-style .unselection-wrapper .unselection-attach .unselection-attach-operation .unselection-attach-more:hover .unselection-attach-menu {
   display: inline-block;
 }
-.simditor .simditor-body .unselection-wrapper .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach:hover .unselection-attach-operation {
-  display: inline-block;
-}
 .simditor .simditor-body .unselection-wrapper inherit, .editor-style .unselection-wrapper inherit {
   display: block;
+}
+.simditor .simditor-body .unselection-wrapper[data-file-id] .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-wrapper[data-file-id] .unselection-attach:hover .unselection-attach-operation {
+  display: inline-block;
+}
+.simditor .simditor-body .unselection-wrapper[data-file-id] .unselection-attach:hover [data-size], .editor-style .unselection-wrapper[data-file-id] .unselection-attach:hover [data-size] {
+  display: none;
 }
 .simditor .simditor-body > :first-child, .editor-style > :first-child {
   margin-top: 0 !important;

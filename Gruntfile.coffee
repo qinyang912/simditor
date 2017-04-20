@@ -50,6 +50,7 @@ module.exports = (grunt) ->
             'src/buttons/undo.coffee'
             'src/buttons/redo.coffee'
             'src/buttons/format-paint.coffee'
+            'src/buttons/attach.coffee'
             'src/commands/commandBase.coffee'
             'src/commands/inlineCommand.coffee'
             'src/commands/stripCommand.coffee'

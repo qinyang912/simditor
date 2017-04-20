@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -476,7 +476,7 @@ Formatter = (function(superClass) {
       font: ['color'],
       code: ['class'],
       p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img'],
-      span: ['class', 'contenteditable', 'data-name', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
+      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -2910,7 +2910,12 @@ UnSelectionBlock = (function(superClass) {
     select: 'unselection-select',
     content: 'unselection-content',
     preview: 'unselection-attach-preview',
-    _delete: 'unselection-attach-delete'
+    _delete: 'unselection-attach-delete',
+    progress: 'unSelection-attach-progress'
+  };
+
+  UnSelectionBlock.selector = {
+    content: '.unselection-content'
   };
 
   UnSelectionBlock.attr = {
@@ -2929,8 +2934,9 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
-    img: "<img src='' alt=''>"
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span data-size='24M'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
+    img: "<img src='' alt=''>",
+    uploader: "<span data-progress=''><span></span></span>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2983,9 +2989,8 @@ UnSelectionBlock = (function(superClass) {
     })(this));
   };
 
-  UnSelectionBlock.getAttachHtml = function(data) {
-    var $download, $name, $operate, $preview, wrapper;
-    wrapper = UnSelectionBlock.getWrapper(data);
+  UnSelectionBlock.fillDataToAttach = function(data, wrapper) {
+    var $download, $name, $operate, $preview, $size;
     wrapper.append(UnSelectionBlock._tpl.attach);
     wrapper.attr(UnSelectionBlock.attr.attach, true);
     if (data && data.file) {
@@ -2993,21 +2998,48 @@ UnSelectionBlock = (function(superClass) {
       $preview = wrapper.find('.unselection-attach-preview');
       $download = wrapper.find('.unselection-attach-download');
       $name = wrapper.find('[data-name]');
+      $size = wrapper.find('[data-size]');
       $operate.attr(UnSelectionBlock.attr.bucket, data.bucket);
       $operate.attr(UnSelectionBlock.attr.key, data.file.filePath);
       $name.attr('data-name', data.file.name);
+      $name.attr('title', data.file.name);
+      $size.attr('data-size', UnSelectionBlock.getFileSize(data.file.size));
       $download.attr('href', data.file.realPath);
       $download.attr('download', data.file.name);
       if (data.previewFile) {
         $preview.attr('href', data.viewPath);
         if (data.framePreviewFile) {
-          $preview.addClass('mfp-iframe');
+          return $preview.addClass('mfp-iframe');
         }
       } else {
-        $preview.remove();
+        return $preview.remove();
       }
     }
+  };
+
+  UnSelectionBlock.getFileSize = function(bytes) {
+    var i, radix, sizes;
+    sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) {
+      return '0 B';
+    }
+    radix = Math.floor(Math.log(bytes) / Math.log(1024));
+    i = parseInt(radix, 10);
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+  };
+
+  UnSelectionBlock.getAttachHtml = function(data) {
+    var wrapper;
+    wrapper = UnSelectionBlock.getWrapper(data);
+    UnSelectionBlock.fillDataToAttach(data, wrapper);
     return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.getAttachUploaderHtml = function(data, wrapper) {
+    wrapper = wrapper ? UnSelectionBlock.createWrapperByP(wrapper.empty()) : UnSelectionBlock.getWrapper(data);
+    UnSelectionBlock.fillDataToAttach(data, wrapper);
+    wrapper.find(UnSelectionBlock.selector.content).append(UnSelectionBlock._tpl.uploader);
+    return wrapper;
   };
 
   UnSelectionBlock.getImgHtml = function(data) {
@@ -3026,7 +3058,7 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.getWrapper = function(data) {
-    var wrapper;
+    var id, wrapper;
     if (data == null) {
       data = {
         file: {}
@@ -3034,7 +3066,8 @@ UnSelectionBlock = (function(superClass) {
     }
     wrapper = $(UnSelectionBlock._tpl.wrapper);
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
-    return wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+    id = data.file && data.file.id ? data.file.id : '';
+    return wrapper.attr(UnSelectionBlock.attr.fileId, id);
   };
 
   UnSelectionBlock.createWrapperByP = function(p) {
@@ -3048,6 +3081,13 @@ UnSelectionBlock = (function(superClass) {
     var $wrapper;
     $wrapper = UnSelectionBlock.createWrapperByP(p);
     $wrapper.attr(UnSelectionBlock.attr.img, true);
+    return $wrapper;
+  };
+
+  UnSelectionBlock.createAttachWrapperByP = function(p) {
+    var $wrapper;
+    $wrapper = UnSelectionBlock.createWrapperByP(p);
+    $wrapper.attr(UnSelectionBlock.attr.attach, true);
     return $wrapper;
   };
 
@@ -7568,6 +7608,193 @@ FormatPaintButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(FormatPaintButton);
+
+AttachButton = (function(superClass) {
+  extend(AttachButton, superClass);
+
+  function AttachButton() {
+    return AttachButton.__super__.constructor.apply(this, arguments);
+  }
+
+  AttachButton.prototype.name = 'attach';
+
+  AttachButton.prototype.icon = 'simditor-r-icon-attachment';
+
+  AttachButton.prototype.disableTag = 'pre, table';
+
+  AttachButton.prototype.needFocus = false;
+
+  AttachButton.prototype.render = function() {
+    var args, uploadOpts;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    AttachButton.__super__.render.apply(this, args);
+    if (this.editor.opts.upload && simpleUploader) {
+      uploadOpts = typeof this.editor.opts.upload === 'object' ? this.editor.opts.upload : {};
+      this.uploader = simpleUploader(uploadOpts);
+    } else {
+      this.uploader = simpleUploader({});
+    }
+    this.input = null;
+    return this._initUploader();
+  };
+
+  AttachButton.prototype.createInput = function() {
+    if (this.input) {
+      this.input.remove();
+    }
+    return this.input = $('<input/>', {
+      type: 'file',
+      title: this._t('uploadImage'),
+      multiple: false,
+      accept: '*/*'
+    }).appendTo(this.el);
+  };
+
+  AttachButton.prototype._initUploader = function() {
+    var uploadProgress;
+    if (this.uploader == null) {
+      return;
+    }
+    this.createInput();
+    this.el.on('change', 'input[type=file]', (function(_this) {
+      return function(e) {
+        if (_this.editor.inputManager.focused) {
+          _this.uploader.upload(_this.input, {
+            inline: true
+          });
+          return _this.createInput();
+        } else {
+          _this.editor.focus();
+          _this.uploader.upload(_this.input, {
+            inline: true
+          });
+          return _this.createInput();
+        }
+      };
+    })(this));
+    uploadProgress = $.proxy(this.editor.util.throttle(function(e, file, loaded, total) {
+      var $attach, percent;
+      if (!file.inline) {
+        return;
+      }
+      $attach = file.attach;
+      percent = loaded / total;
+      percent = (percent * 100).toFixed(0);
+      return $attach.find('[data-progress] span').width(percent + "%");
+    }, 500), this);
+    this.uploader.on('uploadprogress', uploadProgress);
+    this.uploader.on('beforeupload', (function(_this) {
+      return function(e, file) {
+        if (!file.inline) {
+          return;
+        }
+        return file.attach = _this.createAttach(file);
+      };
+    })(this));
+    this.uploader.on('uploadsuccess', (function(_this) {
+      return function(e, file, result) {
+        var $attach;
+        if (!file.inline) {
+          return;
+        }
+        $attach = file.attach;
+        if (typeof result !== 'object') {
+          try {
+            result = $.parseJSON(result);
+          } catch (_error) {
+            e = _error;
+            result = {
+              success: false
+            };
+          }
+        }
+        if (result.success) {
+          if (result.ALY === true) {
+            return $.ajax({
+              url: _this.editor.opts.upload.GET_FILE_FROM_ALI,
+              type: 'post',
+              data: {
+                fileName: file.name,
+                filePath: result.key
+              },
+              success: function(data) {
+                var FileUtil, _data, html;
+                _data = {
+                  file: data
+                };
+                if (_this.editor.opts.upload && _this.editor.opts.upload.FileUtil) {
+                  FileUtil = _this.editor.opts.upload.FileUtil;
+                  _data.previewFile = FileUtil.isPreviewFile(data.name);
+                  _data.framePreviewFile = FileUtil.isFramePreviewFile(data.name);
+                  _data.viewPath = _data.framePreviewFile ? FileUtil.get365FileUrl(data.realPath) : data.realPath;
+                }
+                html = UnSelectionBlock.getAttachHtml(_data);
+                $attach.replaceWith(html);
+                return _this.editor.trigger('valuechanged');
+              },
+              error: function() {}
+            });
+          }
+        }
+      };
+    })(this));
+    return this.uploader.on('uploaderror', (function(_this) {
+      return function(e, file, xhr) {
+        if (!file.inline) {
+          return;
+        }
+        if (xhr.statusText === 'abort') {
+          return;
+        }
+        if (xhr.statusCode === 403) {
+
+        }
+      };
+    })(this));
+  };
+
+  AttachButton.prototype.setDisabled = function(disabled) {
+    AttachButton.__super__.setDisabled.call(this, disabled);
+    if (this.input) {
+      return this.input.prop('disabled', disabled);
+    }
+  };
+
+  AttachButton.prototype.createAttach = function(file) {
+    var $newLine, $totalWrap, $wrapper, range, rootNode;
+    console.log('file', file);
+    if (!this.editor.inputManager.focused) {
+      this.editor.focus();
+    }
+    range = this.editor.selection.range();
+    range.deleteContents();
+    this.editor.selection.range(range);
+    $newLine = $('<p><br></p>');
+    rootNode = this.editor.selection.rootNodes().last();
+    $totalWrap = null;
+    if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
+      $wrapper = Simditor.UnSelectionBlock.getAttachUploaderHtml({
+        file: file
+      }, rootNode);
+      $totalWrap = rootNode;
+    } else {
+      $wrapper = Simditor.UnSelectionBlock.getAttachUploaderHtml({
+        file: file
+      });
+      rootNode.after($wrapper);
+      $totalWrap = $wrapper;
+    }
+    $totalWrap.after($newLine);
+    this.editor.selection.setRangeAtStartOf($newLine, range);
+    this.editor.trigger('valuechanged');
+    return $totalWrap;
+  };
+
+  return AttachButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(AttachButton);
 
 CommandBase = (function(superClass) {
   extend(CommandBase, superClass);
