@@ -3244,6 +3244,7 @@ UnSelectionBlock = (function(superClass) {
       removalDelay: 1000,
       mainClass: 'mfp-fade',
       tLoading: 'Loading...',
+      autoFocusLast: false,
       zoom: {
         enabled: true,
         duration: 300,
