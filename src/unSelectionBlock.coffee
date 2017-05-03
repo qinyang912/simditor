@@ -292,6 +292,8 @@ class UnSelectionBlock extends SimpleModule
         close: ->
         elementParse: (item) ->
           item.src = item.el.attr 'src' unless item.src
+          if item.src and typeof item.src == 'string'
+            item.src = item.src.replace('officeweb365.com/o', 'ow365.cn') # 由于365的调整，链接需要调整
       gallery:
         enabled: true
         preload: [0, 2]
