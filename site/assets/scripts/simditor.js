@@ -3238,7 +3238,7 @@ UnSelectionBlock = (function(superClass) {
       return;
     }
     return this.editor.body.magnificPopup({
-      delegate: "." + UnSelectionBlock.className.preview,
+      delegate: "." + UnSelectionBlock.className.preview + ", img",
       type: 'image',
       preloader: true,
       removalDelay: 1000,
@@ -3259,7 +3259,11 @@ UnSelectionBlock = (function(superClass) {
         beforeOpen: function() {},
         open: function() {},
         close: function() {},
-        elementParse: function() {}
+        elementParse: function(item) {
+          if (!item.src) {
+            return item.src = item.el.attr('src');
+          }
+        }
       },
       gallery: {
         enabled: true,
@@ -7727,7 +7731,7 @@ AttachButton = (function(superClass) {
                   FileUtil = _this.editor.opts.upload.FileUtil;
                   _data.previewFile = FileUtil.isPreviewFile(data.name);
                   _data.framePreviewFile = FileUtil.isFramePreviewFile(data.name);
-                  _data.viewPath = _data.framePreviewFile ? FileUtil.get365FileUrl(data.realPath) : data.realPath;
+                  _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.realPath;
                 }
                 html = UnSelectionBlock.getAttachHtml(_data);
                 $attach.replaceWith(html);

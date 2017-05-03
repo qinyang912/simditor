@@ -263,7 +263,7 @@ class UnSelectionBlock extends SimpleModule
     # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持
     return unless $.fn.magnificPopup
     @editor.body.magnificPopup
-      delegate: ".#{UnSelectionBlock.className.preview}"
+      delegate: ".#{UnSelectionBlock.className.preview}, img"
       type: 'image'
       preloader: true
       removalDelay: 1000
@@ -290,7 +290,8 @@ class UnSelectionBlock extends SimpleModule
         beforeOpen: ->
         open: ->
         close: ->
-        elementParse: ->
+        elementParse: (item) ->
+          item.src = item.el.attr 'src' unless item.src
       gallery:
         enabled: true
         preload: [0, 2]
