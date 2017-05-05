@@ -86,6 +86,7 @@ class AttachButton extends Button
               filePath: result.key
             success: (data) =>
               _data = {file: data}
+              _data.bucket = 'rishiqing-file'
               if @editor.opts.upload and @editor.opts.upload.FileUtil # 这个FileUtil是opts.upload传过来的
                 FileUtil = @editor.opts.upload.FileUtil
                 _data.previewFile = FileUtil.isPreviewFile data.name
@@ -107,7 +108,6 @@ class AttachButton extends Button
     @input.prop 'disabled', disabled if @input
 
   createAttach: (file) ->
-    console.log('file', file)
     @editor.focus() unless @editor.inputManager.focused
     range = @editor.selection.range()
     range.deleteContents()

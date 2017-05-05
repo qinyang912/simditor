@@ -7730,6 +7730,7 @@ AttachButton = (function(superClass) {
                 _data = {
                   file: data
                 };
+                _data.bucket = 'rishiqing-file';
                 if (_this.editor.opts.upload && _this.editor.opts.upload.FileUtil) {
                   FileUtil = _this.editor.opts.upload.FileUtil;
                   _data.previewFile = FileUtil.isPreviewFile(data.name);
@@ -7770,7 +7771,6 @@ AttachButton = (function(superClass) {
 
   AttachButton.prototype.createAttach = function(file) {
     var $newLine, $totalWrap, $wrapper, range, rootNode;
-    console.log('file', file);
     if (!this.editor.inputManager.focused) {
       this.editor.focus();
     }
