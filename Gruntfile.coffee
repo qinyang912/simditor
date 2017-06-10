@@ -22,6 +22,7 @@ module.exports = (grunt) ->
             'src/clipboard.coffee'
             'src/unSelectionBlock.coffee'
             'src/wordNum.coffee'
+            'src/globalLink.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
             'src/domRange.coffee'

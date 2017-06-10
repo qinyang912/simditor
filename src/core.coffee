@@ -4,6 +4,7 @@ class Simditor extends SimpleModule
   @connect InputManager
   @connect Selection
   @connect UnSelectionBlock
+  @connect GlobalLink
   @connect UndoManager
   @connect Keystroke
   @connect Formatter

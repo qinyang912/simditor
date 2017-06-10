@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var $preview, attachHtml, editor, mobileToolbar, toolbar;
+    var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, toolbar;
     Simditor.locale = 'en-US';
     toolbar = ['title', 'undo', 'redo', 'formatPaint', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol"];
@@ -29,7 +29,14 @@
         id: 12341
       }
     });
-    editor.setValue(editor.getValue() + attachHtml + '<p>sfs</p>');
+    globalLinkHtml = Simditor.UnSelectionBlock.getGlobalLinkHtml({
+      file: {
+        name: 'woqu',
+        id: 1,
+        type: 'doc'
+      }
+    });
+    editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + '<p>sfs</p>');
     $preview = $('#preview');
     if ($preview.length > 0) {
       return editor.on('valuechanged', function(e) {

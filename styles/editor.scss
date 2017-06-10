@@ -630,13 +630,74 @@ $simditor-button-width: 46px;
   }
   .unselection-wrapper {
     text-align: center;
-    padding: 0px 100px;
+    &[data-attach], &[data-global-link] {
+      text-align: left;
+    }
     .unselection-inline-wrapper {
       display: inline-block;
       width: 100%;
     }
     .unselection-content {
       cursor: default;
+    }
+
+    [data-name] {
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: right 0.2s;
+      &:before {
+        content: attr(data-name);
+      }
+    }
+
+    .unselection-attach-operation {
+      display: none;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      font-size: 0px;
+      transition: transform 0.2s;
+      .unselection-attach-operation-icon {
+        display: inline-block;
+        height: 100%;
+        font-size: 18px;
+        width: 28px;
+        text-align: center;
+        line-height: 35px;
+        cursor: pointer;
+        color: #575757;
+      }
+      .unselection-attach-more {
+        position: relative;
+        .unselection-attach-menu {
+          display: none;
+          top: 100%;
+          position: absolute;
+          right: 0px;
+          line-height: 26px;
+          box-shadow: 0 3px 9px 0px rgba(0, 0, 0, 0.21);
+          z-index: 1;
+          .unselection-attach-menu-item {
+            padding: 7px 10px;
+            font-size: 12px;
+            background: #fff;
+            transition: background 0.2s;
+            &:hover {
+              background: #f9f9f9;
+            }
+            &:before {
+              content: attr(title);
+            }
+          }
+        }
+        &:hover {
+          .unselection-attach-menu {
+            display: inline-block;
+          }
+        }
+      }
     }
     
     .unselection-attach {
@@ -662,18 +723,11 @@ $simditor-button-width: 46px;
       }
       [data-name] {
         position: absolute;
-        font-size: 12px;
         left: 35px;
         right: 85px;
-        overflow: hidden;
-        text-overflow: ellipsis;
         bottom: 0px;
         top: 0px;
         line-height: 36px;
-        transition: right 0.2s;
-        &:before {
-          content: attr(data-name);
-        }
       }
       [data-progress] {
         display: block;
@@ -706,67 +760,69 @@ $simditor-button-width: 46px;
           content: attr(data-size);
         }
       }
-
-      .unselection-attach-operation {
-        display: none;
-        position: absolute;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-        font-size: 0px;
-        transition: transform 0.2s;
-        .unselection-attach-operation-icon {
-          display: inline-block;
-          height: 100%;
-          font-size: 18px;
-          width: 28px;
-          text-align: center;
-          line-height: 35px;
-          cursor: pointer;
-          color: #575757;
-        }
-        .unselection-attach-more {
-          position: relative;
-          .unselection-attach-menu {
-            display: none;
-            top: 100%;
-            position: absolute;
-            right: 0px;
-            line-height: 26px;
-            box-shadow: 0 3px 9px 0px rgba(0, 0, 0, 0.21);
-            z-index: 1;
-            .unselection-attach-menu-item {
-              padding: 7px 10px;
-              font-size: 12px;
-              background: #fff;
-              transition: background 0.2s;
-              &:hover {
-                background: #f9f9f9;
-              }
-              &:before {
-                content: attr(title);
-              }
-            }
-          }
-          &:hover {
-            .unselection-attach-menu {
-              display: inline-block;
-            }
-          }
-        }
+    }
+    .unselection-global-link {
+      display: inline-block;
+      height: 45px;
+      width: 90%;
+      background-color: #f9f9f9;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.03);
+      position: relative;
+      text-align: left;
+      color: #575757;
+      font-size: 0px;
+      white-space: nowrap;
+      [data-name] {
+        display: inline-block;
+        line-height: 45px;
+        vertical-align: middle;
       }
-      
+      .unselection-attach-operation {
+        display: inline-block;
+      }
+      .unselection-attach-operation-icon {
+        line-height: 45px;
+      }
+      [data-global-link-type] {
+        display: inline-block;
+        height: 100%;
+        width: 45px;
+        vertical-align: middle;
+      }
+      [data-global-link-type="todo"], [data-global-link-type="plan"] {
+        background: url(https://res-front-cdn.rishiqing.com/common/img/todo/tick.png) no-repeat;
+        background-position: 14px;
+      }
+
+      [data-global-link-type="doc"] {
+        background: url(https://res-front-cdn.rishiqing.com/common/img/doc/docItem.png) no-repeat;
+        background-position: 14px;
+      }
+
+      [data-global-link-type="file"] {
+        font-size: 20px;
+        line-height: 42px;
+        text-align: center;
+      }
     }
     inherit {
       display: block;
     }
-    &[data-file-id] .unselection-attach:hover {
-      .unselection-attach-operation {
-        display: inline-block;
+    &[data-file-id] {
+      .unselection-attach:hover, .unselection-global-link:hover {
+        .unselection-attach-operation {
+          display: inline-block;
+        }
       }
-      [data-size] {
-        display: none;
+      .unselection-attach:hover {
+        [data-size] {
+          display: none;
+        }
       }
+    }
+    &[data-global-link] {
+      line-height: 10px;
     }
   }
 

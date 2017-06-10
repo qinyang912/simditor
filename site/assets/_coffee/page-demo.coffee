@@ -50,7 +50,13 @@ $ ->
       realPath: 'http:www.baidu.com'
       id: 12341
 
-  editor.setValue(editor.getValue() + attachHtml + '<p>sfs</p>')
+  globalLinkHtml = Simditor.UnSelectionBlock.getGlobalLinkHtml
+    file:
+      name: 'woqu'
+      id: 1
+      type: 'doc'
+
+  editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + '<p>sfs</p>')
 
   $preview = $('#preview')
   if $preview.length > 0

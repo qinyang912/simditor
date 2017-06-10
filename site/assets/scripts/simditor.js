@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -475,8 +475,8 @@ Formatter = (function(superClass) {
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img'],
-      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link'],
+      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -2911,7 +2911,8 @@ UnSelectionBlock = (function(superClass) {
     content: 'unselection-content',
     preview: 'unselection-attach-preview',
     _delete: 'unselection-attach-delete',
-    progress: 'unSelection-attach-progress'
+    progress: 'unSelection-attach-progress',
+    globalLink: 'unselection-global-link'
   };
 
   UnSelectionBlock.selector = {
@@ -2927,7 +2928,9 @@ UnSelectionBlock = (function(superClass) {
     fileName: 'data-file-name',
     fileSrc: 'data-file-src',
     attach: 'data-attach',
-    img: 'data-img'
+    img: 'data-img',
+    globalLink: 'data-global-link',
+    globalLinkType: 'data-global-link-type'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
@@ -2936,7 +2939,8 @@ UnSelectionBlock = (function(superClass) {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
     attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span data-size='24M'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
     img: "<img src='' alt=''>",
-    uploader: "<span data-progress=''><span></span></span>"
+    uploader: "<span data-progress=''><span></span></span>",
+    globalLink: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.globalLink + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span data-global-link-type=''></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -3055,6 +3059,34 @@ UnSelectionBlock = (function(superClass) {
       $img.attr(UnSelectionBlock.attr.key, data.file.filePath);
     }
     return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.getGlobalLink = function(data, wrapper) {
+    wrapper = wrapper ? UnSelectionBlock.createWrapperByP(wrapper.empty()) : UnSelectionBlock.getWrapper(data);
+    UnSelectionBlock.fillDataToGlobalLink(data, wrapper);
+    return wrapper;
+  };
+
+  UnSelectionBlock.getGlobalLinkHtml = function(data, wrapper) {
+    wrapper = UnSelectionBlock.getGlobalLink(data, wrapper);
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.fillDataToGlobalLink = function(data, wrapper) {
+    var $name, $type;
+    wrapper.append(UnSelectionBlock._tpl.globalLink);
+    wrapper.attr(UnSelectionBlock.attr.globalLink, true);
+    if (data && data.file) {
+      wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+      $name = wrapper.find('[data-name]');
+      $type = wrapper.find('[data-global-link-type]');
+      $name.attr('data-name', data.file.name);
+      $name.attr('title', data.file.name);
+      $type.attr(UnSelectionBlock.attr.globalLinkType, data.file.type);
+      if (data.file.type === 'file') {
+        return $type.addClass('simditor-r-icon-attachment');
+      }
+    }
   };
 
   UnSelectionBlock.getWrapper = function(data) {
@@ -3365,6 +3397,78 @@ WordNum = (function(superClass) {
 
 })(SimpleModule);
 
+GlobalLink = (function(superClass) {
+  extend(GlobalLink, superClass);
+
+  function GlobalLink() {
+    return GlobalLink.__super__.constructor.apply(this, arguments);
+  }
+
+  GlobalLink.pluginName = 'GlobalLink';
+
+  GlobalLink.prototype._init = function() {
+    return this.editor = this._module;
+  };
+
+  GlobalLink.prototype.insert = function(list) {
+    if (!list.length) {
+      return;
+    }
+    list.forEach((function(_this) {
+      return function(item) {
+        console.log(item);
+        return _this.createGlobalLink(item);
+      };
+    })(this));
+    return this.editor.trigger('valuechanged');
+  };
+
+  GlobalLink.prototype.createGlobalLink = function(data) {
+    var $newLine, $wrapper, range, rootNode;
+    if (!this.editor.inputManager.focused) {
+      this.editor.focus();
+    }
+    range = this.editor.selection.range();
+    range.deleteContents();
+    this.editor.selection.range(range);
+    $newLine = $('<p><br></p>');
+    rootNode = this.editor.selection.rootNodes().last();
+    $wrapper = null;
+    if (data.type === 'file') {
+      $wrapper = this.createAttach(data);
+    } else {
+      $wrapper = UnSelectionBlock.getGlobalLink({
+        file: data
+      });
+    }
+    if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
+      $(rootNode).replaceWith($wrapper);
+    } else {
+      rootNode.after($wrapper);
+    }
+    $wrapper.after($newLine);
+    return this.editor.selection.setRangeAtStartOf($newLine, range);
+  };
+
+  GlobalLink.prototype.createAttach = function(data) {
+    var FileUtil, _data;
+    _data = {
+      file: data
+    };
+    _data.bucket = 'rishiqing-file';
+    if (this.editor.opts.upload && this.editor.opts.upload.FileUtil) {
+      FileUtil = this.editor.opts.upload.FileUtil;
+      _data.previewFile = FileUtil.isPreviewFile(data.name);
+      _data.framePreviewFile = FileUtil.isFramePreviewFile(data.name);
+      _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.realPath;
+    }
+    return $(UnSelectionBlock.getAttachHtml(_data));
+  };
+
+  return GlobalLink;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -3379,6 +3483,8 @@ Simditor = (function(superClass) {
   Simditor.connect(Selection);
 
   Simditor.connect(UnSelectionBlock);
+
+  Simditor.connect(GlobalLink);
 
   Simditor.connect(UndoManager);
 

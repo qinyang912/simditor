@@ -23,8 +23,8 @@ class Formatter extends SimpleModule
       a: ['href', 'target']
       font: ['color']
       code: ['class']
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img']
-      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title']
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link']
+      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type']
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend

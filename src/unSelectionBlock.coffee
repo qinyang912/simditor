@@ -13,6 +13,7 @@ class UnSelectionBlock extends SimpleModule
     preview: 'unselection-attach-preview'
     _delete: 'unselection-attach-delete'
     progress: 'unSelection-attach-progress'
+    globalLink: 'unselection-global-link'
 
   @selector:
     content: '.unselection-content'
@@ -27,6 +28,8 @@ class UnSelectionBlock extends SimpleModule
     fileSrc: 'data-file-src'
     attach: 'data-attach'
     img: 'data-img'
+    globalLink: 'data-global-link'
+    globalLinkType: 'data-global-link-type'
 
   _selectedWrapper: null
 
@@ -53,6 +56,22 @@ class UnSelectionBlock extends SimpleModule
       </inherit>"
     img: "<img src='' alt=''>"
     uploader: "<span data-progress=''><span></span></span>"
+    globalLink: "
+      <inherit>
+        <span class='#{UnSelectionBlock.className.inlineWrapper}'>
+          <span class='#{UnSelectionBlock.className.globalLink} #{UnSelectionBlock.className.content}' contenteditable='false'>
+            <span data-global-link-type=''></span>
+            <span data-name=''></span>
+            <span class='unselection-attach-operation' contenteditable='false'>
+              <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
+                <span class='unselection-attach-menu'>
+                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span>
+                </span>
+              </span>
+            </span>
+          </span>
+        </span>
+      </inherit>"
 
   _init: ->
     @editor = @_module
@@ -142,6 +161,33 @@ class UnSelectionBlock extends SimpleModule
       $img.attr(UnSelectionBlock.attr.key, data.file.filePath)
       
     $(document.createElement('div')).append(wrapper).html()
+
+  @getGlobalLink: (data, wrapper) ->
+    wrapper = if wrapper then UnSelectionBlock.createWrapperByP wrapper.empty() else UnSelectionBlock.getWrapper(data)
+    
+    UnSelectionBlock.fillDataToGlobalLink data, wrapper
+    wrapper
+
+  @getGlobalLinkHtml: (data, wrapper) ->
+    wrapper = UnSelectionBlock.getGlobalLink(data, wrapper)
+    $(document.createElement('div')).append(wrapper).html()
+  
+  @fillDataToGlobalLink: (data, wrapper) ->
+    wrapper.append UnSelectionBlock._tpl.globalLink
+    wrapper.attr UnSelectionBlock.attr.globalLink, true
+    if data and data.file
+      wrapper.attr UnSelectionBlock.attr.fileId, data.file.id
+
+      $name = wrapper.find('[data-name]')
+      $type = wrapper.find('[data-global-link-type]')
+
+      $name.attr('data-name', data.file.name)
+      $name.attr('title', data.file.name)
+
+      $type.attr UnSelectionBlock.attr.globalLinkType, data.file.type
+
+      if data.file.type == 'file'
+        $type.addClass 'simditor-r-icon-attachment'
 
   @getWrapper: (data = {file:{}}) ->
     wrapper = $(UnSelectionBlock._tpl.wrapper)
