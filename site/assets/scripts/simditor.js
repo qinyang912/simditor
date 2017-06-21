@@ -2972,8 +2972,9 @@ UnSelectionBlock = (function(superClass) {
         var wrapper;
         wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper, _this.editor.body);
         if (wrapper.length) {
-          return _this._delete(wrapper);
+          _this._delete(wrapper);
         }
+        return false;
       };
     })(this));
     return $(document).on('keydown.simditor-unSelection' + this.editor.id, (function(_this) {

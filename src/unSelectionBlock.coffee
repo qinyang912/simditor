@@ -94,6 +94,7 @@ class UnSelectionBlock extends SimpleModule
       wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}", @editor.body)
       if wrapper.length
         @_delete(wrapper)
+      return false;
 
     $(document).on 'keydown.simditor-unSelection' + @editor.id, (e) =>
       if @_selectedWrapper
