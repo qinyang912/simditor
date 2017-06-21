@@ -80,7 +80,9 @@ class UnSelectionBlock extends SimpleModule
     @_patchFirefox()
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
       @_isUnSelectionClick = true
-      @_unSelectionClick(e)
+      
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.globalLink}", (e) =>
+      @_unGlobalLinkClick(e)
     $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
       if !@_isUnSelectionClick      
         @_selectCurrent(false)
@@ -274,7 +276,7 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper.removeAttr UnSelectionBlock.attr.select
         @_selectedWrapper = null
 
-  _unSelectionClick: (e) ->
+  _unGlobalLinkClick: (e) ->
     wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.globalLink}=true]", @editor.body)
     if wrapper.length
       id = wrapper.attr UnSelectionBlock.attr.fileId
