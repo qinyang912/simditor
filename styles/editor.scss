@@ -791,13 +791,14 @@ $simditor-button-width: 46px;
         vertical-align: middle;
       }
       [data-global-link-type="todo"], [data-global-link-type="plan"] {
-        background: url(https://res-front-cdn.rishiqing.com/common/img/todo/tick.png) no-repeat;
+        background: url(https://res-front-cdn.timetask.cn/common/img/todo/tick.png) no-repeat;
         background-position: 14px;
       }
 
       [data-global-link-type="doc"] {
-        background: url(https://res-front-cdn.rishiqing.com/common/img/doc/docItem.png) no-repeat;
-        background-position: 14px;
+        background: url(https://res-front-cdn.timetask.cn/common/img/doc/docItem.png) no-repeat;
+        background-position: 9px;
+        background-size: 27px 26px;
       }
 
       [data-global-link-type="file"] {

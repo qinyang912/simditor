@@ -2948,30 +2948,31 @@ UnSelectionBlock = (function(superClass) {
     this.editor.on('selectionchanged', this._onSelectionChange.bind(this));
     this._preview();
     this._patchFirefox();
-    $(document).on('click.simditor-unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
       return function(e) {
-        return _this._unSelectionClick = true;
+        _this._isUnSelectionClick = true;
+        return _this._unSelectionClick(e);
       };
     })(this));
-    $(document).on('click.simditor-unSelection', (function(_this) {
+    $(document).on('click.simditor-unSelection-' + this.editor.id, (function(_this) {
       return function(e) {
-        if (!_this._unSelectionClick) {
+        if (!_this._isUnSelectionClick) {
           _this._selectCurrent(false);
         } else {
-          _this._unSelectionClick = false;
+          _this._isUnSelectionClick = false;
         }
       };
     })(this));
     this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className._delete, (function(_this) {
       return function(e) {
         var wrapper;
-        wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+        wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper, _this.editor.body);
         if (wrapper.length) {
           return _this._delete(wrapper);
         }
       };
     })(this));
-    return $(document).on('keydown.simditor-unSelection', (function(_this) {
+    return $(document).on('keydown.simditor-unSelection' + this.editor.id, (function(_this) {
       return function(e) {
         if (_this._selectedWrapper) {
           e.preventDefault();
@@ -3180,7 +3181,7 @@ UnSelectionBlock = (function(superClass) {
     var range, wrapper, wrapper1, wrapper2;
     range = this.editor.selection.range();
     if (range && range.endContainer) {
-      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper);
+      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper, this.editor.body);
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();
       if (wrapper1.length) {
         wrapper = wrapper1;
@@ -3215,6 +3216,19 @@ UnSelectionBlock = (function(superClass) {
     }
   };
 
+  UnSelectionBlock.prototype._unSelectionClick = function(e) {
+    var id, type, wrapper;
+    wrapper = $(e.target).closest("[" + UnSelectionBlock.attr.globalLink + "=true]", this.editor.body);
+    if (wrapper.length) {
+      id = wrapper.attr(UnSelectionBlock.attr.fileId);
+      type = wrapper.find("[" + UnSelectionBlock.attr.globalLinkType + "]").attr(UnSelectionBlock.attr.globalLinkType);
+      return this.editor.trigger('selectGlobalLink', {
+        id: id,
+        type: type
+      });
+    }
+  };
+
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
     var html, p;
     html = wrapper.html();
@@ -3238,7 +3252,7 @@ UnSelectionBlock = (function(superClass) {
       return this.editor.body.on('click.unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
         return function(e) {
           var wrapper;
-          wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper);
+          wrapper = $(e.target).closest("." + UnSelectionBlock.className.wrapper, _this.editor.body);
           if (wrapper.length) {
             return setTimeout(function() {
               return _this._selectWrapper(wrapper);
@@ -3416,7 +3430,6 @@ GlobalLink = (function(superClass) {
     }
     list.forEach((function(_this) {
       return function(item) {
-        console.log(item);
         return _this.createGlobalLink(item);
       };
     })(this));

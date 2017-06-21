@@ -6,7 +6,6 @@ class GlobalLink extends SimpleModule
   insert: (list) ->
     return unless list.length
     list.forEach (item) =>
-      console.log item
       @createGlobalLink item
     @editor.trigger 'valuechanged'
 

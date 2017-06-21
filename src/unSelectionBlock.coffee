@@ -78,21 +78,22 @@ class UnSelectionBlock extends SimpleModule
     @editor.on 'selectionchanged', @_onSelectionChange.bind(@)
     @_preview()
     @_patchFirefox()
-    $(document).on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
-      @_unSelectionClick = true
-    $(document).on 'click.simditor-unSelection', (e) =>
-      if !@_unSelectionClick      
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
+      @_isUnSelectionClick = true
+      @_unSelectionClick(e)
+    $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
+      if !@_isUnSelectionClick      
         @_selectCurrent(false)
       else
-        @_unSelectionClick = false
+        @_isUnSelectionClick = false
       return
 
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className._delete}", (e) =>
-      wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
+      wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}", @editor.body)
       if wrapper.length
         @_delete(wrapper)
 
-    $(document).on 'keydown.simditor-unSelection', (e) =>
+    $(document).on 'keydown.simditor-unSelection' + @editor.id, (e) =>
       if @_selectedWrapper
         e.preventDefault()
         switch e.which
@@ -251,7 +252,7 @@ class UnSelectionBlock extends SimpleModule
   _onSelectionChange: ->
     range = @editor.selection.range()
     if range and range.endContainer
-      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper)
+      wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper, @editor.body)
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last()
       if wrapper1.length
         wrapper = wrapper1
@@ -273,6 +274,15 @@ class UnSelectionBlock extends SimpleModule
         @_selectedWrapper.removeAttr UnSelectionBlock.attr.select
         @_selectedWrapper = null
 
+  _unSelectionClick: (e) ->
+    wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.globalLink}=true]", @editor.body)
+    if wrapper.length
+      id = wrapper.attr UnSelectionBlock.attr.fileId
+      type = wrapper.find("[#{UnSelectionBlock.attr.globalLinkType}]").attr UnSelectionBlock.attr.globalLinkType
+      @editor.trigger 'selectGlobalLink', 
+        id: id,
+        type: type
+
   _selectWrapper: (wrapper) ->
     html = wrapper.html()
     if html == '' or html == '<br>' # 当内容为空的时候，说明这个wrapper正在被删除，则直接用一个全新的p标签来替换wrapper
@@ -290,7 +300,7 @@ class UnSelectionBlock extends SimpleModule
   _patchFirefox: -> #针对firefox的一些补丁
     if @editor.util.browser.firefox
       @editor.body.on 'click.unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
-        wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}")
+        wrapper = $(e.target).closest(".#{UnSelectionBlock.className.wrapper}", @editor.body)
         if wrapper.length
           setTimeout =>
             @_selectWrapper(wrapper)

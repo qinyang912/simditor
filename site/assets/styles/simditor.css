@@ -889,12 +889,13 @@
   vertical-align: middle;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-global-link [data-global-link-type="todo"], .simditor .simditor-body .unselection-wrapper .unselection-global-link [data-global-link-type="plan"], .editor-style .unselection-wrapper .unselection-global-link [data-global-link-type="todo"], .editor-style .unselection-wrapper .unselection-global-link [data-global-link-type="plan"] {
-  background: url(https://res-front-cdn.rishiqing.com/common/img/todo/tick.png) no-repeat;
+  background: url(https://res-front-cdn.timetask.cn/common/img/todo/tick.png) no-repeat;
   background-position: 14px;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-global-link [data-global-link-type="doc"], .editor-style .unselection-wrapper .unselection-global-link [data-global-link-type="doc"] {
-  background: url(https://res-front-cdn.rishiqing.com/common/img/doc/docItem.png) no-repeat;
-  background-position: 14px;
+  background: url(https://res-front-cdn.timetask.cn/common/img/doc/docItem.png) no-repeat;
+  background-position: 9px;
+  background-size: 27px 26px;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-global-link [data-global-link-type="file"], .editor-style .unselection-wrapper .unselection-global-link [data-global-link-type="file"] {
   font-size: 20px;
