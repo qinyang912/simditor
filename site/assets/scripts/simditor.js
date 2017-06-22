@@ -2910,6 +2910,7 @@ UnSelectionBlock = (function(superClass) {
     select: 'unselection-select',
     content: 'unselection-content',
     preview: 'unselection-attach-preview',
+    download: 'unselection-attach-download',
     _delete: 'unselection-attach-delete',
     progress: 'unSelection-attach-progress',
     globalLink: 'unselection-global-link'
@@ -2937,7 +2938,7 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock._tpl = {
     wrapper: "<p class='" + UnSelectionBlock.className.wrapper + "'></p>",
-    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span data-size='24M'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
+    attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span data-size='24M'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
     img: "<img src='' alt=''>",
     uploader: "<span data-progress=''><span></span></span>",
     globalLink: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.globalLink + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span data-global-link-type=''></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>"
@@ -2956,6 +2957,23 @@ UnSelectionBlock = (function(superClass) {
     this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.globalLink, (function(_this) {
       return function(e) {
         return _this._unGlobalLinkClick(e);
+      };
+    })(this));
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.preview, (function(_this) {
+      return function(e) {
+        _this._unAttachPreviewClick(e);
+        return false;
+      };
+    })(this));
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.download, (function(_this) {
+      return function(e) {
+        _this._unAttachDownloadClick(e);
+        return false;
+      };
+    })(this));
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.attach, (function(_this) {
+      return function(e) {
+        return _this._unAttachClick(e);
       };
     })(this));
     $(document).on('click.simditor-unSelection-' + this.editor.id, (function(_this) {
@@ -3000,28 +3018,17 @@ UnSelectionBlock = (function(superClass) {
   };
 
   UnSelectionBlock.fillDataToAttach = function(data, wrapper) {
-    var $download, $name, $operate, $preview, $size;
+    var $name, $preview, $size;
     wrapper.append(UnSelectionBlock._tpl.attach);
     wrapper.attr(UnSelectionBlock.attr.attach, true);
     if (data && data.file) {
-      $operate = wrapper.find('.unselection-attach-operation');
       $preview = wrapper.find('.unselection-attach-preview');
-      $download = wrapper.find('.unselection-attach-download');
       $name = wrapper.find('[data-name]');
       $size = wrapper.find('[data-size]');
-      $operate.attr(UnSelectionBlock.attr.bucket, data.bucket);
-      $operate.attr(UnSelectionBlock.attr.key, data.file.filePath);
       $name.attr('data-name', data.file.name);
       $name.attr('title', data.file.name);
       $size.attr('data-size', UnSelectionBlock.getFileSize(data.file.size));
-      $download.attr('href', data.file.realPath);
-      $download.attr('download', data.file.name);
-      if (data.previewFile) {
-        $preview.attr('href', data.viewPath);
-        if (data.framePreviewFile) {
-          return $preview.addClass('mfp-iframe');
-        }
-      } else {
+      if (!data.previewFile) {
         return $preview.remove();
       }
     }
@@ -3234,6 +3241,34 @@ UnSelectionBlock = (function(superClass) {
     }
   };
 
+  UnSelectionBlock.prototype._unAttachPreviewClick = function(e) {
+    return this._unAttachClick(e, {
+      preview: true
+    });
+  };
+
+  UnSelectionBlock.prototype._unAttachDownloadClick = function(e) {
+    return this._unAttachClick(e, {
+      download: true
+    });
+  };
+
+  UnSelectionBlock.prototype._unAttachClick = function(e, opt) {
+    var id, wrapper;
+    if (opt == null) {
+      opt = {};
+    }
+    wrapper = $(e.target).closest("[" + UnSelectionBlock.attr.attach + "=true]", this.editor.body);
+    if (wrapper.length) {
+      id = wrapper.attr(UnSelectionBlock.attr.fileId);
+      return this.editor.trigger('selectAttach', {
+        id: id,
+        preview: opt.preview,
+        download: opt.download
+      });
+    }
+  };
+
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
     var html, p;
     html = wrapper.html();
@@ -3289,7 +3324,7 @@ UnSelectionBlock = (function(superClass) {
       return;
     }
     return this.editor.body.magnificPopup({
-      delegate: "." + UnSelectionBlock.className.preview + ", img",
+      delegate: "img",
       type: 'image',
       preloader: true,
       removalDelay: 1000,

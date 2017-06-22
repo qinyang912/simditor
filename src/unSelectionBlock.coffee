@@ -11,6 +11,7 @@ class UnSelectionBlock extends SimpleModule
     select: 'unselection-select'
     content: 'unselection-content'
     preview: 'unselection-attach-preview'
+    download: 'unselection-attach-download'
     _delete: 'unselection-attach-delete'
     progress: 'unSelection-attach-progress'
     globalLink: 'unselection-global-link'
@@ -44,7 +45,7 @@ class UnSelectionBlock extends SimpleModule
             <span data-size='24M'></span>
             <span class='unselection-attach-operation' contenteditable='false'>
               <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span>
-              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank' download='QQ20160613-0@2x.png'></a>
+              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank'></a>
               <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
                 <span class='unselection-attach-menu'>
                   <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span>
@@ -83,6 +84,18 @@ class UnSelectionBlock extends SimpleModule
       
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.globalLink}", (e) =>
       @_unGlobalLinkClick(e)
+
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.preview}", (e) => 
+      @_unAttachPreviewClick(e)
+      return false;
+
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.download}", (e) =>
+      @_unAttachDownloadClick(e)
+      return false;
+
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.attach}", (e) =>
+      @_unAttachClick(e)
+
     $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
       if !@_isUnSelectionClick      
         @_selectCurrent(false)
@@ -111,29 +124,18 @@ class UnSelectionBlock extends SimpleModule
     wrapper.append UnSelectionBlock._tpl.attach
     wrapper.attr UnSelectionBlock.attr.attach, true
     if data && data.file
-      $operate = wrapper.find('.unselection-attach-operation')
       $preview = wrapper.find('.unselection-attach-preview')
-      $download = wrapper.find('.unselection-attach-download')
       $name = wrapper.find('[data-name]')
       $size = wrapper.find('[data-size]')
-
-      $operate.attr(UnSelectionBlock.attr.bucket, data.bucket)
-      $operate.attr(UnSelectionBlock.attr.key, data.file.filePath)
 
       $name.attr('data-name', data.file.name)
       $name.attr('title', data.file.name)
 
       $size.attr('data-size', UnSelectionBlock.getFileSize(data.file.size))
 
-      $download.attr('href', data.file.realPath)
-      $download.attr('download', data.file.name)
-
-      if data.previewFile
-        $preview.attr('href', data.viewPath)
-        if data.framePreviewFile
-          $preview.addClass 'mfp-iframe'
-      else 
+      if !data.previewFile
         $preview.remove()
+        
   @getFileSize: (bytes) ->
     sizes = ['B', 'KB', 'MB', 'GB', 'TB']
     return '0 B' if bytes == 0
@@ -286,6 +288,23 @@ class UnSelectionBlock extends SimpleModule
         id: id,
         type: type
 
+  _unAttachPreviewClick: (e) ->
+    @_unAttachClick e,
+      preview: true
+
+  _unAttachDownloadClick: (e) ->
+    @_unAttachClick e,
+      download: true
+
+  _unAttachClick: (e, opt = {}) ->
+    wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.attach}=true]", @editor.body)
+    if wrapper.length
+      id = wrapper.attr UnSelectionBlock.attr.fileId
+      @editor.trigger 'selectAttach',
+        id: id
+        preview: opt.preview
+        download: opt.download
+
   _selectWrapper: (wrapper) ->
     html = wrapper.html()
     if html == '' or html == '<br>' # 当内容为空的时候，说明这个wrapper正在被删除，则直接用一个全新的p标签来替换wrapper
@@ -322,7 +341,7 @@ class UnSelectionBlock extends SimpleModule
     # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持
     return unless $.fn.magnificPopup
     @editor.body.magnificPopup
-      delegate: ".#{UnSelectionBlock.className.preview}, img"
+      delegate: "img"
       type: 'image'
       preloader: true
       removalDelay: 1000
