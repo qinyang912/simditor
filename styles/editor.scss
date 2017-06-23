@@ -777,6 +777,7 @@ $simditor-button-width: 46px;
         display: inline-block;
         line-height: 45px;
         vertical-align: middle;
+        width: calc(100% - 73px);
       }
       .unselection-attach-operation {
         display: inline-block;

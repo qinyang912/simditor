@@ -875,6 +875,7 @@
   display: inline-block;
   line-height: 45px;
   vertical-align: middle;
+  width: calc(100% - 73px);
 }
 .simditor .simditor-body .unselection-wrapper .unselection-global-link .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-global-link .unselection-attach-operation {
   display: inline-block;
