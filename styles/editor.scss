@@ -692,11 +692,6 @@ $simditor-button-width: 46px;
             }
           }
         }
-        &:hover {
-          .unselection-attach-menu {
-            display: inline-block;
-          }
-        }
       }
     }
     
@@ -825,6 +820,14 @@ $simditor-button-width: 46px;
     }
     &[data-global-link] {
       line-height: 10px;
+    }
+  }
+
+  &[contenteditable="true"] {
+    .unselection-attach-more:hover {
+      .unselection-attach-menu {
+        display: inline-block;
+      }
     }
   }
 
