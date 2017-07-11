@@ -15,6 +15,8 @@ class UnSelectionBlock extends SimpleModule
     _delete: 'unselection-attach-delete'
     progress: 'unSelection-attach-progress'
     globalLink: 'unselection-global-link'
+    taskBlock: 'unselection-task-block'
+    taskBlockSetting: 'unselection-task-block-setting'
 
   @selector:
     content: '.unselection-content'
@@ -31,6 +33,10 @@ class UnSelectionBlock extends SimpleModule
     img: 'data-img'
     globalLink: 'data-global-link'
     globalLinkType: 'data-global-link-type'
+    taskBlock: 'data-task-block'
+    taskBlockSetting: 'data-setting'
+    taskBlockTitle: 'data-title'
+    taskBlockSubTitle: 'data-sub-title'
 
   _selectedWrapper: null
 
@@ -73,6 +79,17 @@ class UnSelectionBlock extends SimpleModule
           </span>
         </span>
       </inherit>"
+    taskBlock: "
+      <inherit>
+        <span class='#{UnSelectionBlock.className.inlineWrapper}'>
+          <span class='#{UnSelectionBlock.className.taskBlock} #{UnSelectionBlock.className.content}' contenteditable='false'>
+            <span data-title=''></span>
+            <span data-sub-title=''></span>
+            <span class='simditor-r-icon-setting #{UnSelectionBlock.className.taskBlockSetting}'></span>
+            <span class='simditor-r-icon-close #{UnSelectionBlock.className._delete}'></span>
+          </span>
+        </span>
+      </inherit>"
 
   _init: ->
     @editor = @_module
@@ -95,6 +112,9 @@ class UnSelectionBlock extends SimpleModule
 
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.attach}", (e) =>
       @_unAttachClick(e)
+
+    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.taskBlockSetting}", (e) =>
+      @_unTaskBlockSettingClick(e)
 
     $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
       if !@_isUnSelectionClick      
@@ -195,11 +215,31 @@ class UnSelectionBlock extends SimpleModule
       if data.file.type == 'file'
         $type.addClass 'simditor-r-icon-attachment'
 
+  @getTaskBlock: (data, wrapper) ->
+    wrapper = if wrapper then UnSelectionBlock.createWrapperByP wrapper.empty() else UnSelectionBlock.getWrapper(data)
+    UnSelectionBlock.fillDataToTaskBlock data, wrapper
+    wrapper
+
+  @getTaskBlockHtml: (data, wrapper) ->
+    wrapper = UnSelectionBlock.getTaskBlock data, wrapper
+    $(document.createElement('div')).append(wrapper).html()
+
+  @fillDataToTaskBlock: (data, wrapper) ->
+    wrapper.append UnSelectionBlock._tpl.taskBlock
+    wrapper.attr UnSelectionBlock.attr.taskBlock, true
+    wrapper.attr UnSelectionBlock.attr.taskBlockSetting, JSON.stringify(data.setting)
+    $title = wrapper.find("[#{UnSelectionBlock.attr.taskBlockTitle}]")
+    $subTitle = wrapper.find("[#{UnSelectionBlock.attr.taskBlockSubTitle}]")
+
+    $title.attr UnSelectionBlock.attr.taskBlockTitle, data.info.title
+    $subTitle.attr UnSelectionBlock.attr.taskBlockSubTitle, data.info.subTitle
+
   @getWrapper: (data = {file:{}}) ->
     wrapper = $(UnSelectionBlock._tpl.wrapper)
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator())
-    id = if data.file and data.file.id then data.file.id else ''
-    wrapper.attr(UnSelectionBlock.attr.fileId, id)
+    if data.file and data.file.id
+      wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id)
+    wrapper
 
   @createWrapperByP: (p) -> # 通过一个p标签，来创建一个包裹标签
     p = $(p)
@@ -304,6 +344,18 @@ class UnSelectionBlock extends SimpleModule
         id: id
         preview: opt.preview
         download: opt.download
+
+  _unTaskBlockSettingClick: (e) ->
+    wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.taskBlock}=true]", @editor.body)
+    if wrapper.length
+      setting = wrapper.attr UnSelectionBlock.attr.taskBlockSetting
+      uniqueId = wrapper.attr UnSelectionBlock.attr.unique
+      try
+        json = JSON.parse setting
+        @editor.trigger 'taskBlockSetting',
+          setting: json
+          uniqueId: uniqueId
+      catch e
 
   _selectWrapper: (wrapper) ->
     html = wrapper.html()

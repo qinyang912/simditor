@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TitleButton, Toolbar, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -475,8 +475,8 @@ Formatter = (function(superClass) {
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link'],
-      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type']
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
+      span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size'],
@@ -2913,7 +2913,9 @@ UnSelectionBlock = (function(superClass) {
     download: 'unselection-attach-download',
     _delete: 'unselection-attach-delete',
     progress: 'unSelection-attach-progress',
-    globalLink: 'unselection-global-link'
+    globalLink: 'unselection-global-link',
+    taskBlock: 'unselection-task-block',
+    taskBlockSetting: 'unselection-task-block-setting'
   };
 
   UnSelectionBlock.selector = {
@@ -2931,7 +2933,11 @@ UnSelectionBlock = (function(superClass) {
     attach: 'data-attach',
     img: 'data-img',
     globalLink: 'data-global-link',
-    globalLinkType: 'data-global-link-type'
+    globalLinkType: 'data-global-link-type',
+    taskBlock: 'data-task-block',
+    taskBlockSetting: 'data-setting',
+    taskBlockTitle: 'data-title',
+    taskBlockSubTitle: 'data-sub-title'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
@@ -2941,7 +2947,8 @@ UnSelectionBlock = (function(superClass) {
     attach: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.attach + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span class='simditor-r-icon-attachment unselection-attach-icon'></span> <span data-name=''></span> <span data-size='24M'></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span> <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank'></a> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
     img: "<img src='' alt=''>",
     uploader: "<span data-progress=''><span></span></span>",
-    globalLink: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.globalLink + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span data-global-link-type=''></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>"
+    globalLink: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.globalLink + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span data-global-link-type=''></span> <span data-name=''></span> <span class='unselection-attach-operation' contenteditable='false'> <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'> <span class='unselection-attach-menu'> <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span> </span> </span> </span> </span> </span> </inherit>",
+    taskBlock: "<inherit> <span class='" + UnSelectionBlock.className.inlineWrapper + "'> <span class='" + UnSelectionBlock.className.taskBlock + " " + UnSelectionBlock.className.content + "' contenteditable='false'> <span data-title=''></span> <span data-sub-title=''></span> <span class='simditor-r-icon-setting " + UnSelectionBlock.className.taskBlockSetting + "'></span> <span class='simditor-r-icon-close " + UnSelectionBlock.className._delete + "'></span> </span> </span> </inherit>"
   };
 
   UnSelectionBlock.prototype._init = function() {
@@ -2974,6 +2981,11 @@ UnSelectionBlock = (function(superClass) {
     this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.attach, (function(_this) {
       return function(e) {
         return _this._unAttachClick(e);
+      };
+    })(this));
+    this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.taskBlockSetting, (function(_this) {
+      return function(e) {
+        return _this._unTaskBlockSettingClick(e);
       };
     })(this));
     $(document).on('click.simditor-unSelection-' + this.editor.id, (function(_this) {
@@ -3102,8 +3114,30 @@ UnSelectionBlock = (function(superClass) {
     }
   };
 
+  UnSelectionBlock.getTaskBlock = function(data, wrapper) {
+    wrapper = wrapper ? UnSelectionBlock.createWrapperByP(wrapper.empty()) : UnSelectionBlock.getWrapper(data);
+    UnSelectionBlock.fillDataToTaskBlock(data, wrapper);
+    return wrapper;
+  };
+
+  UnSelectionBlock.getTaskBlockHtml = function(data, wrapper) {
+    wrapper = UnSelectionBlock.getTaskBlock(data, wrapper);
+    return $(document.createElement('div')).append(wrapper).html();
+  };
+
+  UnSelectionBlock.fillDataToTaskBlock = function(data, wrapper) {
+    var $subTitle, $title;
+    wrapper.append(UnSelectionBlock._tpl.taskBlock);
+    wrapper.attr(UnSelectionBlock.attr.taskBlock, true);
+    wrapper.attr(UnSelectionBlock.attr.taskBlockSetting, JSON.stringify(data.setting));
+    $title = wrapper.find("[" + UnSelectionBlock.attr.taskBlockTitle + "]");
+    $subTitle = wrapper.find("[" + UnSelectionBlock.attr.taskBlockSubTitle + "]");
+    $title.attr(UnSelectionBlock.attr.taskBlockTitle, data.info.title);
+    return $subTitle.attr(UnSelectionBlock.attr.taskBlockSubTitle, data.info.subTitle);
+  };
+
   UnSelectionBlock.getWrapper = function(data) {
-    var id, wrapper;
+    var wrapper;
     if (data == null) {
       data = {
         file: {}
@@ -3111,8 +3145,10 @@ UnSelectionBlock = (function(superClass) {
     }
     wrapper = $(UnSelectionBlock._tpl.wrapper);
     wrapper.attr(UnSelectionBlock.attr.unique, UnSelectionBlock._guidGenerator());
-    id = data.file && data.file.id ? data.file.id : '';
-    return wrapper.attr(UnSelectionBlock.attr.fileId, id);
+    if (data.file && data.file.id) {
+      wrapper.attr(UnSelectionBlock.attr.fileId, data.file.id);
+    }
+    return wrapper;
   };
 
   UnSelectionBlock.createWrapperByP = function(p) {
@@ -3266,6 +3302,24 @@ UnSelectionBlock = (function(superClass) {
         preview: opt.preview,
         download: opt.download
       });
+    }
+  };
+
+  UnSelectionBlock.prototype._unTaskBlockSettingClick = function(e) {
+    var json, setting, uniqueId, wrapper;
+    wrapper = $(e.target).closest("[" + UnSelectionBlock.attr.taskBlock + "=true]", this.editor.body);
+    if (wrapper.length) {
+      setting = wrapper.attr(UnSelectionBlock.attr.taskBlockSetting);
+      uniqueId = wrapper.attr(UnSelectionBlock.attr.unique);
+      try {
+        json = JSON.parse(setting);
+        return this.editor.trigger('taskBlockSetting', {
+          setting: json,
+          uniqueId: uniqueId
+        });
+      } catch (_error) {
+        e = _error;
+      }
     }
   };
 
@@ -3522,6 +3576,48 @@ GlobalLink = (function(superClass) {
 
 })(SimpleModule);
 
+TaskBlock = (function(superClass) {
+  extend(TaskBlock, superClass);
+
+  function TaskBlock() {
+    return TaskBlock.__super__.constructor.apply(this, arguments);
+  }
+
+  TaskBlock.pluginName = 'TaskBlock';
+
+  TaskBlock.prototype._init = function() {
+    return this.editor = this._module;
+  };
+
+  TaskBlock.prototype.insert = function(data) {
+    return this.createTaskBlock(data);
+  };
+
+  TaskBlock.prototype.createTaskBlock = function(data) {
+    var $newLine, $wrapper, range, rootNode;
+    if (!this.editor.inputManager.focused) {
+      this.editor.focus();
+    }
+    range = this.editor.selection.range();
+    range.deleteContents();
+    this.editor.selection.range(range);
+    $newLine = $('<p><br></p>');
+    rootNode = this.editor.selection.rootNodes().last();
+    $wrapper = null;
+    $wrapper = UnSelectionBlock.getTaskBlock(data);
+    if (rootNode.is('p') && this.editor.util.isEmptyNode(rootNode)) {
+      $(rootNode).replaceWith($wrapper);
+    } else {
+      rootNode.after($wrapper);
+    }
+    $wrapper.after($newLine);
+    return this.editor.selection.setRangeAtStartOf($newLine, range);
+  };
+
+  return TaskBlock;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -3538,6 +3634,8 @@ Simditor = (function(superClass) {
   Simditor.connect(UnSelectionBlock);
 
   Simditor.connect(GlobalLink);
+
+  Simditor.connect(TaskBlock);
 
   Simditor.connect(UndoManager);
 

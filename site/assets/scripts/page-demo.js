@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, toolbar;
+    var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, taskBlockHtml, toolbar;
     Simditor.locale = 'en-US';
     toolbar = ['title', 'undo', 'redo', 'formatPaint', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol"];
@@ -36,7 +36,17 @@
         type: 'doc'
       }
     });
-    editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + '<p>sfs</p>');
+    taskBlockHtml = Simditor.UnSelectionBlock.getTaskBlockHtml({
+      setting: {
+        preContent: 'time',
+        taskContent: ['note', 'starTrend']
+      },
+      info: {
+        title: '自动填充日程任务',
+        subTitle: '筛选结果：今天、已完成'
+      }
+    });
+    editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>');
     $preview = $('#preview');
     if ($preview.length > 0) {
       return editor.on('valuechanged', function(e) {

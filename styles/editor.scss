@@ -803,6 +803,61 @@ $simditor-button-width: 46px;
         text-align: center;
       }
     }
+    .unselection-task-block {
+      display: inline-block;
+      height: 70px;
+      width: 100%;
+      background: #F4F3F3;
+      border: 1px solid transparent;
+      position: relative;
+      [data-title] {
+        font-size: 14px;
+        color: #333;
+        letter-spacing: 0;
+        display: block;
+        padding-left: 20px;
+        text-align: left;
+        margin-top: 13px;
+        margin-bottom: 7px;
+        &:before {
+          content: attr(data-title)
+        }
+      }
+      [data-sub-title] {
+        font-size: 12px;
+        color: #9B9B9B;
+        letter-spacing: 0;
+        display: block;
+        padding-left: 20px;
+        text-align: left;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        &:before {
+          content: attr(data-sub-title)
+        }
+      }
+      .simditor-r-icon-setting {
+        position: absolute;
+        top: 50%;
+        right: 21px;
+        margin-top: -0.53em;
+        cursor: pointer;
+      }
+      .simditor-r-icon-close {
+        position: absolute;
+        top: 0; right: 0;
+        margin-top: -0.5em;
+        margin-right: -0.5em;
+        background: #FFF;
+        border: 1px solid #F1F1F1;
+        box-shadow: 0 0 1px 0 rgba(0,0,0,0.20);
+        border-radius: 50%;
+        color: #BDBDBD;
+        cursor: pointer;
+        display: none;
+      }
+    }
     inherit {
       display: block;
     }
@@ -827,6 +882,11 @@ $simditor-button-width: 46px;
     .unselection-attach-more:hover {
       .unselection-attach-menu {
         display: inline-block;
+      }
+    }
+    .unselection-task-block:hover {
+      .simditor-r-icon-close {
+        display: block;
       }
     }
   }
