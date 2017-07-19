@@ -20,6 +20,7 @@ class UnSelectionBlock extends SimpleModule
 
   @selector:
     content: '.unselection-content'
+    subTitle: '[data-sub-title]'
 
   @attr:
     select: 'data-unselection-select'
@@ -271,6 +272,14 @@ class UnSelectionBlock extends SimpleModule
       (((1+Math.random())*0x10000)|0).toString(16).substring(1)
     (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
 
+  # 重置任务块的数据
+  resetTaskBlock: (data) -> # { setting, subTitle, uniqueId }
+    uniqueId = data.uniqueId
+    $wrapper = @editor.body.find('[data-unique-id="' + uniqueId + '"]')
+    if $wrapper.length
+      $wrapper.attr UnSelectionBlock.attr.taskBlockSetting, JSON.stringify(data.setting)
+      $wrapper.find(UnSelectionBlock.selector.subTitle).attr UnSelectionBlock.attr.taskBlockSubTitle, data.subTitle
+
   _skipToPrevLine: () ->
     wrapper = @_selectedWrapper[0]
     previousSibling = @editor.util.getPrevNode wrapper
@@ -350,11 +359,13 @@ class UnSelectionBlock extends SimpleModule
     if wrapper.length
       setting = wrapper.attr UnSelectionBlock.attr.taskBlockSetting
       uniqueId = wrapper.attr UnSelectionBlock.attr.unique
+      subTitle = wrapper.find(UnSelectionBlock.selector.subTitle).attr UnSelectionBlock.attr.taskBlockSubTitle
       try
         json = JSON.parse setting
         @editor.trigger 'taskBlockSetting',
           setting: json
           uniqueId: uniqueId
+          subTitle: subTitle
       catch e
 
   _selectWrapper: (wrapper) ->
