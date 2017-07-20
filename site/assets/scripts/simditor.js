@@ -3603,7 +3603,8 @@ TaskBlock = (function(superClass) {
   };
 
   TaskBlock.prototype.insert = function(data) {
-    return this.createTaskBlock(data);
+    this.createTaskBlock(data);
+    return this.editor.trigger('valuechanged');
   };
 
   TaskBlock.prototype.createTaskBlock = function(data) {

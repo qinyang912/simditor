@@ -5,6 +5,7 @@ class TaskBlock extends SimpleModule
 
   insert: (data) ->
     @createTaskBlock data
+    @editor.trigger 'valuechanged'
 
   createTaskBlock: (data) ->
     @editor.focus() unless @editor.inputManager.focused
