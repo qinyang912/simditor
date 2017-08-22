@@ -31,13 +31,6 @@ class GlobalLink extends SimpleModule
     else
       rootNode.after($wrapper)
 
-    # if rootNode.is('p') and @editor.util.isEmptyNode rootNode
-    #   $totalWrap = UnSelectionBlock.getGlobalLink {file: data}, rootNode
-    # else
-    #   $wrapper = UnSelectionBlock.getGlobalLink {file: data}
-    #   rootNode.after($wrapper)
-    #   $totalWrap = $wrapper;
-
     $wrapper.after($newLine);
 
     @editor.selection.setRangeAtStartOf $newLine, range

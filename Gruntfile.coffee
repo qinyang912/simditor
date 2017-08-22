@@ -23,6 +23,7 @@ module.exports = (grunt) ->
             'src/unSelectionBlock.coffee'
             'src/wordNum.coffee'
             'src/globalLink.coffee'
+            'src/taskBlock.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
             'src/domRange.coffee'

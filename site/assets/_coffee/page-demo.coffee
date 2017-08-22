@@ -56,7 +56,15 @@ $ ->
       id: 1
       type: 'doc'
 
-  editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + '<p>sfs</p>')
+  taskBlockHtml = Simditor.UnSelectionBlock.getTaskBlockHtml
+    setting:
+      preContent: 'time'
+      taskContent: ['note', 'starTrend']
+    info:
+      title: '自动填充日程任务'
+      subTitle: '筛选结果：今天、已完成'
+
+  editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>')
 
   $preview = $('#preview')
   if $preview.length > 0
