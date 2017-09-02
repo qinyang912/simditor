@@ -14,7 +14,7 @@ class Formatter extends SimpleModule
     @_allowedTags = $.merge(
       ['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike',
       'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1',
-      'h2', 'h3', 'h4', 'hr', 'inherit'],
+      'h2', 'h3', 'h4', 'hr', 'inherit', 'input'],
       @opts.allowedTags
     )
 
@@ -34,6 +34,9 @@ class Formatter extends SimpleModule
         'data-size', 'href', 'data-bucket', 
         'data-osskey', 'data-key-name', 'title', 
         'data-global-link-type', 'data-title', 'data-sub-title'
+      ]
+      input: [
+        'class', 'type', 'value', 'disabled'
       ]
     , @opts.allowedAttributes
 
