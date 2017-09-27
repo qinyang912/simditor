@@ -13,7 +13,7 @@ class ColorButton extends Button
     super args...
 
   renderMenu: ->
-    $('''
+    list = '''
     <ul class="color-list">
       <li><a href="javascript:;" class="font-color font-color-1"></a></li>
       <li><a href="javascript:;" class="font-color font-color-2"></a></li>
@@ -24,9 +24,14 @@ class ColorButton extends Button
       <li><a href="javascript:;" class="font-color font-color-7"></a></li>
       <li><a href="javascript:;" class="font-color font-color-default"></a></li>
     </ul>
-    ''').appendTo(@menuWrapper)
+    '''
+    customColor = "
+      <label class=\"custom-color\" for=\"color-picker\">#{@_t('customColor')}</label>
+      <input type=\"color\" id=\"color-picker\">
+    "
+    $(list + customColor).appendTo(@menuWrapper)
 
-    @menuWrapper.on 'mousedown', '.color-list', (e) ->
+    @menuWrapper.on 'mousedown', '.color-list,.custom-color', (e) ->
       false
 
     @menuWrapper.on 'click', '.font-color', (e) =>
@@ -47,7 +52,7 @@ class ColorButton extends Button
 
       range = @editor.selection.range()
       if !$link.hasClass('font-color-default') and range.collapsed
-        textNode = document.createTextNode(@_t('coloredText'))
+        textNode = document.createTextNode('')
         range.insertNode textNode
         range.selectNodeContents textNode
         @editor.selection.range range

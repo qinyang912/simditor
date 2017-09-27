@@ -3889,6 +3889,7 @@ Simditor.i18n = {
     'code': '插入代码',
     'color': '文字颜色',
     'coloredText': '彩色文字',
+    'customColor': '自定义颜色',
     'hr': '分隔线',
     'image': '插入图片',
     'externalImage': '外链图片',
@@ -3945,6 +3946,7 @@ Simditor.i18n = {
     'code': 'Code',
     'color': 'Text Color',
     'coloredText': 'Colored Text',
+    'customColor': 'Custom Color',
     'hr': 'Horizontal Line',
     'image': 'Insert Image',
     'externalImage': 'External Image',
@@ -5489,8 +5491,11 @@ ColorButton = (function(superClass) {
   };
 
   ColorButton.prototype.renderMenu = function() {
-    $('<ul class="color-list">\n  <li><a href="javascript:;" class="font-color font-color-1"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-2"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-3"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-4"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-5"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-6"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-7"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-default"></a></li>\n</ul>').appendTo(this.menuWrapper);
-    this.menuWrapper.on('mousedown', '.color-list', function(e) {
+    var customColor, list;
+    list = '<ul class="color-list">\n  <li><a href="javascript:;" class="font-color font-color-1"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-2"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-3"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-4"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-5"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-6"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-7"></a></li>\n  <li><a href="javascript:;" class="font-color font-color-default"></a></li>\n</ul>';
+    customColor = "<label class=\"custom-color\" for=\"color-picker\">" + (this._t('customColor')) + "</label> <input type=\"color\" id=\"color-picker\">";
+    $(list + customColor).appendTo(this.menuWrapper);
+    this.menuWrapper.on('mousedown', '.color-list,.custom-color', function(e) {
       return false;
     });
     return this.menuWrapper.on('click', '.font-color', (function(_this) {
@@ -5514,7 +5519,7 @@ ColorButton = (function(superClass) {
         }
         range = _this.editor.selection.range();
         if (!$link.hasClass('font-color-default') && range.collapsed) {
-          textNode = document.createTextNode(_this._t('coloredText'));
+          textNode = document.createTextNode('');
           range.insertNode(textNode);
           range.selectNodeContents(textNode);
           _this.editor.selection.range(range);
