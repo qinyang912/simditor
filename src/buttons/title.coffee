@@ -5,7 +5,7 @@ class TitleButton extends Button
 
   htmlTag: 'h1, h2, h3, h4, h5'
 
-  disableTag: 'pre, table'
+  disableTag: 'pre, table, li'
 
   _init: ->
     @menu = [{

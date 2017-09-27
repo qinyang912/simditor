@@ -3,7 +3,7 @@ class OutdentButton extends Button
 
   name: 'outdent'
 
-  icon: 'outdent'
+  icon: 'left-retraction'
 
   _init: ->
     @title = @_t(@name) + ' (Shift + Tab)'

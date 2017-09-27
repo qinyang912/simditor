@@ -3,7 +3,7 @@ class UndoButton extends Button
 
   name: 'undo'
 
-  icon: 'simditor-r-icon-undo'
+  icon: 'undo'
 
   _init: ->
     if @editor.util.os.mac

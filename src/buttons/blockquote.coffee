@@ -3,7 +3,7 @@ class BlockquoteButton extends Button
 
   name: 'blockquote'
 
-  icon: 'quote-left'
+  icon: 'quote'
 
   htmlTag: 'blockquote'
 

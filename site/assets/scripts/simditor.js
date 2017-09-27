@@ -5168,7 +5168,7 @@ TitleButton = (function(superClass) {
 
   TitleButton.prototype.htmlTag = 'h1, h2, h3, h4, h5';
 
-  TitleButton.prototype.disableTag = 'pre, table';
+  TitleButton.prototype.disableTag = 'pre, table, li';
 
   TitleButton.prototype._init = function() {
     this.menu = [
@@ -5245,7 +5245,7 @@ FontScaleButton = (function(superClass) {
 
   FontScaleButton.prototype.name = 'fontScale';
 
-  FontScaleButton.prototype.icon = 'font';
+  FontScaleButton.prototype.icon = 'type-size';
 
   FontScaleButton.prototype.disableTag = 'pre';
 
@@ -5256,35 +5256,31 @@ FontScaleButton = (function(superClass) {
       {
         name: '75%',
         text: '12',
-        param: '12px'
+        param: '1'
       }, {
         name: '87.5%',
         text: '14',
-        param: '14px'
+        param: '2'
       }, {
         name: '100%',
         text: '16',
-        param: '16px'
+        param: '3'
       }, {
         name: '112.5%',
         text: '18',
-        param: '18px'
+        param: '4'
       }, {
         name: '125%',
         text: '20',
-        param: '20px'
+        param: '5'
       }, {
         name: '150%',
         text: '24',
-        param: '24px'
+        param: '6'
       }, {
         name: '187.5%',
         text: '30',
-        param: '30px'
-      }, {
-        name: '225%',
-        text: '36',
-        param: '36px'
+        param: '7'
       }
     ];
     return FontScaleButton.__super__._init.call(this);
@@ -5295,10 +5291,11 @@ FontScaleButton = (function(superClass) {
     range = this.editor.selection.range();
     startNodes = this.editor.selection.startNodes();
     endNodes = this.editor.selection.endNodes();
-    startNode = startNodes.filter('span[style*="font-size"]');
-    endNode = endNodes.filter('span[style*="font-size"]');
+    startNode = startNodes.eq(0);
+    endNode = endNodes.eq(0);
     active = startNodes.length > 0 && endNodes.length > 0 && startNode.is(endNode);
     this.node = active ? startNode : null;
+    this.node = this.node !== null && this.node[0].nodeType === Node.TEXT_NODE ? this.node.parent() : this.node;
     this.setActive(active);
     return this.active;
   };
@@ -5306,39 +5303,17 @@ FontScaleButton = (function(superClass) {
   FontScaleButton.prototype.setActive = function(active, param) {
     var fontSize;
     FontScaleButton.__super__.setActive.call(this, active);
-    this.el.removeClass('active-font active-12 active-14 active-16 active-18 active-20 active-24 active-30 active-36');
+    this.el.removeClass('active-font');
     if (!active) {
       return;
     }
     fontSize = window.getComputedStyle(this.node[0], null).getPropertyValue('font-size');
-    return this.el.addClass('active active-font active-' + fontSize.replace('px', ''));
+    this.el.addClass('active active-font');
+    return this.el.find('span').attr('data-size', fontSize.replace('px', ''));
   };
 
   FontScaleButton.prototype.command = function(param) {
-    var $scales, containerNode, range;
-    range = this.editor.selection.range();
-    if (range.collapsed) {
-      return;
-    }
-    document.execCommand('styleWithCSS', false, true);
-    document.execCommand('fontSize', false, 3);
-    document.execCommand('styleWithCSS', false, false);
-    this.editor.selection.reset();
-    this.editor.selection.range();
-    containerNode = this.editor.selection.containerNode();
-    if (containerNode[0].nodeType === Node.TEXT_NODE) {
-      $scales = containerNode.closest('[style*="font-size"]');
-    } else {
-      $scales = containerNode.find('[style*="font-size"]');
-    }
-    $scales.each((function(_this) {
-      return function(i, n) {
-        var $span, size;
-        $span = $(n);
-        size = n.style.fontSize;
-        return $span.css('fontSize', param);
-      };
-    })(this));
+    document.execCommand('fontSize', false, param);
     return this.editor.trigger('valuechanged');
   };
 
@@ -5501,7 +5476,7 @@ ColorButton = (function(superClass) {
 
   ColorButton.prototype.name = 'color';
 
-  ColorButton.prototype.icon = 'tint';
+  ColorButton.prototype.icon = 'type-color';
 
   ColorButton.prototype.disableTag = 'pre';
 
@@ -5646,7 +5621,7 @@ OrderListButton = (function(superClass) {
 
   OrderListButton.prototype.name = 'ol';
 
-  OrderListButton.prototype.icon = 'list-ol';
+  OrderListButton.prototype.icon = 'ordered-list';
 
   OrderListButton.prototype.htmlTag = 'ol';
 
@@ -5677,7 +5652,7 @@ UnorderListButton = (function(superClass) {
 
   UnorderListButton.prototype.name = 'ul';
 
-  UnorderListButton.prototype.icon = 'list-ul';
+  UnorderListButton.prototype.icon = 'unordered-list';
 
   UnorderListButton.prototype.htmlTag = 'ul';
 
@@ -5710,7 +5685,7 @@ BlockquoteButton = (function(superClass) {
 
   BlockquoteButton.prototype.name = 'blockquote';
 
-  BlockquoteButton.prototype.icon = 'quote-left';
+  BlockquoteButton.prototype.icon = 'quote';
 
   BlockquoteButton.prototype.htmlTag = 'blockquote';
 
@@ -6247,7 +6222,7 @@ ImageButton = (function(superClass) {
 
   ImageButton.prototype.name = 'image';
 
-  ImageButton.prototype.icon = 'picture-o';
+  ImageButton.prototype.icon = 'picture';
 
   ImageButton.prototype.htmlTag = 'img';
 
@@ -6967,7 +6942,7 @@ IndentButton = (function(superClass) {
 
   IndentButton.prototype.name = 'indent';
 
-  IndentButton.prototype.icon = 'indent';
+  IndentButton.prototype.icon = 'right-retraction';
 
   IndentButton.prototype._init = function() {
     this.title = this._t(this.name) + ' (Tab)';
@@ -6995,7 +6970,7 @@ OutdentButton = (function(superClass) {
 
   OutdentButton.prototype.name = 'outdent';
 
-  OutdentButton.prototype.icon = 'outdent';
+  OutdentButton.prototype.icon = 'left-retraction';
 
   OutdentButton.prototype._init = function() {
     this.title = this._t(this.name) + ' (Shift + Tab)';
@@ -7023,7 +6998,7 @@ HrButton = (function(superClass) {
 
   HrButton.prototype.name = 'hr';
 
-  HrButton.prototype.icon = 'minus';
+  HrButton.prototype.icon = 'cut-off-rule';
 
   HrButton.prototype.htmlTag = 'hr';
 
@@ -7577,7 +7552,7 @@ StrikethroughButton = (function(superClass) {
 
   StrikethroughButton.prototype.name = 'strikethrough';
 
-  StrikethroughButton.prototype.icon = 'strikethrough';
+  StrikethroughButton.prototype.icon = 'delete-line-text';
 
   StrikethroughButton.prototype.htmlTag = 'strike';
 
@@ -7696,7 +7671,7 @@ UndoButton = (function(superClass) {
 
   UndoButton.prototype.name = 'undo';
 
-  UndoButton.prototype.icon = 'simditor-r-icon-undo';
+  UndoButton.prototype.icon = 'undo';
 
   UndoButton.prototype._init = function() {
     if (this.editor.util.os.mac) {
@@ -7726,7 +7701,7 @@ UndoButton = (function(superClass) {
 
   UndoButton.prototype.name = 'redo';
 
-  UndoButton.prototype.icon = 'simditor-r-icon-redo';
+  UndoButton.prototype.icon = 'redo';
 
   UndoButton.prototype._init = function() {
     if (this.editor.util.os.mac) {
@@ -7756,7 +7731,7 @@ FormatPaintButton = (function(superClass) {
 
   FormatPaintButton.prototype.name = 'formatPaint';
 
-  FormatPaintButton.prototype.icon = 'simditor-r-icon-format_paint';
+  FormatPaintButton.prototype.icon = 'format-paint';
 
   FormatPaintButton.prototype.disableTag = 'pre,table';
 
@@ -7898,7 +7873,7 @@ AttachButton = (function(superClass) {
 
   AttachButton.prototype.name = 'attach';
 
-  AttachButton.prototype.icon = 'simditor-r-icon-attachment';
+  AttachButton.prototype.icon = 'attach';
 
   AttachButton.prototype.disableTag = 'pre, table';
 

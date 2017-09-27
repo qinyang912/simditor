@@ -3,7 +3,7 @@ class ColorButton extends Button
 
   name: 'color'
 
-  icon: 'tint'
+  icon: 'type-color'
 
   disableTag: 'pre'
 

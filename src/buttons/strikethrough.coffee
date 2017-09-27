@@ -3,7 +3,7 @@ class StrikethroughButton extends Button
 
   name: 'strikethrough'
 
-  icon: 'strikethrough'
+  icon: 'delete-line-text'
 
   htmlTag: 'strike'
 

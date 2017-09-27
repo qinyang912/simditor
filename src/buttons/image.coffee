@@ -3,7 +3,7 @@ class ImageButton extends Button
 
   name: 'image'
 
-  icon: 'picture-o'
+  icon: 'picture'
 
   htmlTag: 'img'
 

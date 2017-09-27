@@ -3,7 +3,7 @@ class FormatPaintButton extends Button
 
   name: 'formatPaint'
 
-  icon: 'simditor-r-icon-format_paint'
+  icon: 'format-paint'
 
   disableTag: 'pre,table'
 

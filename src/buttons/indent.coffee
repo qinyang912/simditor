@@ -3,7 +3,7 @@ class IndentButton extends Button
 
   name: 'indent'
 
-  icon: 'indent'
+  icon: 'right-retraction'
 
   _init: ->
     @title = @_t(@name) + ' (Tab)'

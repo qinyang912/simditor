@@ -268,41 +268,10 @@ $simditor-button-width: 46px;
           }
           &.toolbar-item-fontScale {
             &.active-font span:before {
-              font-size: 19px;
+              font-size: 18px;
               font-weight: bold;
               font-family: 'Times New Roman';
-            }
-            &.active-12 span:before {
-              content: '12';
-              font-size: 18px;
-            }
-            &.active-14 span:before {
-              content: '14';
-              font-size: 18px;
-            }
-            &.active-16 span:before {
-              content: '16';
-              font-size: 18px;
-            }
-            &.active-18 span:before {
-              content: '18';
-              font-size: 18px;
-            }
-            &.active-20 span:before {
-              content: '20';
-              font-size: 18px;
-            }
-            &.active-24 span:before {
-              content: '24';
-              font-size: 18px;
-            }
-            &.active-30 span:before {
-              content: '30';
-              font-size: 18px;
-            }
-            &.active-36 span:before {
-              content: '36';
-              font-size: 18px;
+              content: attr(data-size);
             }
           }
         }
@@ -1043,4 +1012,20 @@ $simditor-button-width: 46px;
     vertical-align: middle;
   }
 
+  $font-size-map: (
+    1: 12px,
+    2: 14px,
+    3: 16px,
+    4: 18px,
+    5: 20px,
+    6: 24px,
+    7: 30px,
+    8: 36px
+  );
+
+  @each $size-num in map-keys($font-size-map) {
+    font[size="#{$size-num}"] {
+      font-size: map-get($font-size-map, $size-num);
+    }
+  }
 }

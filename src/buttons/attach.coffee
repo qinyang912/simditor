@@ -3,7 +3,7 @@ class AttachButton extends Button
 
   name: 'attach'
 
-  icon: 'simditor-r-icon-attachment'
+  icon: 'attach'
 
   disableTag: 'pre, table'
 

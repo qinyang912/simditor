@@ -42,7 +42,7 @@ class ListButton extends Button
 class OrderListButton extends ListButton
   type: 'ol'
   name: 'ol'
-  icon: 'list-ol'
+  icon: 'ordered-list'
   htmlTag: 'ol'
   shortcut: 'cmd+/'
   _init: ->
@@ -56,7 +56,7 @@ class OrderListButton extends ListButton
 class UnorderListButton extends ListButton
   type: 'ul'
   name: 'ul'
-  icon: 'list-ul'
+  icon: 'unordered-list'
   htmlTag: 'ul'
   shortcut: 'cmd+.'
   _init: ->
