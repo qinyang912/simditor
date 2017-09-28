@@ -26,15 +26,16 @@ class ColorButton extends Button
     </ul>
     '''
     customColor = "
-      <label class=\"custom-color\" for=\"color-picker\">#{@_t('customColor')}</label>
-      <input type=\"color\" id=\"color-picker\">
+      <label class=\"custom-color\">#{@_t('customColor')}</label>
     "
     $(list + customColor).appendTo(@menuWrapper)
 
-    @menuWrapper.on 'mousedown', '.color-list,.custom-color,input', (e) ->
+    @menuWrapper.on 'mousedown', '.color-list,.custom-color,input', (e) =>
       false
 
     @menuWrapper.on 'click', '.font-color', (e) =>
+      @menuWrapper.find('.custom-color').colpickHide();
+      console.log('clo')
       @wrapper.removeClass('menu-on')
       $link = $(e.currentTarget)
 
@@ -50,20 +51,25 @@ class ColorButton extends Button
 
       return unless hex
 
-      range = @editor.selection.range()
-      if !$link.hasClass('font-color-default') and range.collapsed
-        textNode = document.createTextNode('')
-        range.insertNode textNode
-        range.selectNodeContents textNode
-        @editor.selection.range range
+      @_format hex
 
-      # Use span[style] instead of font[color]
-      document.execCommand 'styleWithCSS', false, true
-      document.execCommand 'foreColor', false, hex
-      document.execCommand 'styleWithCSS', false, false
+    @menuWrapper.find('.custom-color').colpick
+      layout: 'hex'
+      submit: 0
+      onChange:(hsb, hex) =>
+        @_format "##{hex}"
 
-      unless @editor.util.support.oninput
-        @editor.trigger 'valuechanged'
+  _format:(hex) ->
+    range = @editor.selection.range()
+
+    # Use span[style] instead of font[color]
+    document.execCommand 'styleWithCSS', false, true
+    document.execCommand 'foreColor', false, hex
+    document.execCommand 'styleWithCSS', false, false
+
+    unless @editor.util.support.oninput
+      @editor.trigger 'valuechanged'
+
 
   _convertRgbToHex:(rgb) ->
     re = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g

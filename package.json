@@ -18,6 +18,7 @@
   "main": "lib/simditor.js",
   "homepage": "http://simditor.tower.im",
   "dependencies": {
+    "jquery-colpick": "^3.1.0",
     "simple-hotkeys": "~1.0.3",
     "simple-uploader": "git+https://github.com/qinyang912/simple-uploader.git"
   },
