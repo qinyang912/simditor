@@ -57,7 +57,7 @@ class FontScaleButton extends Button
     super active
     @el.removeClass 'active-font'
     return if not active
-    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size')    
+    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size')
     @el.addClass('active active-font')
     @el.find('span').attr 'data-size', fontSize.replace('px', '')
 
