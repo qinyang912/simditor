@@ -1,10 +1,4 @@
-
 class ColorButton extends Button
-
-  name: 'color'
-
-  icon: 'type-color'
-
   disableTag: 'pre'
 
   menu: true
@@ -35,7 +29,6 @@ class ColorButton extends Button
 
     @menuWrapper.on 'click', '.font-color', (e) =>
       @menuWrapper.find('.custom-color').colpickHide();
-      console.log('clo')
       @wrapper.removeClass('menu-on')
       $link = $(e.currentTarget)
 
@@ -85,4 +78,28 @@ class ColorButton extends Button
     rgbToHex match[1] * 1, match[2] * 1, match[3] * 1
 
 
-Simditor.Toolbar.addButton ColorButton
+class TypeColorButton extends ColorButton
+
+  name: 'color'
+
+  icon: 'type-color'
+
+class BackgroundColorButton extends ColorButton
+
+  name: 'background'
+
+  icon: 'background-color'
+
+  _format:(hex) ->
+    range = @editor.selection.range()
+
+    # Use span[style]
+    document.execCommand 'styleWithCSS', false, true
+    document.execCommand 'backColor', false, hex
+    document.execCommand 'styleWithCSS', false, false
+
+    unless @editor.util.support.oninput
+      @editor.trigger 'valuechanged'
+
+Simditor.Toolbar.addButton TypeColorButton
+Simditor.Toolbar.addButton BackgroundColorButton

@@ -13,6 +13,7 @@ $ ->
     'strikethrough', 
     'fontScale', 
     'color', 
+    'background',
     '|', 
     'ol', 
     'ul', 

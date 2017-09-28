@@ -1037,55 +1037,55 @@ colpick Color Picker / colpick.com
   font-size: 0;
   margin: 6px 0;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color, .simditor .more-option .toolbar-menu.toolbar-menu-color {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background, .simditor .more-option .toolbar-menu.toolbar-menu-color, .simditor .more-option .toolbar-menu.toolbar-menu-background {
   width: 96px;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list {
   height: 40px;
   margin: 10px 6px 0px 10px;
   padding: 0;
   min-width: 0;
   border-bottom: 1px solid #ddd;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li {
   float: left;
   margin: 0 4px 4px 0;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color {
   display: block;
   width: 16px;
   height: 16px;
   background: #dfdfdf;
   border-radius: 2px;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color:hover, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color:hover, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color:hover {
   opacity: 0.8;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color.font-color-default, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color.font-color-default, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color.font-color-default {
   background: #333333;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-1, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-1 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-1, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-1, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-1, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-1 {
   background: #E33737;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-2, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-2 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-2, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-2, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-2, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-2 {
   background: #e28b41;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-3, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-3 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-3, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-3, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-3, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-3 {
   background: #c8a732;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-4, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-4 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-4, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-4, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-4, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-4 {
   background: #209361;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-5, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-5 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-5, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-5, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-5, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-5 {
   background: #418caf;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-6, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-6 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-6, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-6, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-6, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-6 {
   background: #aa8773;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-7, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-7 {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .color-list li .font-color-7, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color-7, .simditor .more-option .toolbar-menu.toolbar-menu-color .color-list li .font-color-7, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color-7 {
   background: #999999;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .custom-color, .simditor .more-option .toolbar-menu.toolbar-menu-color .custom-color {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color .custom-color, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .custom-color, .simditor .more-option .toolbar-menu.toolbar-menu-color .custom-color, .simditor .more-option .toolbar-menu.toolbar-menu-background .custom-color {
   display: block;
   font-size: 12px;
   text-align: center;
@@ -1093,7 +1093,7 @@ colpick Color Picker / colpick.com
   line-height: 16px;
   cursor: pointer;
 }
-.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color input, .simditor .more-option .toolbar-menu.toolbar-menu-color input {
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color input, .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background input, .simditor .more-option .toolbar-menu.toolbar-menu-color input, .simditor .more-option .toolbar-menu.toolbar-menu-background input {
   visibility: hidden;
   position: absolute;
   top: -999999px;
