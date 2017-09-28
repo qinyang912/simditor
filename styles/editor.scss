@@ -426,7 +426,10 @@ $simditor-button-width: 46px;
           cursor: pointer;
         }
         input {
-          display: none;
+          visibility: hidden;
+          position: absolute;
+          top: -999999px;
+          left: -999999px;
         }
       }
 

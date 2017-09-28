@@ -580,7 +580,10 @@
   cursor: pointer;
 }
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-color input, .simditor .more-option .toolbar-menu.toolbar-menu-color input {
-  display: none;
+  visibility: hidden;
+  position: absolute;
+  top: -999999px;
+  left: -999999px;
 }
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table {
   background: #ffffff;

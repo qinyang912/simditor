@@ -31,7 +31,7 @@ class ColorButton extends Button
     "
     $(list + customColor).appendTo(@menuWrapper)
 
-    @menuWrapper.on 'mousedown', '.color-list,.custom-color', (e) ->
+    @menuWrapper.on 'mousedown', '.color-list,.custom-color,input', (e) ->
       false
 
     @menuWrapper.on 'click', '.font-color', (e) =>

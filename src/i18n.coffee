@@ -62,7 +62,7 @@ Simditor.i18n =
     'code': 'Code'
     'color': 'Text Color'
     'coloredText': 'Colored Text'
-    'customColor': 'Custom Color'
+    'customColor': 'Custom'
     'hr': 'Horizontal Line'
     'image': 'Insert Image'
     'externalImage': 'External Image'
