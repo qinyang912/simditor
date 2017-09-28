@@ -5597,8 +5597,6 @@ BackgroundColorButton = (function(superClass) {
   BackgroundColorButton.prototype.icon = 'background-color';
 
   BackgroundColorButton.prototype._format = function(hex) {
-    var range;
-    range = this.editor.selection.range();
     document.execCommand('styleWithCSS', false, true);
     document.execCommand('backColor', false, hex);
     document.execCommand('styleWithCSS', false, false);

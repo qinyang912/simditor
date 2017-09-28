@@ -1626,9 +1626,6 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body table td.active, .simditor .simditor-body table th.active, .editor-style table td.active, .editor-style table th.active {
   background-color: #ffffee;
 }
-.simditor .simditor-body span, .editor-style span {
-  display: inline-block;
-}
 .simditor .simditor-body img, .editor-style img {
   margin: 0 5px;
   vertical-align: middle;

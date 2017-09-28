@@ -1017,10 +1017,11 @@ $simditor-button-width: 46px;
       }
     }
   }
-
-  span {
-    display: inline-block;
-  }
+  
+  // 这个地方要不要把span设置为inline-block，还有待商榷
+  // span {
+  //   display: inline-block;
+  // }
 
 
   img {

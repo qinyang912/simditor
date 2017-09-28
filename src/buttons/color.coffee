@@ -91,8 +91,6 @@ class BackgroundColorButton extends ColorButton
   icon: 'background-color'
 
   _format:(hex) ->
-    range = @editor.selection.range()
-
     # Use span[style]
     document.execCommand 'styleWithCSS', false, true
     document.execCommand 'backColor', false, hex
