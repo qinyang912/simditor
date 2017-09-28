@@ -2,7 +2,7 @@
   $(function() {
     var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, taskBlockHtml, toolbar;
     Simditor.locale = 'en-US';
-    toolbar = ['title', 'undo', 'redo', 'formatPaint', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'background', 'time-stamp', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
+    toolbar = ['title', 'undo', 'redo', 'formatPaint', 'clear-format', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'background', 'time-stamp', 'line-height', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol"];
     if (mobilecheck()) {
       toolbar = mobileToolbar;

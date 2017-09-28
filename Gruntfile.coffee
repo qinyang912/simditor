@@ -54,6 +54,8 @@ module.exports = (grunt) ->
             'src/buttons/format-paint.coffee'
             'src/buttons/attach.coffee'
             'src/buttons/time-stamp.coffee'
+            'src/buttons/line-height.coffee'
+            'src/buttons/clear-format.coffee'
             'src/commands/commandBase.coffee'
             'src/commands/inlineCommand.coffee'
             'src/commands/stripCommand.coffee'

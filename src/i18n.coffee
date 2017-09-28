@@ -58,6 +58,8 @@ Simditor.i18n =
     'redo': '重做'
     'formatPaint': '格式刷'
     'time-stamp': '时间戳'
+    'line-height': '行高'
+    'clear-format': '清除格式'
   'en-US':
     'blockquote': 'Block Quote'
     'bold': 'Bold'
@@ -116,3 +118,5 @@ Simditor.i18n =
     'redo': 'Redo'
     'formatPaint': 'Format Paint'
     'time-stamp': 'Time Stamp'
+    'line-height': 'Line Height'
+    'clear-format': 'Clear Format'
