@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -3939,7 +3939,8 @@ Simditor.i18n = {
     'fontScaleXSmall': '超小字体',
     'undo': '撤销',
     'redo': '重做',
-    'formatPaint': '格式刷'
+    'formatPaint': '格式刷',
+    'time-stamp': '时间戳'
   },
   'en-US': {
     'blockquote': 'Block Quote',
@@ -3997,7 +3998,8 @@ Simditor.i18n = {
     'fontScaleXSmall': 'X Small Size',
     'undo': 'Undo',
     'redo': 'Redo',
-    'formatPaint': 'Format Paint'
+    'formatPaint': 'Format Paint',
+    'time-stamp': 'Time Stamp'
   }
 };
 
@@ -8105,6 +8107,43 @@ AttachButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(AttachButton);
+
+TimeStampButton = (function(superClass) {
+  extend(TimeStampButton, superClass);
+
+  function TimeStampButton() {
+    return TimeStampButton.__super__.constructor.apply(this, arguments);
+  }
+
+  TimeStampButton.prototype.name = 'time-stamp';
+
+  TimeStampButton.prototype.icon = 'time-stamp';
+
+  TimeStampButton.prototype._prefix = function(t) {
+    if (t < 10) {
+      return '0' + t;
+    } else {
+      return t;
+    }
+  };
+
+  TimeStampButton.prototype.command = function() {
+    var date, hour, minute, month, s, t, year;
+    t = new Date;
+    year = t.getFullYear();
+    month = this._prefix(t.getMonth() + 1);
+    date = this._prefix(t.getDate());
+    hour = this._prefix(t.getHours());
+    minute = this._prefix(t.getMinutes());
+    s = year + "-" + month + "-" + date + " " + hour + ":" + minute;
+    return document.execCommand('insertText', false, s);
+  };
+
+  return TimeStampButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(TimeStampButton);
 
 CommandBase = (function(superClass) {
   extend(CommandBase, superClass);

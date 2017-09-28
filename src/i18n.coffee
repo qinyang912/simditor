@@ -57,6 +57,7 @@ Simditor.i18n =
     'undo': '撤销'
     'redo': '重做'
     'formatPaint': '格式刷'
+    'time-stamp': '时间戳'
   'en-US':
     'blockquote': 'Block Quote'
     'bold': 'Bold'
@@ -114,3 +115,4 @@ Simditor.i18n =
     'undo': 'Undo'
     'redo': 'Redo'
     'formatPaint': 'Format Paint'
+    'time-stamp': 'Time Stamp'

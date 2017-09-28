@@ -14,6 +14,7 @@ $ ->
     'fontScale', 
     'color', 
     'background',
+    'time-stamp',
     '|', 
     'ol', 
     'ul', 
