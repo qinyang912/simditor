@@ -8298,7 +8298,7 @@ FontFamilyButton = (function(superClass) {
     })(this));
     Object.keys(FontFamilyButton.fontFamily).forEach((function(_this) {
       return function(name) {
-        return _this.fontFamilyMap[name.toLowerCase()] = FontFamilyButton.fontFamily[name];
+        return _this.fontFamilyMap[name.toLowerCase().replace(/"|'/g, '')] = FontFamilyButton.fontFamily[name];
       };
     })(this));
     return FontFamilyButton.__super__._init.call(this);
@@ -8328,7 +8328,7 @@ FontFamilyButton = (function(superClass) {
       return;
     }
     fontFamily = window.getComputedStyle(this.node[0], null).getPropertyValue('font-family');
-    family = this.fontFamilyMap[fontFamily.toLowerCase()];
+    family = this.fontFamilyMap[fontFamily.toLowerCase().replace(/"|'/g, '')];
     name = family ? family.text : '其他字体';
     return this.el.find('span').text(name);
   };
