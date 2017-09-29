@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -3942,7 +3942,8 @@ Simditor.i18n = {
     'formatPaint': '格式刷',
     'time-stamp': '时间戳',
     'line-height': '行高',
-    'clear-format': '清除格式'
+    'clear-format': '清除格式',
+    'font-family': '字体'
   },
   'en-US': {
     'blockquote': 'Block Quote',
@@ -4003,7 +4004,8 @@ Simditor.i18n = {
     'formatPaint': 'Format Paint',
     'time-stamp': 'Time Stamp',
     'line-height': 'Line Height',
-    'clear-format': 'Clear Format'
+    'clear-format': 'Clear Format',
+    'font-family': 'Font Family'
   }
 };
 
@@ -4943,9 +4945,14 @@ Button = (function(superClass) {
         'data-param': menuItem.param
       }).addClass('menu-item-' + menuItem.name);
       if (menuItem.icon) {
-        results.push($menuBtnEl.find('span').addClass(this.iconClassOf(menuItem.icon)));
+        $menuBtnEl.find('span').addClass(this.iconClassOf(menuItem.icon));
       } else {
-        results.push($menuBtnEl.find('span').text(menuItem.text));
+        $menuBtnEl.find('span').text(menuItem.text);
+      }
+      if (menuItem.style) {
+        results.push($menuBtnEl.find('span').attr('style', menuItem.style));
+      } else {
+        results.push(void 0);
       }
     }
     return results;
@@ -5310,7 +5317,7 @@ FontScaleButton = (function(superClass) {
     return this.active;
   };
 
-  FontScaleButton.prototype.setActive = function(active, param) {
+  FontScaleButton.prototype.setActive = function(active) {
     var fontSize;
     FontScaleButton.__super__.setActive.call(this, active);
     this.el.removeClass('active-font');
@@ -8162,6 +8169,8 @@ LineHeightButton = (function(superClass) {
 
   LineHeightButton.prototype.disableTag = 'pre';
 
+  LineHeightButton.prototype.menu = true;
+
   return LineHeightButton;
 
 })(Button);
@@ -8188,6 +8197,153 @@ ClearFormatButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(ClearFormatButton);
+
+FontFamilyButton = (function(superClass) {
+  extend(FontFamilyButton, superClass);
+
+  function FontFamilyButton() {
+    return FontFamilyButton.__super__.constructor.apply(this, arguments);
+  }
+
+  FontFamilyButton.prototype.name = 'font-family';
+
+  FontFamilyButton.prototype.disableTag = 'pre';
+
+  FontFamilyButton.prototype.menu = true;
+
+  FontFamilyButton.prototype.text = '微软雅黑';
+
+  FontFamilyButton.fontFamily = {
+    '"Microsoft YaHei", STXihei': {
+      name: 'yahei',
+      text: '微软雅黑',
+      param: '"Microsoft YaHei", STXihei',
+      style: 'font-family:"Microsoft YaHei", STXihei;'
+    },
+    'SimSun, STSong': {
+      name: 'SimSun',
+      text: '宋体',
+      param: 'SimSun, STSong',
+      style: 'font-family:SimSun, STSong;'
+    },
+    'NSimSun': {
+      name: 'NSimSun',
+      text: '新宋体',
+      param: 'NSimSun',
+      style: 'font-family:NSimSun;'
+    },
+    'FangSong_GB2312, FangSong, STFangsong': {
+      name: 'FangSong_GB2312',
+      text: '仿宋',
+      param: 'FangSong_GB2312, FangSong, STFangsong',
+      style: 'font-family:FangSong_GB2312, FangSong, STFangsong;'
+    },
+    'KaiTi_GB2312, KaiTi, STKaiti': {
+      name: 'KaiTi_GB2312',
+      text: '楷体',
+      param: 'KaiTi_GB2312, KaiTi, STKaiti',
+      style: 'font-family:KaiTi_GB2312, KaiTi, STKaiti;'
+    },
+    'SimHei, STHeiti': {
+      name: 'SimHei',
+      text: '黑体',
+      param: 'SimHei, STHeiti',
+      style: 'font-family:SimHei, STHeiti;'
+    },
+    'Arial': {
+      name: 'Arial',
+      text: 'Arial',
+      param: 'Arial',
+      style: 'font-family:Arial;'
+    },
+    '"Arial Black"': {
+      name: 'Arial-Black',
+      text: 'Arial Black',
+      param: '"Arial Black"',
+      style: 'font-family:"Arial Black";'
+    },
+    '"Times New Roman"': {
+      name: 'Times-New-Roman',
+      text: 'Times New Roman',
+      param: '"Times New Roman"',
+      style: 'font-family:"Times New Roman";'
+    },
+    '"Courier New"': {
+      name: 'Courier-New',
+      text: 'Courier New',
+      param: '"Courier New"',
+      style: 'font-family:"Courier New";'
+    },
+    'Tahoma': {
+      name: 'Tahoma',
+      text: 'Tahoma',
+      param: 'Tahoma',
+      style: 'font-family:Tahoma;'
+    },
+    'Verdana': {
+      name: 'Verdana',
+      text: 'Verdana',
+      param: 'Verdana',
+      style: 'font-family:Verdana;'
+    }
+  };
+
+  FontFamilyButton.prototype._init = function() {
+    this.menu = [];
+    this.fontFamilyMap = {};
+    Object.keys(FontFamilyButton.fontFamily).forEach((function(_this) {
+      return function(name) {
+        return _this.menu.push(FontFamilyButton.fontFamily[name]);
+      };
+    })(this));
+    Object.keys(FontFamilyButton.fontFamily).forEach((function(_this) {
+      return function(name) {
+        return _this.fontFamilyMap[name.toLowerCase()] = FontFamilyButton.fontFamily[name];
+      };
+    })(this));
+    return FontFamilyButton.__super__._init.call(this);
+  };
+
+  FontFamilyButton.prototype._activeStatus = function() {
+    var active, endNode, endNodes, range, startNode, startNodes;
+    range = this.editor.selection.range();
+    startNodes = this.editor.selection.startNodes();
+    endNodes = this.editor.selection.endNodes();
+    startNode = startNodes.eq(0);
+    endNode = endNodes.eq(0);
+    active = startNodes.length > 0 && endNodes.length > 0 && startNode.is(endNode);
+    this.node = active ? startNode : null;
+    this.node = this.node !== null && this.node[0].nodeType === Node.TEXT_NODE ? this.node.parent() : this.node;
+    this.setActive(active);
+    return this.active;
+  };
+
+  FontFamilyButton.prototype.setActive = function(active) {
+    var family, fontFamily, name;
+    FontFamilyButton.__super__.setActive.call(this, active);
+    if (!active) {
+      return;
+    }
+    if (!this.node[0]) {
+      return;
+    }
+    fontFamily = window.getComputedStyle(this.node[0], null).getPropertyValue('font-family');
+    family = this.fontFamilyMap[fontFamily.toLowerCase()];
+    name = family ? family.text : '其他字体';
+    return this.el.find('span').text(name);
+  };
+
+  FontFamilyButton.prototype.command = function(param) {
+    document.execCommand('styleWithCSS', false, true);
+    document.execCommand('fontName', false, param);
+    return document.execCommand('styleWithCSS', false, false);
+  };
+
+  return FontFamilyButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(FontFamilyButton);
 
 CommandBase = (function(superClass) {
   extend(CommandBase, superClass);

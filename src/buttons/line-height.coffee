@@ -6,4 +6,6 @@ class LineHeightButton extends Button
 
   disableTag: 'pre'
 
+  menu: true
+
 Simditor.Toolbar.addButton LineHeightButton

@@ -956,6 +956,13 @@ colpick Color Picker / colpick.com
   font-family: 'Times New Roman';
   content: attr(data-size);
 }
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-font-family, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-font-family {
+  width: 80px;
+  padding: 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
 .simditor .simditor-toolbar > ul > li.menu-on .toolbar-item, .simditor .more-option > ul > li.menu-on .toolbar-item {
   position: relative;
   z-index: 20;
@@ -1151,6 +1158,9 @@ colpick Color Picker / colpick.com
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment .menu-item, .simditor .more-option .toolbar-menu.toolbar-menu-alignment .menu-item {
   text-align: center;
 }
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-font-family:before, .simditor .more-option .toolbar-menu.toolbar-menu-font-family:before {
+  width: 90px;
+}
 .simditor .simditor-popover {
   display: none;
   padding: 5px 8px 0;
@@ -1221,7 +1231,7 @@ colpick Color Picker / colpick.com
 
 .simditor .simditor-body, .editor-style {
   font-size: 16px;
-  font-family: arial, sans-serif;
+  font-family: "Microsoft YaHei", STXihei;
   line-height: 1.6;
   color: #333;
   outline: none;

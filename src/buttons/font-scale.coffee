@@ -53,7 +53,7 @@ class FontScaleButton extends Button
     @setActive active
     @active
 
-  setActive: (active, param) ->
+  setActive: (active) ->
     super active
     @el.removeClass 'active-font'
     return if not active

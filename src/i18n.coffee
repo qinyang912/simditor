@@ -60,6 +60,7 @@ Simditor.i18n =
     'time-stamp': '时间戳'
     'line-height': '行高'
     'clear-format': '清除格式'
+    'font-family': '字体'
   'en-US':
     'blockquote': 'Block Quote'
     'bold': 'Bold'
@@ -120,3 +121,4 @@ Simditor.i18n =
     'time-stamp': 'Time Stamp'
     'line-height': 'Line Height'
     'clear-format': 'Clear Format'
+    'font-family': 'Font Family'

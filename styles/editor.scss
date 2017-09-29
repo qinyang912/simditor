@@ -3,6 +3,7 @@
 
 $simditor-button-height: 40px;
 $simditor-button-width: 46px;
+$simditor-button-font-family-width: 80px;
 
 .simditor {
   position: relative;
@@ -274,6 +275,13 @@ $simditor-button-width: 46px;
               content: attr(data-size);
             }
           }
+          &.toolbar-item-font-family {
+            width: $simditor-button-font-family-width;
+            padding: 0 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left; // 这个地方如果不配置为left，不知道为什么鼠标hover的时候，每次都会自动往右边移动，而且还找不到任何原因; 目前只是在chrome和safari发现了这个问题，firefox倒是很正常
+          }
         }
 
         &.menu-on {
@@ -500,6 +508,12 @@ $simditor-button-width: 46px;
           text-align: center;
         }
       }
+
+      &.toolbar-menu-font-family {
+        &:before {
+          width: $simditor-button-font-family-width + 5px * 2;
+        }
+      }
     }
   }
 
@@ -591,7 +605,7 @@ $simditor-button-width: 46px;
 
 .simditor .simditor-body, .editor-style {
   font-size: 16px;
-  font-family: arial, sans-serif;
+  font-family: "Microsoft YaHei", STXihei;
   line-height: 1.6;
   color: #333;
   outline: none;

@@ -155,6 +155,8 @@ class Button extends SimpleModule
         $menuBtnEl.find('span').addClass @iconClassOf menuItem.icon
       else
         $menuBtnEl.find('span').text(menuItem.text)
+      if menuItem.style
+        $menuBtnEl.find('span').attr 'style', menuItem.style
 
   setActive: (active) ->
     return if active == @active
