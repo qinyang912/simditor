@@ -106,5 +106,6 @@ class FontFamilyButton extends Button
     document.execCommand 'styleWithCSS', false, true
     document.execCommand 'fontName', false, param
     document.execCommand 'styleWithCSS', false, false
+    @editor.trigger 'valuechanged'
 
 Simditor.Toolbar.addButton FontFamilyButton

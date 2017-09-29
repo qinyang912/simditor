@@ -6,5 +6,6 @@ class ClearFormatButton extends Button
 
   command: ->
     document.execCommand 'removeFormat', false, false
+    @editor.trigger 'valuechanged'
 
 Simditor.Toolbar.addButton ClearFormatButton
