@@ -1688,8 +1688,13 @@ colpick Color Picker / colpick.com
   cursor: pointer;
   position: absolute;
   left: 0.5em;
-  top: 0;
   display: inline-block;
+  top: 50%;
+  margin-top: -12.5px;
+  width: 16px;
+  height: 25px;
+  display: flex;
+  align-items: center;
 }
 .simditor .simditor-body .check-box-item-unchecked:before, .editor-style .check-box-item-unchecked:before {
   content: "\e916";

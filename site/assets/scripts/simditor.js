@@ -475,7 +475,7 @@ Formatter = (function(superClass) {
       a: ['href', 'target'],
       font: ['color'],
       code: ['class'],
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block', 'check-box-item-unchecked', 'check-box-item-checked'],
       span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title'],
       input: ['class', 'type', 'value', 'disabled']
     }, this.opts.allowedAttributes);
@@ -3647,32 +3647,64 @@ CheckBox = (function(superClass) {
     checked: 'check-box-item-checked'
   };
 
+  CheckBox.selector = {
+    unchecked: "." + CheckBox.className.unchecked,
+    checked: "." + CheckBox.className.checked,
+    checkbox: "." + CheckBox.className.unchecked + ",." + CheckBox.className.checked
+  };
+
   CheckBox.prototype._offset = 2;
 
   CheckBox.prototype._init = function() {
     this.editor = this._module;
     return this.editor.body.on('click.simditor-check-box-item', '.check-box-item-unchecked,.check-box-item-checked', (function(_this) {
       return function(e) {
-        var cs, fontSize, lineHeight, maxX, maxY, minX, minY, x, y;
-        if (!$(e.currentTarget).is($(e.target))) {
-          return;
-        }
-        cs = window.getComputedStyle(e.target, null);
-        fontSize = cs.getPropertyValue('font-size');
-        fontSize = parseInt(fontSize.replace('px', ''), 10);
-        lineHeight = cs.getPropertyValue('line-height');
-        lineHeight = parseInt(lineHeight.replace('px', ''), 10);
-        x = e.offsetX;
-        y = e.offsetY;
-        minX = fontSize / 2 - _this._offset;
-        maxX = fontSize / 2 + fontSize + _this._offset;
-        minY = -_this._offset;
-        maxY = lineHeight + _this._offset;
-        if (minX < x && x < maxX && minY < y && y < maxY) {
-          return _this._onCheckBoxClick(e);
-        }
+        return _this._detect2(e);
       };
     })(this));
+  };
+
+  CheckBox.prototype._detect1 = function(e) {
+    var cs, fontSize, lineHeight, maxX, maxY, minX, minY, x, y;
+    if (!$(e.currentTarget).is($(e.target))) {
+      return;
+    }
+    cs = window.getComputedStyle(e.target, null);
+    fontSize = cs.getPropertyValue('font-size');
+    fontSize = parseInt(fontSize.replace('px', ''), 10);
+    lineHeight = cs.getPropertyValue('line-height');
+    lineHeight = parseInt(lineHeight.replace('px', ''), 10);
+    x = e.offsetX;
+    y = e.offsetY;
+    minX = fontSize / 2 - this._offset;
+    maxX = fontSize / 2 + fontSize + this._offset;
+    minY = -this._offset;
+    maxY = lineHeight + this._offset;
+    if (minX < x && x < maxX && minY < y && y < maxY) {
+      return this._onCheckBoxClick(e);
+    }
+  };
+
+  CheckBox.prototype._detect2 = function(e) {
+    var cs, fontSize, lineHeight, maxX, maxY, minX, minY, offsetHeight, x, y;
+    if (!$(e.currentTarget).is($(e.target))) {
+      return;
+    }
+    cs = window.getComputedStyle(e.target, null);
+    fontSize = cs.getPropertyValue('font-size');
+    fontSize = parseInt(fontSize.replace('px', ''), 10);
+    lineHeight = cs.getPropertyValue('line-height');
+    lineHeight = parseInt(lineHeight.replace('px', ''), 10);
+    offsetHeight = e.currentTarget.offsetHeight;
+    x = e.offsetX;
+    y = e.offsetY;
+    minX = fontSize / 2 - this._offset;
+    maxX = fontSize / 2 + fontSize + this._offset;
+    minY = offsetHeight / 2 - lineHeight / 2 - this._offset;
+    maxY = offsetHeight / 2 + lineHeight / 2 + this._offset;
+    if (minX < x && x < maxX && minY < y && y < maxY) {
+      return this._onCheckBoxClick(e);
+    }
   };
 
   CheckBox.prototype._onCheckBoxClick = function(e) {
@@ -8470,16 +8502,71 @@ CheckboxButton = (function(superClass) {
 
   CheckboxButton.prototype.icon = 'seleced-mult';
 
-  CheckboxButton.prototype.disableTag = 'pre,table';
+  CheckboxButton.prototype.disableTag = 'pre,table,li li';
+
+  CheckboxButton.prototype.htmlTag = Simditor.CheckBox.selector.checkbox;
+
+  CheckboxButton.prototype.enableTag = 'p,li';
+
+  CheckboxButton.prototype._filterTag = '.unselection-wrapper';
+
+  CheckboxButton.prototype._format = function(node) {
+    var $node;
+    $node = $(node);
+    if (!$node.is(this.enableTag)) {
+      return;
+    }
+    if ($node.is(this._filterTag)) {
+      return;
+    }
+    if ($node.is('li')) {
+      $node = this._formatLi($node);
+    }
+    if ($node.is(Simditor.CheckBox.selector.checkbox)) {
+      $node.removeClass(Simditor.CheckBox.className.unchecked);
+      return $node.removeClass(Simditor.CheckBox.className.checked);
+    } else {
+      return $node.addClass(Simditor.CheckBox.className.unchecked);
+    }
+  };
+
+  CheckboxButton.prototype._formatLi = function($blockEl) {
+    var $new, $parent, ec, range;
+    if (!$blockEl.is('li')) {
+      return;
+    }
+    this.editor.selection.save();
+    $parent = $blockEl.parent();
+    range = document.createRange();
+    range.setStartBefore($parent[0]);
+    range.setEndBefore($blockEl[0]);
+    ec = range.extractContents();
+    if ($.trim(ec.textContent)) {
+      $parent.before(ec);
+    }
+    $new = $('<p/>').insertBefore($parent).after($blockEl.children('ul, ol')).append($blockEl.contents());
+    $blockEl.remove();
+    if ($.trim($parent.text()) === '') {
+      $parent.remove();
+    }
+    this.editor.selection.restore();
+    return $new;
+  };
 
   CheckboxButton.prototype.command = function() {
     var blocks, roots;
     roots = this.editor.selection.rootNodes();
     blocks = this.editor.selection.blockNodes();
-    if (roots) {
-      roots.addClass('check-box-item-unchecked');
+    if (blocks && blocks.length) {
+      blocks.each((function(_this) {
+        return function(i, e) {
+          return _this._format(e);
+        };
+      })(this));
     }
-    return console.log(roots, blocks, this.node);
+    console.log(roots, blocks, this.node);
+    this.editor.trigger('valuechanged');
+    return $(document).trigger('selectionchange');
   };
 
   return CheckboxButton;

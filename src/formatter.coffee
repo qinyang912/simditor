@@ -27,7 +27,7 @@ class Formatter extends SimpleModule
         'class', 'data-unique-id', 'data-file-id', 
         'data-file-name', 'data-file-src', 'data-attach', 
         'data-img', 'data-global-link', 'data-setting',
-        'data-task-block'
+        'data-task-block', 'check-box-item-unchecked', 'check-box-item-checked'
       ]
       span: [
         'class', 'contenteditable', 'data-name', 
