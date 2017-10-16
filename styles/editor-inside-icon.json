@@ -1,0 +1,109 @@
+{
+  "IcoMoonType": "selection",
+  "icons": [
+    {
+      "icon": {
+        "paths": [
+          "M97.524 48.762c-26.931 0-48.762 21.831-48.762 48.762v828.952c0 26.931 21.831 48.762 48.762 48.762h828.952c26.931 0 48.762-21.831 48.762-48.762v-828.952c0-26.931-21.831-48.762-48.762-48.762h-828.952zM97.524 0h828.952c53.861 0 97.524 43.663 97.524 97.524v828.952c0 53.861-43.663 97.524-97.524 97.524h-828.952c-53.861 0-97.524-43.663-97.524-97.524v-828.952c0-53.861 43.663-97.524 97.524-97.524z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "tags": [
+          "check-box"
+        ],
+        "grid": 16
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 949,
+        "id": 0,
+        "name": "check-box",
+        "prevSize": 32,
+        "code": 59670
+      },
+      "setIdx": 0,
+      "setId": 4,
+      "iconIdx": 0
+    },
+    {
+      "icon": {
+        "paths": [
+          "M178.308 466.368c-20.31-17.686-51.111-15.56-68.796 4.75s-15.56 51.111 4.75 68.796l310.043 269.992 489.332-533.124c18.211-19.84 16.889-50.686-2.951-68.896s-50.686-16.889-68.896 2.951l-425.088 463.13-238.394-207.599z",
+          "M97.524 48.762c-26.931 0-48.762 21.831-48.762 48.762v828.952c0 26.931 21.831 48.762 48.762 48.762h828.952c26.931 0 48.762-21.831 48.762-48.762v-828.952c0-26.931-21.831-48.762-48.762-48.762h-828.952zM97.524 0h828.952c53.861 0 97.524 43.663 97.524 97.524v828.952c0 53.861-43.663 97.524-97.524 97.524h-828.952c-53.861 0-97.524-43.663-97.524-97.524v-828.952c0-53.861 43.663-97.524 97.524-97.524z"
+        ],
+        "attrs": [
+          {},
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "tags": [
+          "seleced-mult"
+        ],
+        "grid": 16
+      },
+      "attrs": [
+        {},
+        {}
+      ],
+      "properties": {
+        "order": 948,
+        "id": 1,
+        "name": "seleced-mult",
+        "prevSize": 32,
+        "code": 59772
+      },
+      "setIdx": 0,
+      "setId": 4,
+      "iconIdx": 1
+    }
+  ],
+  "height": 1024,
+  "metadata": {
+    "name": "editor-inside-icon"
+  },
+  "preferences": {
+    "showGlyphs": true,
+    "showQuickUse": true,
+    "showQuickUse2": true,
+    "showSVGs": true,
+    "fontPref": {
+      "prefix": "simditor-icon-",
+      "metadata": {
+        "fontFamily": "editor-inside-icon",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      "metrics": {
+        "emSize": 1024,
+        "baseline": 6.25,
+        "whitespace": 50
+      },
+      "embed": false,
+      "noie8": true,
+      "ie7": false,
+      "showSelector": false,
+      "showMetrics": false,
+      "showMetadata": false,
+      "showVersion": false,
+      "cssVars": false,
+      "cssVarsFormat": "scss"
+    },
+    "imagePref": {
+      "prefix": "icon-",
+      "png": true,
+      "useClassSelector": true,
+      "color": 0,
+      "bgColor": 16777215,
+      "classSelector": ".icon"
+    },
+    "historySize": 50,
+    "showCodes": true,
+    "gridSize": 16
+  }
+}

@@ -61,6 +61,7 @@ Simditor.i18n =
     'line-height': '行高'
     'clear-format': '清除格式'
     'font-family': '字体'
+    'checkbox': '勾选框'
   'en-US':
     'blockquote': 'Block Quote'
     'bold': 'Bold'
@@ -122,3 +123,4 @@ Simditor.i18n =
     'line-height': 'Line Height'
     'clear-format': 'Clear Format'
     'font-family': 'Font Family'
+    'checkbox': 'CheckBox'

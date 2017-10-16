@@ -18,6 +18,7 @@ $ ->
     'background',
     'time-stamp',
     'line-height',
+    'checkbox'
     '|', 
     'ol', 
     'ul', 

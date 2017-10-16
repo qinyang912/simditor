@@ -13,6 +13,7 @@ class Simditor extends SimpleModule
   @connect Indentation
   @connect Clipboard
   @connect WordNum
+  @connect CheckBox
 
   @count: 0
 

@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, CheckBox, CheckboxButton, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -561,7 +561,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype.format = function($el) {
-    var $node, blockNode, len, len1, n, node, ref, ref1, w, y;
+    var $node, blockNode, len, len1, n, node, ref, ref1, w, z;
     if ($el == null) {
       $el = this.editor.body;
     }
@@ -575,8 +575,8 @@ Formatter = (function(superClass) {
       this.cleanNode(n, true);
     }
     ref1 = $el.contents();
-    for (y = 0, len1 = ref1.length; y < len1; y++) {
-      node = ref1[y];
+    for (z = 0, len1 = ref1.length; z < len1; z++) {
+      node = ref1[z];
       $node = $(node);
       if ($node.is('br')) {
         if (typeof blockNode !== "undefined" && blockNode !== null) {
@@ -608,7 +608,7 @@ Formatter = (function(superClass) {
   };
 
   Formatter.prototype.cleanNode = function(node, recursive) {
-    var $blockEls, $childImg, $node, $p, $td, allowedAttributes, attr, contents, isDecoration, len, len1, n, ref, ref1, text, textNode, w, y;
+    var $blockEls, $childImg, $node, $p, $td, allowedAttributes, attr, contents, isDecoration, len, len1, n, ref, ref1, text, textNode, w, z;
     $node = $(node);
     if (!($node.length > 0)) {
       return;
@@ -684,8 +684,8 @@ Formatter = (function(superClass) {
       contents = null;
     }
     if (recursive && (contents != null) && !$node.is('pre')) {
-      for (y = 0, len1 = contents.length; y < len1; y++) {
-        n = contents[y];
+      for (z = 0, len1 = contents.length; z < len1; z++) {
+        n = contents[z];
         this.cleanNode(n, true);
       }
     }
@@ -2372,7 +2372,7 @@ Toolbar = (function(superClass) {
   };
 
   Toolbar.prototype._renderMoreOption = function() {
-    var buttonCount, first, getMoveInCount, getMoveOutCount, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, prev, ref, ref1, separatorCount, separatorWidth, totalWidth, w, x, y;
+    var buttonCount, first, getMoveInCount, getMoveOutCount, listWidth, moreOptionWidth, moveInCount, moveOutCount, otherElCount, prev, ref, ref1, separatorCount, separatorWidth, totalWidth, w, x, z;
     listWidth = this.list.width();
     moreOptionWidth = this.moreOption.outerWidth();
     separatorCount = this.separators.length;
@@ -2431,7 +2431,7 @@ Toolbar = (function(superClass) {
     } else if (totalWidth < listWidth) {
       getMoveOutCount(moveOutCount);
       if (moveOutCount > 0) {
-        for (x = y = 0, ref1 = moveOutCount - 1; 0 <= ref1 ? y <= ref1 : y >= ref1; x = 0 <= ref1 ? ++y : --y) {
+        for (x = z = 0, ref1 = moveOutCount - 1; 0 <= ref1 ? z <= ref1 : z >= ref1; x = 0 <= ref1 ? ++z : --z) {
           first = this.moreOptionList.shift();
           first.detach();
           this.moreOption.before(first);
@@ -2793,7 +2793,7 @@ Clipboard = (function(superClass) {
   };
 
   Clipboard.prototype._processPasteContent = function(pasteContent) {
-    var $blockEl, $img, aa, ab, blob, children, insertPosition, lastLine, len, len1, len2, len3, len4, line, lines, node, ref, ref1, ref2, uploadOpt, w, y, z;
+    var $blockEl, $img, aa, ab, ad, blob, children, insertPosition, lastLine, len, len1, len2, len3, len4, line, lines, node, ref, ref1, ref2, uploadOpt, w, z;
     if (this.editor.triggerHandler('pasting', [pasteContent]) === false) {
       return;
     }
@@ -2813,14 +2813,14 @@ Clipboard = (function(superClass) {
       } else {
         pasteContent = $('<div/>').text(pasteContent);
         ref = pasteContent.contents();
-        for (y = 0, len1 = ref.length; y < len1; y++) {
-          node = ref[y];
+        for (z = 0, len1 = ref.length; z < len1; z++) {
+          node = ref[z];
           this.editor.selection.insertNode($(node)[0]);
         }
       }
     } else if ($blockEl.is(this.editor.body)) {
-      for (z = 0, len2 = pasteContent.length; z < len2; z++) {
-        node = pasteContent[z];
+      for (aa = 0, len2 = pasteContent.length; aa < len2; aa++) {
+        node = pasteContent[aa];
         this.editor.selection.insertNode(node);
       }
     } else if (pasteContent.length < 1) {
@@ -2846,8 +2846,8 @@ Clipboard = (function(superClass) {
             return;
           }
         }
-        for (aa = 0, len3 = children.length; aa < len3; aa++) {
-          node = children[aa];
+        for (ab = 0, len3 = children.length; ab < len3; ab++) {
+          node = children[ab];
           this.editor.selection.insertNode(node);
         }
       } else if ($blockEl.is('p') && this.editor.util.isEmptyNode($blockEl)) {
@@ -2857,8 +2857,8 @@ Clipboard = (function(superClass) {
         if (pasteContent.find('li').length === 1) {
           pasteContent = $('<div/>').text(pasteContent.text());
           ref2 = pasteContent.contents();
-          for (ab = 0, len4 = ref2.length; ab < len4; ab++) {
-            node = ref2[ab];
+          for (ad = 0, len4 = ref2.length; ad < len4; ad++) {
+            node = ref2[ad];
             this.editor.selection.insertNode($(node)[0]);
           }
         } else if ($blockEl.is('li')) {
@@ -3633,6 +3633,65 @@ TaskBlock = (function(superClass) {
 
 })(SimpleModule);
 
+CheckBox = (function(superClass) {
+  extend(CheckBox, superClass);
+
+  function CheckBox() {
+    return CheckBox.__super__.constructor.apply(this, arguments);
+  }
+
+  CheckBox.pluginName = 'CheckBox';
+
+  CheckBox.className = {
+    unchecked: 'check-box-item-unchecked',
+    checked: 'check-box-item-checked'
+  };
+
+  CheckBox.prototype._offset = 2;
+
+  CheckBox.prototype._init = function() {
+    this.editor = this._module;
+    return this.editor.body.on('click.simditor-check-box-item', '.check-box-item-unchecked,.check-box-item-checked', (function(_this) {
+      return function(e) {
+        var cs, fontSize, lineHeight, maxX, maxY, minX, minY, x, y;
+        if (!$(e.currentTarget).is($(e.target))) {
+          return;
+        }
+        cs = window.getComputedStyle(e.target, null);
+        fontSize = cs.getPropertyValue('font-size');
+        fontSize = parseInt(fontSize.replace('px', ''), 10);
+        lineHeight = cs.getPropertyValue('line-height');
+        lineHeight = parseInt(lineHeight.replace('px', ''), 10);
+        x = e.offsetX;
+        y = e.offsetY;
+        minX = fontSize / 2 - _this._offset;
+        maxX = fontSize / 2 + fontSize + _this._offset;
+        minY = -_this._offset;
+        maxY = lineHeight + _this._offset;
+        if (minX < x && x < maxX && minY < y && y < maxY) {
+          return _this._onCheckBoxClick(e);
+        }
+      };
+    })(this));
+  };
+
+  CheckBox.prototype._onCheckBoxClick = function(e) {
+    var $target, ac;
+    $target = $(e.target);
+    if ($target.hasClass(CheckBox.className.unchecked)) {
+      ac = 'checked';
+    } else {
+      ac = 'unchecked';
+    }
+    $target.removeClass(CheckBox.className.unchecked);
+    $target.removeClass(CheckBox.className.checked);
+    return $target.addClass(CheckBox.className[ac]);
+  };
+
+  return CheckBox;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -3665,6 +3724,8 @@ Simditor = (function(superClass) {
   Simditor.connect(Clipboard);
 
   Simditor.connect(WordNum);
+
+  Simditor.connect(CheckBox);
 
   Simditor.count = 0;
 
@@ -3943,7 +4004,8 @@ Simditor.i18n = {
     'time-stamp': '时间戳',
     'line-height': '行高',
     'clear-format': '清除格式',
-    'font-family': '字体'
+    'font-family': '字体',
+    'checkbox': '勾选框'
   },
   'en-US': {
     'blockquote': 'Block Quote',
@@ -4005,7 +4067,8 @@ Simditor.i18n = {
     'time-stamp': 'Time Stamp',
     'line-height': 'Line Height',
     'clear-format': 'Clear Format',
-    'font-family': 'Font Family'
+    'font-family': 'Font Family',
+    'checkbox': 'CheckBox'
   }
 };
 
@@ -7421,14 +7484,14 @@ TableButton = (function(superClass) {
   };
 
   TableButton.prototype.createTable = function(row, col, phBr) {
-    var $table, $tbody, $td, $thead, $tr, c, r, ref, ref1, w, y;
+    var $table, $tbody, $td, $thead, $tr, c, r, ref, ref1, w, z;
     $table = $('<table/>');
     $thead = $('<thead/>').appendTo($table);
     $tbody = $('<tbody/>').appendTo($table);
     for (r = w = 0, ref = row; 0 <= ref ? w < ref : w > ref; r = 0 <= ref ? ++w : --w) {
       $tr = $('<tr/>');
       $tr.appendTo(r === 0 ? $thead : $tbody);
-      for (c = y = 0, ref1 = col; 0 <= ref1 ? y < ref1 : y > ref1; c = 0 <= ref1 ? ++y : --y) {
+      for (c = z = 0, ref1 = col; 0 <= ref1 ? z < ref1 : z > ref1; c = 0 <= ref1 ? ++z : --z) {
         $td = $(r === 0 ? '<th/>' : '<td/>').appendTo($tr);
         if (phBr) {
           $td.append(this.editor.util.phBr);
@@ -8395,6 +8458,35 @@ FontFamilyButton = (function(superClass) {
 })(Button);
 
 Simditor.Toolbar.addButton(FontFamilyButton);
+
+CheckboxButton = (function(superClass) {
+  extend(CheckboxButton, superClass);
+
+  function CheckboxButton() {
+    return CheckboxButton.__super__.constructor.apply(this, arguments);
+  }
+
+  CheckboxButton.prototype.name = 'checkbox';
+
+  CheckboxButton.prototype.icon = 'seleced-mult';
+
+  CheckboxButton.prototype.disableTag = 'pre,table';
+
+  CheckboxButton.prototype.command = function() {
+    var blocks, roots;
+    roots = this.editor.selection.rootNodes();
+    blocks = this.editor.selection.blockNodes();
+    if (roots) {
+      roots.addClass('check-box-item-unchecked');
+    }
+    return console.log(roots, blocks, this.node);
+  };
+
+  return CheckboxButton;
+
+})(Button);
+
+Simditor.Toolbar.addButton(CheckboxButton);
 
 CommandBase = (function(superClass) {
   extend(CommandBase, superClass);
