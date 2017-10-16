@@ -18,6 +18,10 @@ class CheckBox extends SimpleModule
     @editor = @_module
     @editor.body.on 'click.simditor-check-box-item', '.check-box-item-unchecked,.check-box-item-checked', (e) =>
       @_detect2 e
+    $(document).on 'keydown.simditor-check-box-item' + @editor.id, (e) =>
+      switch e.which
+        when 13 then @_emptyLineDetect(e) # enter
+        when 8 then @_emptyLineDetect(e)
 
   _detect1: (e) -> # 方案1， position: absolute, top 0
     unless $(e.currentTarget).is($(e.target))
@@ -56,7 +60,6 @@ class CheckBox extends SimpleModule
 
   _onCheckBoxClick: (e) ->
     $target = $(e.target)
-
     if $target.hasClass(CheckBox.className.unchecked)
       ac = 'checked'
     else
@@ -65,5 +68,16 @@ class CheckBox extends SimpleModule
     $target.removeClass CheckBox.className.checked
     $target.addClass CheckBox.className[ac]
 
-
+  _emptyLineDetect: (e) ->
+    roots = @editor.selection.rootNodes()
+    if roots and roots.length
+      $root = $(roots[0])
+      if $root.is(CheckBox.selector.checkbox) and $.trim($root.text()) == ''
+        @editor.selection.save()
+        $root.removeClass CheckBox.className.unchecked
+        $root.removeClass CheckBox.className.checked
+        e.preventDefault()
+        @editor.selection.restore()
+        @editor.trigger 'valuechanged'
+        $(document).trigger 'selectionchange' # 人为触发一下selectionchange事件
 

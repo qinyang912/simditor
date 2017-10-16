@@ -58,7 +58,6 @@ class CheckboxButton extends Button
       blocks.each (i, e) =>
         @_format e
       
-    console.log roots, blocks, @node
     @editor.trigger 'valuechanged'
     $(document).trigger 'selectionchange' # 人为触发一下selectionchange事件
 
