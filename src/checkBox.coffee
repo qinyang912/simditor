@@ -67,6 +67,8 @@ class CheckBox extends SimpleModule
     $target.removeClass CheckBox.className.unchecked
     $target.removeClass CheckBox.className.checked
     $target.addClass CheckBox.className[ac]
+    @editor.trigger 'valuechanged'
+    $(document).trigger 'selectionchange' # 人为触发一下selectionchange事件
 
   _emptyLineDetect: (e) ->
     roots = @editor.selection.rootNodes()
