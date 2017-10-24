@@ -132,15 +132,10 @@ class ImageButton extends Button
         return unless $img.hasClass('uploading')
         src = if img then img.src else @defaultImage
 
-        @loadImage $img, src, =>
-          if @popover.active
-            @popover.refresh()
-            @popover.srcEl.val(@_t('uploading'))
-              .prop('disabled', true)
+        @loadImage $img, src
 
     uploadProgress = $.proxy @editor.util.throttle((e, file, loaded, total) ->
       return unless file.inline
-
       $mask = file.img.data('mask')
       return unless $mask
 
@@ -151,8 +146,9 @@ class ImageButton extends Button
 
       percent = loaded / total
       percent = (percent * 100).toFixed(0)
-      percent = 85 if percent > 85
+      percent = 99 if percent > 99
       $mask.find('.progress').height "#{100 - percent}%"
+      $mask.find('.progress-tip').text(percent + '%')
     , 500), @
     @editor.uploader.on 'uploadprogress', uploadProgress
 
@@ -161,7 +157,6 @@ class ImageButton extends Button
 
       $img = file.img
       return unless $img.hasClass('uploading') and $img.parent().length > 0
-
       # in case mime type of response isnt correct
       if typeof result != 'object'
         try
@@ -273,6 +268,7 @@ class ImageButton extends Button
       $mask = $('''
         <div class="simditor-image-loading">
           <div class="progress"></div>
+          <div class="progress-tip">0%</div>
         </div>
       ''')
         .hide()
@@ -291,8 +287,8 @@ class ImageButton extends Button
 
       $img.attr
         src: src,
-        width: width,
-        height: height,
+        # width: width,
+        # height: height,
         'data-image-size': width + ',' + height
       .removeClass('loading')
 
@@ -358,211 +354,13 @@ class ImageButton extends Button
     $img
 
   command: (src) ->
+    return unless @editor.opts.imageButton != 'upload'
     $img = @createImage()
 
     @loadImage $img, src || @defaultImage, =>
       @editor.trigger 'valuechanged'
       @editor.util.reflow $img
       $img.click()
-
-
-class ImagePopover extends Popover
-
-  offset:
-    top: 6
-    left: -4
-
-  render: ->
-    tpl = """
-    <div class="link-settings">
-      <div class="settings-field">
-        <label>#{ @_t 'imageUrl' }</label>
-        <input class="image-src" type="text" tabindex="1" />
-        <a class="btn-upload" href="javascript:;"
-          title="#{ @_t 'uploadImage' }" tabindex="-1">
-          <span class="simditor-icon simditor-icon-upload"></span>
-        </a>
-      </div>
-      <div class='settings-field'>
-        <label>#{ @_t 'imageAlt' }</label>
-        <input class="image-alt" id="image-alt" type="text" tabindex="1" />
-      </div>
-      <div class="settings-field">
-        <label>#{ @_t 'imageSize' }</label>
-        <input class="image-size" id="image-width" type="text" tabindex="2" />
-        <span class="times">×</span>
-        <input class="image-size" id="image-height" type="text" tabindex="3" />
-        <a class="btn-restore" href="javascript:;"
-          title="#{ @_t 'restoreImageSize' }" tabindex="-1">
-          <span class="simditor-icon simditor-icon-undo"></span>
-        </a>
-      </div>
-    </div>
-    """
-    @el.addClass('image-popover')
-      .append(tpl)
-    @srcEl = @el.find '.image-src'
-    @widthEl = @el.find '#image-width'
-    @heightEl = @el.find '#image-height'
-    @altEl = @el.find '#image-alt'
-
-    @srcEl.on 'keydown', (e) =>
-      return unless e.which == 13 and !@target.hasClass('uploading')
-      e.preventDefault()
-      range = document.createRange()
-      @button.editor.selection.setRangeAfter @target, range
-      @hide()
-
-    @srcEl.on 'blur', (e) =>
-      @_loadImage @srcEl.val()
-
-    @el.find('.image-size').on 'blur', (e) =>
-      @_resizeImg $(e.currentTarget)
-      @el.data('popover').refresh()
-
-    @el.find('.image-size').on 'keyup', (e) =>
-      inputEl = $(e.currentTarget)
-      unless e.which == 13 or e.which == 27 or e.which == 9
-        @_resizeImg inputEl, true
-
-    @el.find('.image-size').on 'keydown', (e) =>
-      inputEl = $(e.currentTarget)
-      if e.which == 13 or e.which == 27
-        e.preventDefault()
-        if e.which == 13
-          @_resizeImg inputEl
-        else
-          @_restoreImg()
-
-        $img = @target
-        @hide()
-        range = document.createRange()
-        @button.editor.selection.setRangeAfter $img, range
-      else if e.which == 9
-        @el.data('popover').refresh()
-
-    @altEl.on 'keydown', (e) =>
-      if e.which == 13
-        e.preventDefault()
-
-        range = document.createRange()
-        @button.editor.selection.setRangeAfter @target, range
-        @hide()
-
-    @altEl.on 'keyup', (e) =>
-      return if e.which == 13 or e.which == 27 or e.which == 9
-      @alt = @altEl.val()
-      @target.attr 'alt', @alt
-
-    @el.find('.btn-restore').on 'click', (e) =>
-      @_restoreImg()
-      @el.data('popover').refresh()
-
-    @editor.on 'valuechanged', (e) =>
-      @refresh() if @active
-
-    @_initUploader()
-
-  _initUploader: ->
-    $uploadBtn = @el.find('.btn-upload')
-    unless @editor.uploader?
-      $uploadBtn.remove()
-      return
-
-    createInput = =>
-      @input.remove() if @input
-      @input = $ '<input/>',
-        type: 'file'
-        title: @_t('uploadImage')
-        multiple: false
-        accept: 'image/*'
-      .appendTo($uploadBtn)
-
-    createInput()
-
-    @el.on 'click mousedown', 'input[type=file]', (e) ->
-      e.stopPropagation()
-
-    @el.on 'change', 'input[type=file]', (e) =>
-      @editor.uploader.upload(@input, {
-        inline: true,
-        img: @target
-      })
-      createInput()
-
-  _resizeImg: (inputEl, onlySetVal = false) ->
-    value = inputEl.val() * 1
-    return unless @target and ($.isNumeric(value) or value < 0)
-
-    if inputEl.is @widthEl
-      width = value
-      height = @height * value / @width
-      @heightEl.val height
-    else
-      height = value
-      width = @width * value / @height
-      @widthEl.val width
-
-    unless onlySetVal
-      @target.attr
-        width: width
-        height: height
-      @editor.trigger 'valuechanged'
-
-  _restoreImg: ->
-    size = @target.data('image-size')?.split(",") || [@width, @height]
-    @target.attr
-      width: size[0] * 1
-      height: size[1] * 1
-    @widthEl.val(size[0])
-    @heightEl.val(size[1])
-
-    @editor.trigger 'valuechanged'
-
-  _loadImage: (src, callback) ->
-    if /^data:image/.test(src) and not @editor.uploader
-      callback(false) if callback
-      return
-
-    return if @target.attr('src') == src
-
-    @button.loadImage @target, src, (img) =>
-      return unless img
-
-      if @active
-        @width = img.width
-        @height = img.height
-
-        @widthEl.val @width
-        @heightEl.val @height
-
-      if /^data:image/.test(src)
-        blob = @editor.util.dataURLtoBlob src
-        blob.name = "Base64 Image.png"
-        @editor.uploader.upload blob,
-          inline: true
-          img: @target
-      else
-        @editor.trigger 'valuechanged'
-
-      callback(img) if callback
-
-  show: (args...) ->
-    super args...
-    $img = @target
-    @width = $img.width()
-    @height = $img.height()
-    @alt = $img.attr 'alt'
-
-    if $img.hasClass 'uploading'
-      @srcEl.val @_t('uploading')
-        .prop 'disabled', true
-    else
-      @srcEl.val $img.attr('src')
-        .prop 'disabled', false
-      @widthEl.val @width
-      @heightEl.val @height
-      @altEl.val @alt
 
 
 Simditor.Toolbar.addButton ImageButton

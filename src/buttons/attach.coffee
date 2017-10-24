@@ -24,7 +24,7 @@ class AttachButton extends Button
     @input.remove() if @input
     @input = $ '<input/>',
       type: 'file'
-      title: @_t('uploadImage')
+      title: @_t('uploadAttach')
       multiple: false
       accept: '*/*'
     .appendTo(@el)

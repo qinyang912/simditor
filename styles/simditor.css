@@ -773,6 +773,21 @@ colpick Color Picker / colpick.com
   bottom: 0;
   left: 0;
 }
+.simditor .simditor-wrapper .simditor-image-loading .progress-tip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  line-height: 40px;
+  color: #fff;
+  font-size: 13px;
+  margin-left: -20px;
+  margin-top: -20px;
+}
 .simditor .simditor-body {
   padding: 22px 15px 40px;
   min-height: 300px;
@@ -1237,7 +1252,7 @@ colpick Color Picker / colpick.com
   z-index: 2;
   width: 12px;
   height: 12px;
-  background: #41464b;
+  background: #7BBDFF;
   user-select: none;
   border-radius: 50%;
   border: 2px solid #fff;
@@ -1667,6 +1682,7 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body img, .editor-style img {
   max-width: 100%;
   vertical-align: middle;
+  height: auto;
 }
 .simditor .simditor-body font[size="1"], .editor-style font[size="1"] {
   font-size: 12px;

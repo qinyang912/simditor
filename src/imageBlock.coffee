@@ -49,6 +49,14 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
     @_currentResizeImg.attr 'width', (width + 'px')
     @_setPosition()
 
+    if @_resizeChangeTimer
+      clearTimeout @_resizeChangeTimer
+
+    @_resizeChangeTimer = setTimeout () =>
+      @_resizeChangeTimer = null
+      @editor.trigger 'valuechanged'
+    , 100
+
   _setPosition: () ->
     $img = @_currentResizeImg
     editorOffset = @editor.el.offset()

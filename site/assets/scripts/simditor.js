@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, CheckBox, CheckboxButton, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageBlock, ImageButton, ImagePopover, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, CheckBox, CheckboxButton, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageBlock, ImageButton, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -3822,7 +3822,16 @@ ImageBlock = (function(superClass) {
     }
     this._currentResizeImg.attr('height', height + 'px');
     this._currentResizeImg.attr('width', width + 'px');
-    return this._setPosition();
+    this._setPosition();
+    if (this._resizeChangeTimer) {
+      clearTimeout(this._resizeChangeTimer);
+    }
+    return this._resizeChangeTimer = setTimeout((function(_this) {
+      return function() {
+        _this._resizeChangeTimer = null;
+        return _this.editor.trigger('valuechanged');
+      };
+    })(this), 100);
   };
 
   ImageBlock.prototype._setPosition = function() {
@@ -4161,6 +4170,7 @@ Simditor.i18n = {
     'image': '插入图片',
     'externalImage': '外链图片',
     'uploadImage': '上传图片',
+    'uploadAttach': '上传附件',
     'uploadFailed': '上传失败了',
     'uploadError': '上传出错了',
     'imageUrl': '图片地址',
@@ -4224,6 +4234,7 @@ Simditor.i18n = {
     'image': 'Insert Image',
     'externalImage': 'External Image',
     'uploadImage': 'Upload Image',
+    'uploadAttach': 'Upload Attach',
     'uploadFailed': 'Upload failed',
     'uploadError': 'Error occurs during upload',
     'imageUrl': 'Url',
@@ -6726,12 +6737,7 @@ ImageButton = (function(superClass) {
             return;
           }
           src = img ? img.src : _this.defaultImage;
-          return _this.loadImage($img, src, function() {
-            if (_this.popover.active) {
-              _this.popover.refresh();
-              return _this.popover.srcEl.val(_this._t('uploading')).prop('disabled', true);
-            }
-          });
+          return _this.loadImage($img, src);
         });
       };
     })(this));
@@ -6751,10 +6757,11 @@ ImageButton = (function(superClass) {
       }
       percent = loaded / total;
       percent = (percent * 100).toFixed(0);
-      if (percent > 85) {
-        percent = 85;
+      if (percent > 99) {
+        percent = 99;
       }
-      return $mask.find('.progress').height((100 - percent) + "%");
+      $mask.find('.progress').height((100 - percent) + "%");
+      return $mask.find('.progress-tip').text(percent + '%');
     }, 500), this);
     this.editor.uploader.on('uploadprogress', uploadProgress);
     this.editor.uploader.on('uploadsuccess', (function(_this) {
@@ -6903,7 +6910,7 @@ ImageButton = (function(superClass) {
     $img.addClass('loading');
     $mask = $img.data('mask');
     if (!$mask) {
-      $mask = $('<div class="simditor-image-loading">\n  <div class="progress"></div>\n</div>').hide().appendTo(this.editor.wrapper);
+      $mask = $('<div class="simditor-image-loading">\n  <div class="progress"></div>\n  <div class="progress-tip">0%</div>\n</div>').hide().appendTo(this.editor.wrapper);
       positionMask();
       $img.data('mask', $mask);
       $mask.data('img', $img);
@@ -6919,8 +6926,6 @@ ImageButton = (function(superClass) {
         height = img.height;
         $img.attr({
           src: src,
-          width: width,
-          height: height,
           'data-image-size': width + ',' + height
         }).removeClass('loading');
         if ($img.hasClass('uploading')) {
@@ -6979,6 +6984,9 @@ ImageButton = (function(superClass) {
 
   ImageButton.prototype.command = function(src) {
     var $img;
+    if (this.editor.opts.imageButton === 'upload') {
+      return;
+    }
     $img = this.createImage();
     return this.loadImage($img, src || this.defaultImage, (function(_this) {
       return function() {
@@ -6992,249 +7000,6 @@ ImageButton = (function(superClass) {
   return ImageButton;
 
 })(Button);
-
-ImagePopover = (function(superClass) {
-  extend(ImagePopover, superClass);
-
-  function ImagePopover() {
-    return ImagePopover.__super__.constructor.apply(this, arguments);
-  }
-
-  ImagePopover.prototype.offset = {
-    top: 6,
-    left: -4
-  };
-
-  ImagePopover.prototype.render = function() {
-    var tpl;
-    tpl = "<div class=\"link-settings\">\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageUrl')) + "</label>\n    <input class=\"image-src\" type=\"text\" tabindex=\"1\" />\n    <a class=\"btn-upload\" href=\"javascript:;\"\n      title=\"" + (this._t('uploadImage')) + "\" tabindex=\"-1\">\n      <span class=\"simditor-icon simditor-icon-upload\"></span>\n    </a>\n  </div>\n  <div class='settings-field'>\n    <label>" + (this._t('imageAlt')) + "</label>\n    <input class=\"image-alt\" id=\"image-alt\" type=\"text\" tabindex=\"1\" />\n  </div>\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageSize')) + "</label>\n    <input class=\"image-size\" id=\"image-width\" type=\"text\" tabindex=\"2\" />\n    <span class=\"times\">×</span>\n    <input class=\"image-size\" id=\"image-height\" type=\"text\" tabindex=\"3\" />\n    <a class=\"btn-restore\" href=\"javascript:;\"\n      title=\"" + (this._t('restoreImageSize')) + "\" tabindex=\"-1\">\n      <span class=\"simditor-icon simditor-icon-undo\"></span>\n    </a>\n  </div>\n</div>";
-    this.el.addClass('image-popover').append(tpl);
-    this.srcEl = this.el.find('.image-src');
-    this.widthEl = this.el.find('#image-width');
-    this.heightEl = this.el.find('#image-height');
-    this.altEl = this.el.find('#image-alt');
-    this.srcEl.on('keydown', (function(_this) {
-      return function(e) {
-        var range;
-        if (!(e.which === 13 && !_this.target.hasClass('uploading'))) {
-          return;
-        }
-        e.preventDefault();
-        range = document.createRange();
-        _this.button.editor.selection.setRangeAfter(_this.target, range);
-        return _this.hide();
-      };
-    })(this));
-    this.srcEl.on('blur', (function(_this) {
-      return function(e) {
-        return _this._loadImage(_this.srcEl.val());
-      };
-    })(this));
-    this.el.find('.image-size').on('blur', (function(_this) {
-      return function(e) {
-        _this._resizeImg($(e.currentTarget));
-        return _this.el.data('popover').refresh();
-      };
-    })(this));
-    this.el.find('.image-size').on('keyup', (function(_this) {
-      return function(e) {
-        var inputEl;
-        inputEl = $(e.currentTarget);
-        if (!(e.which === 13 || e.which === 27 || e.which === 9)) {
-          return _this._resizeImg(inputEl, true);
-        }
-      };
-    })(this));
-    this.el.find('.image-size').on('keydown', (function(_this) {
-      return function(e) {
-        var $img, inputEl, range;
-        inputEl = $(e.currentTarget);
-        if (e.which === 13 || e.which === 27) {
-          e.preventDefault();
-          if (e.which === 13) {
-            _this._resizeImg(inputEl);
-          } else {
-            _this._restoreImg();
-          }
-          $img = _this.target;
-          _this.hide();
-          range = document.createRange();
-          return _this.button.editor.selection.setRangeAfter($img, range);
-        } else if (e.which === 9) {
-          return _this.el.data('popover').refresh();
-        }
-      };
-    })(this));
-    this.altEl.on('keydown', (function(_this) {
-      return function(e) {
-        var range;
-        if (e.which === 13) {
-          e.preventDefault();
-          range = document.createRange();
-          _this.button.editor.selection.setRangeAfter(_this.target, range);
-          return _this.hide();
-        }
-      };
-    })(this));
-    this.altEl.on('keyup', (function(_this) {
-      return function(e) {
-        if (e.which === 13 || e.which === 27 || e.which === 9) {
-          return;
-        }
-        _this.alt = _this.altEl.val();
-        return _this.target.attr('alt', _this.alt);
-      };
-    })(this));
-    this.el.find('.btn-restore').on('click', (function(_this) {
-      return function(e) {
-        _this._restoreImg();
-        return _this.el.data('popover').refresh();
-      };
-    })(this));
-    this.editor.on('valuechanged', (function(_this) {
-      return function(e) {
-        if (_this.active) {
-          return _this.refresh();
-        }
-      };
-    })(this));
-    return this._initUploader();
-  };
-
-  ImagePopover.prototype._initUploader = function() {
-    var $uploadBtn, createInput;
-    $uploadBtn = this.el.find('.btn-upload');
-    if (this.editor.uploader == null) {
-      $uploadBtn.remove();
-      return;
-    }
-    createInput = (function(_this) {
-      return function() {
-        if (_this.input) {
-          _this.input.remove();
-        }
-        return _this.input = $('<input/>', {
-          type: 'file',
-          title: _this._t('uploadImage'),
-          multiple: false,
-          accept: 'image/*'
-        }).appendTo($uploadBtn);
-      };
-    })(this);
-    createInput();
-    this.el.on('click mousedown', 'input[type=file]', function(e) {
-      return e.stopPropagation();
-    });
-    return this.el.on('change', 'input[type=file]', (function(_this) {
-      return function(e) {
-        _this.editor.uploader.upload(_this.input, {
-          inline: true,
-          img: _this.target
-        });
-        return createInput();
-      };
-    })(this));
-  };
-
-  ImagePopover.prototype._resizeImg = function(inputEl, onlySetVal) {
-    var height, value, width;
-    if (onlySetVal == null) {
-      onlySetVal = false;
-    }
-    value = inputEl.val() * 1;
-    if (!(this.target && ($.isNumeric(value) || value < 0))) {
-      return;
-    }
-    if (inputEl.is(this.widthEl)) {
-      width = value;
-      height = this.height * value / this.width;
-      this.heightEl.val(height);
-    } else {
-      height = value;
-      width = this.width * value / this.height;
-      this.widthEl.val(width);
-    }
-    if (!onlySetVal) {
-      this.target.attr({
-        width: width,
-        height: height
-      });
-      return this.editor.trigger('valuechanged');
-    }
-  };
-
-  ImagePopover.prototype._restoreImg = function() {
-    var ref, size;
-    size = ((ref = this.target.data('image-size')) != null ? ref.split(",") : void 0) || [this.width, this.height];
-    this.target.attr({
-      width: size[0] * 1,
-      height: size[1] * 1
-    });
-    this.widthEl.val(size[0]);
-    this.heightEl.val(size[1]);
-    return this.editor.trigger('valuechanged');
-  };
-
-  ImagePopover.prototype._loadImage = function(src, callback) {
-    if (/^data:image/.test(src) && !this.editor.uploader) {
-      if (callback) {
-        callback(false);
-      }
-      return;
-    }
-    if (this.target.attr('src') === src) {
-      return;
-    }
-    return this.button.loadImage(this.target, src, (function(_this) {
-      return function(img) {
-        var blob;
-        if (!img) {
-          return;
-        }
-        if (_this.active) {
-          _this.width = img.width;
-          _this.height = img.height;
-          _this.widthEl.val(_this.width);
-          _this.heightEl.val(_this.height);
-        }
-        if (/^data:image/.test(src)) {
-          blob = _this.editor.util.dataURLtoBlob(src);
-          blob.name = "Base64 Image.png";
-          _this.editor.uploader.upload(blob, {
-            inline: true,
-            img: _this.target
-          });
-        } else {
-          _this.editor.trigger('valuechanged');
-        }
-        if (callback) {
-          return callback(img);
-        }
-      };
-    })(this));
-  };
-
-  ImagePopover.prototype.show = function() {
-    var $img, args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    ImagePopover.__super__.show.apply(this, args);
-    $img = this.target;
-    this.width = $img.width();
-    this.height = $img.height();
-    this.alt = $img.attr('alt');
-    if ($img.hasClass('uploading')) {
-      return this.srcEl.val(this._t('uploading')).prop('disabled', true);
-    } else {
-      this.srcEl.val($img.attr('src')).prop('disabled', false);
-      this.widthEl.val(this.width);
-      this.heightEl.val(this.height);
-      return this.altEl.val(this.alt);
-    }
-  };
-
-  return ImagePopover;
-
-})(Popover);
 
 Simditor.Toolbar.addButton(ImageButton);
 
@@ -8204,7 +7969,7 @@ AttachButton = (function(superClass) {
     }
     return this.input = $('<input/>', {
       type: 'file',
-      title: this._t('uploadImage'),
+      title: this._t('uploadAttach'),
       multiple: false,
       accept: '*/*'
     }).appendTo(this.el);

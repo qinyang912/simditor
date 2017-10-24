@@ -66,6 +66,21 @@ $simditor-button-font-family-width: 80px;
         bottom: 0;
         left: 0;
       }
+      .progress-tip {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.40);
+        text-align: center;
+        line-height: 40px;
+        color: #fff;
+        font-size: 13px;
+        margin-left: -20px;
+        margin-top: -20px;
+      }
     }
   }
 
@@ -596,7 +611,7 @@ $simditor-button-font-family-width: 80px;
     z-index: 2;
     width: 12px;
     height: 12px;
-    background: #41464b;
+    background: #7BBDFF;
     user-select: none;
     border-radius: 50%;
     border: 2px solid #fff;
@@ -1061,6 +1076,7 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   img {
     max-width: 100%;
     vertical-align: middle;
+    height: auto;
   }
 
   $font-size-map: (
