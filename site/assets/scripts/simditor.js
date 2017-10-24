@@ -3784,6 +3784,9 @@ ImageBlock = (function(superClass) {
     this._initResizeBar();
     this.editor.on(UnSelectionBlock.event.select, (function(_this) {
       return function(e, img) {
+        if (!img.complete) {
+          return;
+        }
         _this._currentResizeImg = $(img);
         _this._offResize();
         _this._setPosition();
@@ -3799,21 +3802,26 @@ ImageBlock = (function(superClass) {
   };
 
   ImageBlock.prototype._setSize = function(offset) {
-    var _height, _width, size;
+    var _height, _width, height, naturalHeight, naturalWidth, width;
     if (!this._currentResizeImg) {
       return;
     }
+    naturalWidth = this._currentResizeImg[0].naturalWidth;
+    naturalHeight = this._currentResizeImg[0].naturalHeight;
     _width = this._currentResizeImg.outerWidth();
     _height = this._currentResizeImg.outerHeight();
     if (offset.x * offset.x < offset.y * offset.y) {
-      size = Math.ceil((_height + offset.y * 2) * _width / _height);
+      height = _height + offset.y * 2;
+      width = height * naturalWidth / naturalHeight;
     } else {
-      size = _width + offset.x * 2;
+      width = _width + offset.x * 2;
+      height = width * naturalHeight / naturalWidth;
     }
-    if (!(size > 0)) {
+    if (!(width > 0 && height > 0)) {
       return;
     }
-    this._currentResizeImg.attr('width', size + 'px');
+    this._currentResizeImg.attr('height', height + 'px');
+    this._currentResizeImg.attr('width', width + 'px');
     return this._setPosition();
   };
 

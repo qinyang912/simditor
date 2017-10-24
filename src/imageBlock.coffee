@@ -11,6 +11,7 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
     @editor = @_module
     @_initResizeBar()
     @editor.on UnSelectionBlock.event.select, (e, img) =>
+      return unless img.complete # 判断是否已经加载完成
       @_currentResizeImg = $(img)
 
       @_offResize()
@@ -26,6 +27,9 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
 
   _setSize: (offset) ->
     return unless @_currentResizeImg
+    naturalWidth = @_currentResizeImg[0].naturalWidth
+    naturalHeight  =@_currentResizeImg[0].naturalHeight
+
     _width = @_currentResizeImg.outerWidth()
     _height = @_currentResizeImg.outerHeight()
     # attr = 'width'
@@ -33,13 +37,16 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
     
     # 如果x轴的变化没有y轴变化大，就用y轴的数据转换成x轴的数据
     if offset.x * offset.x < offset.y * offset.y
-      size = Math.ceil((_height + offset.y * 2) * _width / _height)
+      height = _height + offset.y * 2
+      width = height * naturalWidth / naturalHeight
     else
-      size = _width + offset.x * 2
+      width = _width + offset.x * 2
+      height = width * naturalHeight / naturalWidth
 
-    return unless size > 0
+    return unless width > 0 and height > 0
     # @_currentResizeImg.removeAttr removeAttr
-    @_currentResizeImg.attr 'width', (size + 'px')
+    @_currentResizeImg.attr 'height', (height + 'px')
+    @_currentResizeImg.attr 'width', (width + 'px')
     @_setPosition()
 
   _setPosition: () ->
