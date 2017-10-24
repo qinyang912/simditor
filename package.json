@@ -13,7 +13,8 @@
     "url": "https://github.com/mycolorway/simditor/issues"
   },
   "scripts": {
-    "test": "grunt test --verbose"
+    "test": "grunt test --verbose",
+    "start": "grunt"
   },
   "main": "lib/simditor.js",
   "homepage": "http://simditor.tower.im",

@@ -39,6 +39,10 @@ class UnSelectionBlock extends SimpleModule
     taskBlockTitle: 'data-title'
     taskBlockSubTitle: 'data-sub-title'
 
+  @event:
+    unSelect: 'un-selection-block-un-select'
+    select: 'un-selection-block-select'
+
   _selectedWrapper: null
 
   @_tpl:
@@ -94,7 +98,7 @@ class UnSelectionBlock extends SimpleModule
 
   _init: ->
     @editor = @_module
-    @editor.on 'selectionchanged', @_onSelectionChange.bind(@)
+    @editor.on 'selectionchanged.simditor-unSelection', @_onSelectionChange.bind(@)
     @_preview()
     @_patchFirefox()
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
@@ -118,7 +122,7 @@ class UnSelectionBlock extends SimpleModule
       @_unTaskBlockSettingClick(e)
 
     $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
-      if !@_isUnSelectionClick      
+      if !@_isUnSelectionClick and !@editor.imageBlock.isResize
         @_selectCurrent(false)
       else
         @_isUnSelectionClick = false
@@ -327,6 +331,7 @@ class UnSelectionBlock extends SimpleModule
       else
         @_selectedWrapper.removeAttr UnSelectionBlock.attr.select
         @_selectedWrapper = null
+        @editor.trigger UnSelectionBlock.event.unSelect
 
   _unGlobalLinkClick: (e) ->
     wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.globalLink}=true]", @editor.body)
@@ -381,6 +386,13 @@ class UnSelectionBlock extends SimpleModule
       @_selectCurrent false
       @_selectedWrapper = wrapper
       @_selectCurrent()
+      # 当选中的是图片的时候
+      if wrapper.is("[#{UnSelectionBlock.attr.img}]") and wrapper.find('img').length
+        @_onImageSelect(wrapper.find('img').eq(0))
+
+  # 当 image被选中的时候
+  _onImageSelect: ($img) ->
+    @editor.trigger UnSelectionBlock.event.select, $img
 
   _patchFirefox: -> #针对firefox的一些补丁
     if @editor.util.browser.firefox
@@ -404,7 +416,7 @@ class UnSelectionBlock extends SimpleModule
     # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持
     return unless $.fn.magnificPopup
     @editor.body.magnificPopup
-      delegate: "img"
+      delegate: "[data-unselection-select='true'] img"
       type: 'image'
       preloader: true
       removalDelay: 1000

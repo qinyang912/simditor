@@ -590,6 +590,19 @@ $simditor-button-font-family-width: 80px;
       }
     }
   }
+  .simditor-resize-bar {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+    background: #41464b;
+    user-select: none;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.45);
+    cursor: se-resize;
+  }
 
   &.simditor-mobile {
     .simditor-wrapper.toolbar-floating .simditor-toolbar {
@@ -1046,7 +1059,7 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 
   img {
-    margin: 0 5px;
+    max-width: 100%;
     vertical-align: middle;
   }
 

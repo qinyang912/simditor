@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, taskBlockHtml, toolbar;
+    var $preview, attachHtml, editor, globalLinkHtml, imgHtml, imgHtml2, mobileToolbar, taskBlockHtml, toolbar;
     Simditor.locale = 'en-US';
     toolbar = ['title', 'undo', 'redo', 'formatPaint', 'clear-format', 'bold', 'italic', 'underline', 'strikethrough', 'font-family', 'fontScale', 'color', 'background', 'time-stamp', 'line-height', 'checkbox', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol"];
@@ -46,7 +46,25 @@
         subTitle: '筛选结果：今天、已完成'
       }
     });
-    editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>');
+    imgHtml = Simditor.UnSelectionBlock.getImgHtml({
+      file: {
+        id: 1,
+        realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/1504846159168image.png?Expires=1508813168&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=uLdwiFm9%2BE5EBDzuowpK2I/cdE8%3D',
+        name: 'image',
+        bucket: 'rishiqing-file',
+        filePath: ''
+      }
+    });
+    imgHtml2 = Simditor.UnSelectionBlock.getImgHtml({
+      file: {
+        id: 2,
+        realPath: 'http://rishiqing-file.oss-cn-beijing.aliyuncs.com/1508766896563image.png?Expires=1508853297&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=fyAMTdSkl9vBUXaQvT3Y9naN8kY%3D',
+        name: 'image',
+        bucket: 'rishiqing-file',
+        filePath: ''
+      }
+    });
+    editor.setValue(editor.getValue() + imgHtml + imgHtml2);
     $preview = $('#preview');
     if ($preview.length > 0) {
       return editor.on('valuechanged', function(e) {

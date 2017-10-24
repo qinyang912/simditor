@@ -70,7 +70,23 @@ $ ->
       title: '自动填充日程任务'
       subTitle: '筛选结果：今天、已完成'
 
-  editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>')
+  imgHtml = Simditor.UnSelectionBlock.getImgHtml
+    file:
+      id: 1
+      realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/1504846159168image.png?Expires=1508813168&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=uLdwiFm9%2BE5EBDzuowpK2I/cdE8%3D'
+      name: 'image'
+      bucket: 'rishiqing-file'
+      filePath: ''
+
+  imgHtml2 = Simditor.UnSelectionBlock.getImgHtml
+    file:
+      id: 2
+      realPath: 'http://rishiqing-file.oss-cn-beijing.aliyuncs.com/1508766896563image.png?Expires=1508853297&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=fyAMTdSkl9vBUXaQvT3Y9naN8kY%3D'
+      name: 'image'
+      bucket: 'rishiqing-file'
+      filePath: ''
+
+  editor.setValue(editor.getValue() + imgHtml + imgHtml2)
 
   $preview = $('#preview')
   if $preview.length > 0

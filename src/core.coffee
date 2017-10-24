@@ -14,6 +14,7 @@ class Simditor extends SimpleModule
   @connect Clipboard
   @connect WordNum
   @connect CheckBox
+  @connect ImageBlock
 
   @count: 0
 

@@ -40,7 +40,6 @@ class ImageButton extends Button
     @editor.body.on 'click', 'img:not([data-non-image])', (e) =>
       $img = $(e.currentTarget)
 
-      #@popover.show $img
       range = document.createRange()
       range.selectNode $img[0]
       @editor.selection.range range
@@ -51,17 +50,6 @@ class ImageButton extends Button
 
     @editor.body.on 'mouseup', 'img:not([data-non-image])', (e) ->
       return false
-
-    @editor.on 'selectionchanged.image', =>
-      range = @editor.selection.range()
-      return unless range?
-
-      $contents = $(range.cloneContents()).contents()
-      if $contents.length == 1 and $contents.is('img:not([data-non-image])')
-        $img = $(range.startContainer).contents().eq(range.startOffset)
-        @popover.show $img
-      else
-        @popover.hide()
 
     @editor.on 'valuechanged.image', =>
       $masks = @editor.wrapper.find('.simditor-image-loading')
@@ -82,8 +70,6 @@ class ImageButton extends Button
 
   render: (args...) ->
     super args...
-    @popover = new ImagePopover
-      button: @
 
     if @editor.opts.imageButton == 'upload'
       @_initUploader @el
@@ -235,10 +221,6 @@ class ImageButton extends Button
             if @editor.body.find('img.uploading').length < 1
               @editor.uploader.trigger 'uploadready', [file, result]
 
-      if @popover.active
-        @popover.srcEl.prop('disabled', false)
-        @popover.srcEl.val result.file_path
-
     @editor.uploader.on 'uploaderror', (e, file, xhr) =>
       return unless file.inline
       return if xhr.statusText == 'abort'
@@ -265,10 +247,6 @@ class ImageButton extends Button
         $mask = $img.data('mask')
         $mask.remove() if $mask
         $img.removeData 'mask'
-
-      if @popover.active
-        @popover.srcEl.prop('disabled', false)
-        @popover.srcEl.val @defaultImage
 
       @editor.trigger 'valuechanged'
       if @editor.body.find('img.uploading').length < 1
@@ -386,10 +364,6 @@ class ImageButton extends Button
       @editor.trigger 'valuechanged'
       @editor.util.reflow $img
       $img.click()
-
-      @popover.one 'popovershow', =>
-        @popover.srcEl.focus()
-        @popover.srcEl[0].select()
 
 
 class ImagePopover extends Popover
