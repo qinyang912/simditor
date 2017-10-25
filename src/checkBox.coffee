@@ -58,6 +58,23 @@ class CheckBox extends SimpleModule
     if minX < x and x < maxX and minY < y and y < maxY
       @_onCheckBoxClick(e);
 
+  _detect3: (e) -> # 方案3，position: relative, margin-right: .5em
+    unless $(e.currentTarget).is($(e.target))
+      return
+    cs = window.getComputedStyle(e.target, null)
+    fontSize = cs.getPropertyValue 'font-size'
+    fontSize = parseInt(fontSize.replace('px', ''), 10)
+    lineHeight = cs.getPropertyValue 'line-height'
+    lineHeight = parseInt(lineHeight.replace('px', ''), 10)
+    x = e.offsetX
+    y = e.offsetY
+    minX = -@_offset
+    maxX = fontSize + @_offset
+    minY = -@_offset
+    maxY = lineHeight + @_offset
+    if minX < x and x < maxX and minY < y and y < maxY
+      @_onCheckBoxClick(e);
+
   _onCheckBoxClick: (e) ->
     $target = $(e.target)
     if $target.hasClass(CheckBox.className.unchecked)

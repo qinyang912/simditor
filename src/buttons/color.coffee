@@ -33,10 +33,7 @@ class ColorButton extends Button
       $link = $(e.currentTarget)
 
       if $link.hasClass 'font-color-default'
-        $p = @editor.body.find 'p, li'
-        return unless $p.length > 0
-        rgb = window.getComputedStyle($p[0], null).getPropertyValue('color')
-        hex = @_convertRgbToHex rgb
+        hex = @_getDefaultColor()
       else
         rgb = window.getComputedStyle($link[0], null)
           .getPropertyValue('background-color')
@@ -52,6 +49,12 @@ class ColorButton extends Button
       onChange:(hsb, hex) =>
         @_format "##{hex}"
 
+  _getDefaultColor: ->
+    $p = @editor.body.find 'p, li'
+    return unless $p.length > 0
+    rgb = window.getComputedStyle($p[0], null).getPropertyValue('color')
+    return @_convertRgbToHex rgb
+
   _format:(hex) ->
     range = @editor.selection.range()
 
@@ -65,8 +68,11 @@ class ColorButton extends Button
 
 
   _convertRgbToHex:(rgb) ->
-    re = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g
-    match = re.exec rgb
+    re1 = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g
+    re2 = /rgba\((\d+),\s?(\d+),\s?(\d+),\s?(\d+)\)/g
+    _m1 = re1.exec rgb
+    _m2 = re2.exec rgb
+    match = if _m1 then _m1 else _m2
     return '' unless match
 
     rgbToHex = (r, g, b) ->
@@ -89,6 +95,9 @@ class BackgroundColorButton extends ColorButton
   name: 'background'
 
   icon: 'background-color'
+
+  _getDefaultColor: ->
+    return '#ffffff'
 
   _format:(hex) ->
     # Use span[style]

@@ -21,13 +21,13 @@ class Formatter extends SimpleModule
     @_allowedAttributes = $.extend
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name']
       a: ['href', 'target']
-      font: ['color']
+      font: ['color', 'size']
       code: ['class']
       p: [
         'class', 'data-unique-id', 'data-file-id', 
         'data-file-name', 'data-file-src', 'data-attach', 
         'data-img', 'data-global-link', 'data-setting',
-        'data-task-block', 'check-box-item-unchecked', 'check-box-item-checked'
+        'data-task-block'
       ]
       span: [
         'class', 'contenteditable', 'data-name', 
@@ -41,13 +41,13 @@ class Formatter extends SimpleModule
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend
-      span: ['color', 'font-size']
+      span: ['color', 'font-size', 'font-family', 'background-color']
       b: ['color']
       i: ['color']
       strong: ['color']
       strike: ['color']
       u: ['color']
-      p: ['margin-left', 'text-align']
+      p: ['margin-left', 'text-align', 'line-height']
       h1: ['margin-left', 'text-align']
       h2: ['margin-left', 'text-align']
       h3: ['margin-left', 'text-align']

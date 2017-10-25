@@ -12,7 +12,9 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
     @_initResizeBar()
     @editor.on UnSelectionBlock.event.select, (e, img) =>
       return unless img.complete # 判断是否已经加载完成
-      @_currentResizeImg = $(img)
+      $img = $(img)
+      return unless !$img.hasClass('uploading')
+      @_currentResizeImg = $img
 
       @_offResize()
 
@@ -24,6 +26,14 @@ class ImageBlock extends SimpleModule # 不能直接用Image，因为Image是一
     @editor.on UnSelectionBlock.event.unSelect, () =>
       @_currentResizeImg = null
       @_resize.hide()
+
+    @editor.on UnSelectionBlock.event.unSelectDelete, (e, wrapper) =>
+      $wrapper = $(wrapper)
+      return unless $wrapper.attr('data-img') == 'true'
+      $img = $wrapper.find('img')
+      return unless $img.length > 0
+      @_currentResizeImg = null
+      @_resize.hide()      
 
   _setSize: (offset) ->
     return unless @_currentResizeImg

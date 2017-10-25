@@ -456,6 +456,21 @@ $simditor-button-font-family-width: 80px;
         }
       }
 
+      &.toolbar-menu-background {
+        .color-list {
+          li {
+            .font-color {
+              &.font-color-default {
+                background: #fff;
+                border: 1px solid #e1e1e1;
+                width: 14px;
+                height: 14px;
+              }
+            }
+          }
+        }
+      }
+
       &.toolbar-menu-table {
         .menu-create-table {
           background: #ffffff;
@@ -521,6 +536,7 @@ $simditor-button-font-family-width: 80px;
         }
         .menu-item {
           text-align: center;
+          padding: 0;
         }
       }
 
@@ -625,6 +641,12 @@ $simditor-button-font-family-width: 80px;
         top: 0;
         z-index: 10;
         box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+  }
+
+  &.focus {
+    .simditor-info-area {
+      display: none;
     }
   }
 }
@@ -1097,25 +1119,33 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   }
 
   [class^="check-box-item-"], [class*=" check-box-item-"] {
-    padding-left: 2em;
     position: relative;
+    padding-left: 2em; // 方案1和2会用到
     &:before {
       font-family: 'editor-inside-icon' !important;
       cursor: pointer;
-      position: absolute;
-      left: 0.5em;
       display: inline-block;
+      padding: 0 1px;
 
       // // 方案1
+      // position: absolute;
       // top: 0;
+      // left: 0.5em;
 
       // 方案2
+      position: absolute;
       top: 50%;
+      left: 0.5em;
       margin-top: -12.5px;
       width: 16px;
       height: 25px;
       display: flex;
       align-items: center;
+
+      // // 方案3
+      // position: relative;
+      // margin-right: .5em;
+      // line-height: normal;
     }
   }
   .check-box-item-unchecked:before {

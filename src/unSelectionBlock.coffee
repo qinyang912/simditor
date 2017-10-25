@@ -42,6 +42,7 @@ class UnSelectionBlock extends SimpleModule
   @event:
     unSelect: 'un-selection-block-un-select'
     select: 'un-selection-block-select'
+    unSelectDelete: 'un-selection-delete'
 
   _selectedWrapper: null
 
@@ -406,6 +407,7 @@ class UnSelectionBlock extends SimpleModule
   _delete: (wrapper = @_selectedWrapper) ->
     if wrapper
       previousSibling = wrapper[0].previousSibling
+      @editor.trigger UnSelectionBlock.event.unSelectDelete, wrapper
       wrapper.remove()
       if previousSibling
         range = document.createRange()

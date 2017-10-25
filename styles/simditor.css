@@ -1130,6 +1130,12 @@ colpick Color Picker / colpick.com
   top: -999999px;
   left: -999999px;
 }
+.simditor .simditor-toolbar .toolbar-menu.toolbar-menu-background .color-list li .font-color.font-color-default, .simditor .more-option .toolbar-menu.toolbar-menu-background .color-list li .font-color.font-color-default {
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  width: 14px;
+  height: 14px;
+}
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-table .menu-create-table, .simditor .more-option .toolbar-menu.toolbar-menu-table .menu-create-table {
   background: #ffffff;
   padding: 1px;
@@ -1181,6 +1187,7 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-alignment .menu-item, .simditor .more-option .toolbar-menu.toolbar-menu-alignment .menu-item {
   text-align: center;
+  padding: 0;
 }
 .simditor .simditor-toolbar .toolbar-menu.toolbar-menu-font-family:before, .simditor .more-option .toolbar-menu.toolbar-menu-font-family:before {
   width: 90px;
@@ -1264,6 +1271,9 @@ colpick Color Picker / colpick.com
   top: 0;
   z-index: 10;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+.simditor.focus .simditor-info-area {
+  display: none;
 }
 
 @font-face {
@@ -1709,16 +1719,17 @@ colpick Color Picker / colpick.com
   font-size: 36px;
 }
 .simditor .simditor-body [class^="check-box-item-"], .simditor .simditor-body [class*=" check-box-item-"], .editor-style [class^="check-box-item-"], .editor-style [class*=" check-box-item-"] {
-  padding-left: 2em;
   position: relative;
+  padding-left: 2em;
 }
 .simditor .simditor-body [class^="check-box-item-"]:before, .simditor .simditor-body [class*=" check-box-item-"]:before, .editor-style [class^="check-box-item-"]:before, .editor-style [class*=" check-box-item-"]:before {
   font-family: 'editor-inside-icon' !important;
   cursor: pointer;
-  position: absolute;
-  left: 0.5em;
   display: inline-block;
+  padding: 0 1px;
+  position: absolute;
   top: 50%;
+  left: 0.5em;
   margin-top: -12.5px;
   width: 16px;
   height: 25px;

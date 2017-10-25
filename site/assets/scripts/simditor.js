@@ -14,7 +14,7 @@
   }
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
-var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, CheckBox, CheckboxButton, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageBlock, ImageButton, IndentButton, Indentation, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
+var AlignmentButton, AttachButton, BackgroundColorButton, BlockquoteButton, BoldButton, Button, CheckBox, CheckboxButton, ClearFormatButton, Clipboard, CodeButton, CodePopover, ColorButton, CommandBase, CommandUtil, Consolidator, DomRange, DomRangeMemento, DomTreeExtractor, FontFamilyButton, FontScaleButton, FormatPaintButton, FormatPainterCommand, Formatter, FragmentContainer, FragmentsCondition, GlobalLink, HrButton, ImageBlock, ImageButton, IndentButton, Indentation, InfoArea, InlineCommand, InputManager, ItalicButton, Keystroke, LineHeightButton, LinkButton, LinkPopover, ListButton, NodeComparer, OrderListButton, OutdentButton, Popover, RangeFragmentsTraverser, RangeIterator, Selection, Simditor, StrikethroughButton, StripCommand, StripElementCommand, TableButton, TaskBlock, TimeStampButton, TitleButton, Toolbar, TypeColorButton, UnSelectionBlock, UnderlineButton, UndoButton, UndoManager, UnorderListButton, Util, WordNum,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -473,20 +473,20 @@ Formatter = (function(superClass) {
     this._allowedAttributes = $.extend({
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name'],
       a: ['href', 'target'],
-      font: ['color'],
+      font: ['color', 'size'],
       code: ['class'],
-      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block', 'check-box-item-unchecked', 'check-box-item-checked'],
+      p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
       span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title'],
       input: ['class', 'type', 'value', 'disabled']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
-      span: ['color', 'font-size'],
+      span: ['color', 'font-size', 'font-family', 'background-color'],
       b: ['color'],
       i: ['color'],
       strong: ['color'],
       strike: ['color'],
       u: ['color'],
-      p: ['margin-left', 'text-align'],
+      p: ['margin-left', 'text-align', 'line-height'],
       h1: ['margin-left', 'text-align'],
       h2: ['margin-left', 'text-align'],
       h3: ['margin-left', 'text-align'],
@@ -2944,7 +2944,8 @@ UnSelectionBlock = (function(superClass) {
 
   UnSelectionBlock.event = {
     unSelect: 'un-selection-block-un-select',
-    select: 'un-selection-block-select'
+    select: 'un-selection-block-select',
+    unSelectDelete: 'un-selection-delete'
   };
 
   UnSelectionBlock.prototype._selectedWrapper = null;
@@ -3391,6 +3392,7 @@ UnSelectionBlock = (function(superClass) {
     }
     if (wrapper) {
       previousSibling = wrapper[0].previousSibling;
+      this.editor.trigger(UnSelectionBlock.event.unSelectDelete, wrapper);
       wrapper.remove();
       if (previousSibling) {
         range = document.createRange();
@@ -3730,6 +3732,27 @@ CheckBox = (function(superClass) {
     }
   };
 
+  CheckBox.prototype._detect3 = function(e) {
+    var cs, fontSize, lineHeight, maxX, maxY, minX, minY, x, y;
+    if (!$(e.currentTarget).is($(e.target))) {
+      return;
+    }
+    cs = window.getComputedStyle(e.target, null);
+    fontSize = cs.getPropertyValue('font-size');
+    fontSize = parseInt(fontSize.replace('px', ''), 10);
+    lineHeight = cs.getPropertyValue('line-height');
+    lineHeight = parseInt(lineHeight.replace('px', ''), 10);
+    x = e.offsetX;
+    y = e.offsetY;
+    minX = -this._offset;
+    maxX = fontSize + this._offset;
+    minY = -this._offset;
+    maxY = lineHeight + this._offset;
+    if (minX < x && x < maxX && minY < y && y < maxY) {
+      return this._onCheckBoxClick(e);
+    }
+  };
+
   CheckBox.prototype._onCheckBoxClick = function(e) {
     var $target, ac;
     $target = $(e.target);
@@ -3784,17 +3807,37 @@ ImageBlock = (function(superClass) {
     this._initResizeBar();
     this.editor.on(UnSelectionBlock.event.select, (function(_this) {
       return function(e, img) {
+        var $img;
         if (!img.complete) {
           return;
         }
-        _this._currentResizeImg = $(img);
+        $img = $(img);
+        if (!!$img.hasClass('uploading')) {
+          return;
+        }
+        _this._currentResizeImg = $img;
         _this._offResize();
         _this._setPosition();
         return _this._resize.show();
       };
     })(this));
-    return this.editor.on(UnSelectionBlock.event.unSelect, (function(_this) {
+    this.editor.on(UnSelectionBlock.event.unSelect, (function(_this) {
       return function() {
+        _this._currentResizeImg = null;
+        return _this._resize.hide();
+      };
+    })(this));
+    return this.editor.on(UnSelectionBlock.event.unSelectDelete, (function(_this) {
+      return function(e, wrapper) {
+        var $img, $wrapper;
+        $wrapper = $(wrapper);
+        if ($wrapper.attr('data-img') !== 'true') {
+          return;
+        }
+        $img = $wrapper.find('img');
+        if (!($img.length > 0)) {
+          return;
+        }
         _this._currentResizeImg = null;
         return _this._resize.hide();
       };
@@ -3904,6 +3947,38 @@ ImageBlock = (function(superClass) {
 
 })(SimpleModule);
 
+InfoArea = (function(superClass) {
+  extend(InfoArea, superClass);
+
+  function InfoArea() {
+    return InfoArea.__super__.constructor.apply(this, arguments);
+  }
+
+  InfoArea.pluginName = 'InfoArea';
+
+  InfoArea.prototype.opts = {
+    infoArea: ''
+  };
+
+  InfoArea.prototype._init = function() {
+    var tpl;
+    this.editor = this._module;
+    if (!this.opts.infoArea) {
+      return;
+    }
+    tpl = "<div class=\"simditor-info-area\">" + this.opts.infoArea + "</div>";
+    this.el = $(tpl);
+    return this.editor.wrapper.prepend(this.el);
+  };
+
+  InfoArea.prototype.changeContent = function(txt) {
+    return this.el.text(txt);
+  };
+
+  return InfoArea;
+
+})(SimpleModule);
+
 Simditor = (function(superClass) {
   extend(Simditor, superClass);
 
@@ -3940,6 +4015,8 @@ Simditor = (function(superClass) {
   Simditor.connect(CheckBox);
 
   Simditor.connect(ImageBlock);
+
+  Simditor.connect(InfoArea);
 
   Simditor.count = 0;
 
@@ -5603,6 +5680,9 @@ FontScaleButton = (function(superClass) {
     if (!active) {
       return;
     }
+    if (!this.node[0]) {
+      return;
+    }
     fontSize = window.getComputedStyle(this.node[0], null).getPropertyValue('font-size');
     this.el.addClass('active active-font');
     return this.el.find('span').attr('data-size', fontSize.replace('px', ''));
@@ -5792,17 +5872,12 @@ ColorButton = (function(superClass) {
     })(this));
     this.menuWrapper.on('click', '.font-color', (function(_this) {
       return function(e) {
-        var $link, $p, hex, rgb;
+        var $link, hex, rgb;
         _this.menuWrapper.find('.custom-color').colpickHide();
         _this.wrapper.removeClass('menu-on');
         $link = $(e.currentTarget);
         if ($link.hasClass('font-color-default')) {
-          $p = _this.editor.body.find('p, li');
-          if (!($p.length > 0)) {
-            return;
-          }
-          rgb = window.getComputedStyle($p[0], null).getPropertyValue('color');
-          hex = _this._convertRgbToHex(rgb);
+          hex = _this._getDefaultColor();
         } else {
           rgb = window.getComputedStyle($link[0], null).getPropertyValue('background-color');
           hex = _this._convertRgbToHex(rgb);
@@ -5824,6 +5899,16 @@ ColorButton = (function(superClass) {
     });
   };
 
+  ColorButton.prototype._getDefaultColor = function() {
+    var $p, rgb;
+    $p = this.editor.body.find('p, li');
+    if (!($p.length > 0)) {
+      return;
+    }
+    rgb = window.getComputedStyle($p[0], null).getPropertyValue('color');
+    return this._convertRgbToHex(rgb);
+  };
+
   ColorButton.prototype._format = function(hex) {
     var range;
     range = this.editor.selection.range();
@@ -5836,9 +5921,12 @@ ColorButton = (function(superClass) {
   };
 
   ColorButton.prototype._convertRgbToHex = function(rgb) {
-    var match, re, rgbToHex;
-    re = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g;
-    match = re.exec(rgb);
+    var _m1, _m2, match, re1, re2, rgbToHex;
+    re1 = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g;
+    re2 = /rgba\((\d+),\s?(\d+),\s?(\d+),\s?(\d+)\)/g;
+    _m1 = re1.exec(rgb);
+    _m2 = re2.exec(rgb);
+    match = _m1 ? _m1 : _m2;
     if (!match) {
       return '';
     }
@@ -5887,6 +5975,10 @@ BackgroundColorButton = (function(superClass) {
   BackgroundColorButton.prototype.name = 'background';
 
   BackgroundColorButton.prototype.icon = 'background-color';
+
+  BackgroundColorButton.prototype._getDefaultColor = function() {
+    return '#ffffff';
+  };
 
   BackgroundColorButton.prototype._format = function(hex) {
     document.execCommand('styleWithCSS', false, true);
@@ -6651,6 +6743,23 @@ ImageButton = (function(superClass) {
             }
           }
         });
+      };
+    })(this));
+    this.editor.on(UnSelectionBlock.event.unSelectDelete, (function(_this) {
+      return function(e, wrapper) {
+        var $img, $mask, $wrapper;
+        $wrapper = $(wrapper);
+        if ($wrapper.attr('data-img') !== 'true') {
+          return;
+        }
+        $img = $wrapper.find('img');
+        if (!($img.length > 0)) {
+          return;
+        }
+        $mask = $img.data('mask');
+        if ($mask) {
+          return $mask.remove();
+        }
       };
     })(this));
     return ImageButton.__super__._init.call(this);

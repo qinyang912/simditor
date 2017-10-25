@@ -66,6 +66,14 @@ class ImageButton extends Button
               if @editor.body.find('img.uploading').length < 1
                 @editor.uploader.trigger 'uploadready', [file]
 
+    @editor.on UnSelectionBlock.event.unSelectDelete, (e, wrapper) =>
+      $wrapper = $(wrapper)
+      return unless $wrapper.attr('data-img') == 'true'
+      $img = $wrapper.find('img')
+      return unless $img.length > 0
+      $mask = $img.data('mask')
+      $mask.remove() if $mask
+
     super()
 
   render: (args...) ->
@@ -154,7 +162,7 @@ class ImageButton extends Button
 
     @editor.uploader.on 'uploadsuccess', (e, file, result) =>
       return unless file.inline
-
+      
       $img = file.img
       return unless $img.hasClass('uploading') and $img.parent().length > 0
       # in case mime type of response isnt correct
