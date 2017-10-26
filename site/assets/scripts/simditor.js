@@ -2544,7 +2544,7 @@ Indentation = (function(superClass) {
   };
 
   Indentation.prototype.indentBlock = function(blockEl) {
-    var $blockEl, $childList, $nextTd, $nextTr, $parentLi, $pre, $td, $tr, marginLeft, tagName;
+    var $blockEl, $childList, $nextTd, $nextTr, $parentLi, $pre, $td, $tr, count, marginLeft, tagName;
     $blockEl = $(blockEl);
     if (!$blockEl.length) {
       return;
@@ -2571,8 +2571,11 @@ Indentation = (function(superClass) {
       this.editor.selection.restore();
     } else if ($blockEl.is('p, h1, h2, h3, h4')) {
       marginLeft = parseInt($blockEl.css('margin-left')) || 0;
-      marginLeft = (Math.round(marginLeft / this.opts.indentWidth) + 1) * this.opts.indentWidth;
-      $blockEl.css('margin-left', marginLeft);
+      count = Math.round(marginLeft / this.opts.indentWidth) + 1;
+      if (count < this.opts.indentCount + 1) {
+        marginLeft = count * this.opts.indentWidth;
+        $blockEl.css('margin-left', marginLeft);
+      }
     } else if ($blockEl.is('table') || $blockEl.is('.simditor-table')) {
       $td = this.editor.selection.containerNode().closest('td, th');
       $nextTd = $td.next('td, th');
@@ -4026,7 +4029,8 @@ Simditor = (function(superClass) {
     defaultImage: 'images/image.png',
     params: {},
     upload: false,
-    indentWidth: 40
+    indentWidth: 40,
+    indentCount: 10
   };
 
   Simditor.prototype._init = function() {

@@ -71,9 +71,10 @@ class Indentation extends SimpleModule
       @editor.selection.restore()
     else if $blockEl.is 'p, h1, h2, h3, h4'
       marginLeft = parseInt($blockEl.css('margin-left')) || 0
-      marginLeft = (Math.round(marginLeft / @opts.indentWidth) + 1) *
-        @opts.indentWidth
-      $blockEl.css 'margin-left', marginLeft
+      count = Math.round(marginLeft / @opts.indentWidth) + 1
+      if count < @opts.indentCount + 1
+        marginLeft = count * @opts.indentWidth
+        $blockEl.css 'margin-left', marginLeft
     else if $blockEl.is('table') or $blockEl.is('.simditor-table')
       $td = @editor.selection.containerNode().closest('td, th')
       $nextTd = $td.next('td, th')
