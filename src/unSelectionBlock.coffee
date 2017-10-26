@@ -310,7 +310,7 @@ class UnSelectionBlock extends SimpleModule
 
   _onSelectionChange: ->
     range = @editor.selection.range()
-    if range and range.endContainer
+    if range and range.endContainer and range.startContainer and (range.startContainer == range.endContainer)
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper, @editor.body)
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last()
       if wrapper1.length

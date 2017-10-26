@@ -73,7 +73,7 @@ $ ->
   imgHtml = Simditor.UnSelectionBlock.getImgHtml
     file:
       id: 1
-      realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/1504846159168image.png?Expires=1508813168&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=uLdwiFm9%2BE5EBDzuowpK2I/cdE8%3D'
+      realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/150884150442420160306115904image.png?Expires=1509061432&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=D2M2dGI/2ckE4Bm2wlsZa9WMDg8%3D'
       name: 'image'
       bucket: 'rishiqing-file'
       filePath: ''
@@ -81,7 +81,7 @@ $ ->
   imgHtml2 = Simditor.UnSelectionBlock.getImgHtml
     file:
       id: 2
-      realPath: 'http://rishiqing-file.oss-cn-beijing.aliyuncs.com/1508766896563image.png?Expires=1508853297&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=fyAMTdSkl9vBUXaQvT3Y9naN8kY%3D'
+      realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/1508828568224road-1072823.jpg?Expires=1509061432&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=PHm3EfluZYRwxMEk1luF9/T6/%2BA%3D'
       name: 'image'
       bucket: 'rishiqing-file'
       filePath: ''

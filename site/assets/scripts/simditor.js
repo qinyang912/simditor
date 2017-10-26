@@ -3246,7 +3246,7 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.prototype._onSelectionChange = function() {
     var range, wrapper, wrapper1, wrapper2;
     range = this.editor.selection.range();
-    if (range && range.endContainer) {
+    if (range && range.endContainer && range.startContainer && (range.startContainer === range.endContainer)) {
       wrapper1 = $(range.endContainer).closest('.' + UnSelectionBlock.className.wrapper, this.editor.body);
       wrapper2 = $(range.endContainer).find('.' + UnSelectionBlock.className.wrapper).last();
       if (wrapper1.length) {
