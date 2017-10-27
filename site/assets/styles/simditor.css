@@ -1266,6 +1266,62 @@ colpick Color Picker / colpick.com
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.45);
   cursor: se-resize;
 }
+.simditor .simditor-table-context-menu {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  background: #ffffff;
+  text-align: left;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.simditor .simditor-table-context-menu ul {
+  min-width: 160px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 0px;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item {
+  display: block;
+  font-size: 16px;
+  line-height: 2em;
+  padding: 0 10px;
+  text-decoration: none;
+  color: #666666;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item:hover {
+  background: #f6f6f6;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h1 {
+  font-size: 24px;
+  color: #333333;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h2 {
+  font-size: 22px;
+  color: #333333;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h3 {
+  font-size: 20px;
+  color: #333333;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h4 {
+  font-size: 18px;
+  color: #333333;
+}
+.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h5 {
+  font-size: 16px;
+  color: #333333;
+}
+.simditor .simditor-table-context-menu ul > li .separator {
+  display: block;
+  border-top: 1px solid #cccccc;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  margin: 6px 0;
+}
+.simditor .simditor-table-context-menu .menu-edit-table ul li {
+  white-space: nowrap;
+}
 .simditor.simditor-mobile .simditor-wrapper.toolbar-floating .simditor-toolbar {
   position: absolute;
   top: 0;
@@ -1680,7 +1736,7 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body table td, .simditor .simditor-body table th, .editor-style table td, .editor-style table th {
   min-width: 40px;
   height: 30px;
-  border: 1px solid #ccc;
+  border: 1px solid #bbb;
   vertical-align: top;
   padding: 2px 4px;
   text-align: left;
