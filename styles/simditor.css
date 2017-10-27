@@ -1291,26 +1291,6 @@ colpick Color Picker / colpick.com
 .simditor .simditor-table-context-menu ul > li .menu-item:hover {
   background: #f6f6f6;
 }
-.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h1 {
-  font-size: 24px;
-  color: #333333;
-}
-.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h2 {
-  font-size: 22px;
-  color: #333333;
-}
-.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h3 {
-  font-size: 20px;
-  color: #333333;
-}
-.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h4 {
-  font-size: 18px;
-  color: #333333;
-}
-.simditor .simditor-table-context-menu ul > li .menu-item.menu-item-h5 {
-  font-size: 16px;
-  color: #333333;
-}
 .simditor .simditor-table-context-menu ul > li .separator {
   display: block;
   border-top: 1px solid #cccccc;
