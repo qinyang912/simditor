@@ -352,6 +352,7 @@ class TableButton extends Button
       param = btn.attr 'data-param'
       if @contextMenuUnit and @contextMenuUnit.length
         @command param, @contextMenuUnit
+      @hideContextMenu()
 
   showContextMenu: (opt, target) ->
     @contextmenu.css
