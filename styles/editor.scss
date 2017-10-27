@@ -720,9 +720,9 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 }
 
 .simditor .simditor-body, .editor-style {
-  font-size: 16px;
+  font-size: 14px;
   font-family: "Microsoft YaHei", STXihei;
-  line-height: 1.6;
+  line-height: 1.57;
   color: #333;
   outline: none;
   word-wrap: break-word;
@@ -1013,9 +1013,10 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   a:hover, a:active{ outline: 0; }
 
   h1,h2,h3,h4,h5,h6 {
-    font-weight: normal;
-    margin: 40px 0 20px;
+    font-weight: bold;
+    margin: 25px 0 20px;
     color: #000000;
+    line-height: 1.2;
   }
 
   h1 { font-size: 24px; }
@@ -1027,7 +1028,7 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
   p, div {
     word-wrap: break-word;
-    margin: 0 0 15px 0;
+    margin: 0;
     color: #333;
     word-wrap: break-word;
   }

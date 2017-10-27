@@ -19,9 +19,9 @@ class LineHeightButton extends Button
         text: '1.25',
         param: 1.25
       }, {
-        name: '1.5',
-        text: '1.5',
-        param: 1.5
+        name: '1.57',
+        text: '1.57',
+        param: 1.57
       }, {
         name: '1.75',
         text: '1.75',

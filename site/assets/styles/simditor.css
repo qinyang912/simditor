@@ -1330,9 +1330,9 @@ colpick Color Picker / colpick.com
   font-style: normal;
 }
 .simditor .simditor-body, .editor-style {
-  font-size: 16px;
+  font-size: 14px;
   font-family: "Microsoft YaHei", STXihei;
-  line-height: 1.6;
+  line-height: 1.57;
   color: #333;
   outline: none;
   word-wrap: break-word;
@@ -1611,9 +1611,10 @@ colpick Color Picker / colpick.com
   outline: 0;
 }
 .simditor .simditor-body h1, .simditor .simditor-body h2, .simditor .simditor-body h3, .simditor .simditor-body h4, .simditor .simditor-body h5, .simditor .simditor-body h6, .editor-style h1, .editor-style h2, .editor-style h3, .editor-style h4, .editor-style h5, .editor-style h6 {
-  font-weight: normal;
-  margin: 40px 0 20px;
+  font-weight: bold;
+  margin: 25px 0 20px;
   color: #000000;
+  line-height: 1.2;
 }
 .simditor .simditor-body h1, .editor-style h1 {
   font-size: 24px;
@@ -1635,7 +1636,7 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-body p, .simditor .simditor-body div, .editor-style p, .editor-style div {
   word-wrap: break-word;
-  margin: 0 0 15px 0;
+  margin: 0;
   color: #333;
   word-wrap: break-word;
 }
