@@ -5,6 +5,28 @@ class ColorButton extends Button
 
   render: (args...) ->
     super args...
+    @el.append '<span class="color-selected"></span>'
+
+  setActive: ->
+    startNodes = @editor.selection.startNodes()
+    endNodes = @editor.selection.endNodes()
+    return unless startNodes and endNodes
+    startNode = startNodes.eq 0
+    endNode = endNodes.eq 0
+    active = startNodes.length > 0 and endNodes.length > 0 and startNode.is(endNode)
+    node = if active then startNode else null
+    node = if node != null and node[0].nodeType is Node.TEXT_NODE then node.parent() else node
+    # return unless node
+    @setActiveColor node
+
+  setActiveColor: (node) ->
+    if node
+      color = @_getSelectedColor node
+      @el.find('.color-selected').css
+        'background-color': color
+    else
+      @el.find('.color-selected').css
+        'background-color': ''
 
   renderMenu: ->
     list = '''
@@ -56,8 +78,6 @@ class ColorButton extends Button
     return @_convertRgbToHex rgb
 
   _format:(hex) ->
-    range = @editor.selection.range()
-
     # Use span[style] instead of font[color]
     document.execCommand 'styleWithCSS', false, true
     document.execCommand 'foreColor', false, hex
@@ -66,6 +86,10 @@ class ColorButton extends Button
     unless @editor.util.support.oninput
       @editor.trigger 'valuechanged'
 
+  # 获取光标所在地方的颜色， color是字体色，backgournd是背景色
+  _getSelectedColor: (node) ->
+    rgb = window.getComputedStyle(node[0], null).getPropertyValue('color')
+    return @_convertRgbToHex rgb
 
   _convertRgbToHex:(rgb) ->
     re1 = /rgb\((\d+),\s?(\d+),\s?(\d+)\)/g
@@ -107,6 +131,13 @@ class BackgroundColorButton extends ColorButton
 
     unless @editor.util.support.oninput
       @editor.trigger 'valuechanged'
+
+  _getSelectedColor: (node) ->
+    rgb = window.getComputedStyle(node[0], null).getPropertyValue('background-color')
+    if rgb == 'rgba(0, 0, 0, 0)'
+      return '#ffffff'
+    else
+      return @_convertRgbToHex rgb
 
 Simditor.Toolbar.addButton TypeColorButton
 Simditor.Toolbar.addButton BackgroundColorButton

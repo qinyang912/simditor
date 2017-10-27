@@ -139,7 +139,11 @@ class UnSelectionBlock extends SimpleModule
       if @_selectedWrapper
         e.preventDefault()
         switch e.which
-          when 13 then @_skipToNextNewLine()
+          when 13
+            if e.shiftKey
+              @_skipToPrevNewLine()
+            else
+              @_skipToNextNewLine()
           when 40, 39 then @_skipToNextLine()
           when 38, 37 then @_skipToPrevLine()
           when 8 
@@ -298,6 +302,15 @@ class UnSelectionBlock extends SimpleModule
     if nextSibling
       range = document.createRange()
       @editor.selection.setRangeAtStartOf nextSibling, range
+
+  _skipToPrevNewLine: ->
+    p = document.createElement('p')
+    p.innerHTML = '<br>'
+    wrapper = @editor.util.getRootNodeFromNode(@_selectedWrapper)
+    wrapper = $(wrapper)
+    wrapper.before(p)
+    range = document.createRange()
+    @editor.selection.setRangeAtStartOf p, range
 
   _skipToNextNewLine: ->
     p = document.createElement('p')

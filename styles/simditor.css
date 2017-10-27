@@ -987,6 +987,17 @@ colpick Color Picker / colpick.com
   text-overflow: ellipsis;
   text-align: left;
 }
+.simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-color .color-selected, .simditor .simditor-toolbar > ul > li > .toolbar-item.toolbar-item-background .color-selected, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-color .color-selected, .simditor .more-option > ul > li > .toolbar-item.toolbar-item-background .color-selected {
+  display: inline-block;
+  height: 3px;
+  width: 1.2em;
+  position: absolute;
+  left: 50%;
+  margin-left: -0.6em;
+  top: 50%;
+  margin-top: 0.5em;
+  opacity: 1;
+}
 .simditor .simditor-toolbar > ul > li.menu-on .toolbar-item, .simditor .more-option > ul > li.menu-on .toolbar-item {
   position: relative;
   z-index: 20;

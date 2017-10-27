@@ -82,7 +82,6 @@ class FontFamilyButton extends Button
     super()
 
   _activeStatus: ->
-    range = @editor.selection.range()
     startNodes = @editor.selection.startNodes()
     endNodes = @editor.selection.endNodes()
     startNode = startNodes.eq 0

@@ -3024,7 +3024,12 @@ UnSelectionBlock = (function(superClass) {
           e.preventDefault();
           switch (e.which) {
             case 13:
-              return _this._skipToNextNewLine();
+              if (e.shiftKey) {
+                return _this._skipToPrevNewLine();
+              } else {
+                return _this._skipToNextNewLine();
+              }
+              break;
             case 40:
             case 39:
               return _this._skipToNextLine();
@@ -3233,6 +3238,17 @@ UnSelectionBlock = (function(superClass) {
       range = document.createRange();
       return this.editor.selection.setRangeAtStartOf(nextSibling, range);
     }
+  };
+
+  UnSelectionBlock.prototype._skipToPrevNewLine = function() {
+    var p, range, wrapper;
+    p = document.createElement('p');
+    p.innerHTML = '<br>';
+    wrapper = this.editor.util.getRootNodeFromNode(this._selectedWrapper);
+    wrapper = $(wrapper);
+    wrapper.before(p);
+    range = document.createRange();
+    return this.editor.selection.setRangeAtStartOf(p, range);
   };
 
   UnSelectionBlock.prototype._skipToNextNewLine = function() {
@@ -5884,7 +5900,37 @@ ColorButton = (function(superClass) {
   ColorButton.prototype.render = function() {
     var args;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return ColorButton.__super__.render.apply(this, args);
+    ColorButton.__super__.render.apply(this, args);
+    return this.el.append('<span class="color-selected"></span>');
+  };
+
+  ColorButton.prototype.setActive = function() {
+    var active, endNode, endNodes, node, startNode, startNodes;
+    startNodes = this.editor.selection.startNodes();
+    endNodes = this.editor.selection.endNodes();
+    if (!(startNodes && endNodes)) {
+      return;
+    }
+    startNode = startNodes.eq(0);
+    endNode = endNodes.eq(0);
+    active = startNodes.length > 0 && endNodes.length > 0 && startNode.is(endNode);
+    node = active ? startNode : null;
+    node = node !== null && node[0].nodeType === Node.TEXT_NODE ? node.parent() : node;
+    return this.setActiveColor(node);
+  };
+
+  ColorButton.prototype.setActiveColor = function(node) {
+    var color;
+    if (node) {
+      color = this._getSelectedColor(node);
+      return this.el.find('.color-selected').css({
+        'background-color': color
+      });
+    } else {
+      return this.el.find('.color-selected').css({
+        'background-color': ''
+      });
+    }
   };
 
   ColorButton.prototype.renderMenu = function() {
@@ -5937,14 +5983,18 @@ ColorButton = (function(superClass) {
   };
 
   ColorButton.prototype._format = function(hex) {
-    var range;
-    range = this.editor.selection.range();
     document.execCommand('styleWithCSS', false, true);
     document.execCommand('foreColor', false, hex);
     document.execCommand('styleWithCSS', false, false);
     if (!this.editor.util.support.oninput) {
       return this.editor.trigger('valuechanged');
     }
+  };
+
+  ColorButton.prototype._getSelectedColor = function(node) {
+    var rgb;
+    rgb = window.getComputedStyle(node[0], null).getPropertyValue('color');
+    return this._convertRgbToHex(rgb);
   };
 
   ColorButton.prototype._convertRgbToHex = function(rgb) {
@@ -6013,6 +6063,16 @@ BackgroundColorButton = (function(superClass) {
     document.execCommand('styleWithCSS', false, false);
     if (!this.editor.util.support.oninput) {
       return this.editor.trigger('valuechanged');
+    }
+  };
+
+  BackgroundColorButton.prototype._getSelectedColor = function(node) {
+    var rgb;
+    rgb = window.getComputedStyle(node[0], null).getPropertyValue('background-color');
+    if (rgb === 'rgba(0, 0, 0, 0)') {
+      return '#ffffff';
+    } else {
+      return this._convertRgbToHex(rgb);
     }
   };
 
@@ -8558,8 +8618,7 @@ FontFamilyButton = (function(superClass) {
   };
 
   FontFamilyButton.prototype._activeStatus = function() {
-    var active, endNode, endNodes, range, startNode, startNodes;
-    range = this.editor.selection.range();
+    var active, endNode, endNodes, startNode, startNodes;
     startNodes = this.editor.selection.startNodes();
     endNodes = this.editor.selection.endNodes();
     startNode = startNodes.eq(0);

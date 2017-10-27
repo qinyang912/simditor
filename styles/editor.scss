@@ -297,6 +297,19 @@ $simditor-button-font-family-width: 80px;
             text-overflow: ellipsis;
             text-align: left; // 这个地方如果不配置为left，不知道为什么鼠标hover的时候，每次都会自动往右边移动，而且还找不到任何原因; 目前只是在chrome和safari发现了这个问题，firefox倒是很正常
           }
+          &.toolbar-item-color, &.toolbar-item-background {
+            .color-selected {
+              display: inline-block;
+              height: 3px;
+              width: 1.2em;
+              position: absolute;
+              left: 50%;
+              margin-left: -0.6em;
+              top: 50%;
+              margin-top: 0.5em;
+              opacity: 1;
+            }
+          }
         }
 
         &.menu-on {
