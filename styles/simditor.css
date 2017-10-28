@@ -1343,6 +1343,7 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-body [data-unselection-select] img, .editor-style [data-unselection-select] img {
   box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
+  cursor: zoom-in;
 }
 .simditor .simditor-body [data-img], .editor-style [data-img] {
   padding: 0px !important;
