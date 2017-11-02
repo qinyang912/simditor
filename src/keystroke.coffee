@@ -82,7 +82,10 @@ class Keystroke extends SimpleModule
 
     @add 'backspace', '*', (e) =>
       # Remove hr
-      $rootBlock = @editor.selection.rootNodes().first()
+      try
+        $rootBlock = @editor.selection.rootNodes().first()
+      catch
+        return false
       $prevBlockEl = $rootBlock.prev()
 
       if $prevBlockEl.is('hr') and @editor.selection.rangeAtStartOf $rootBlock
@@ -203,13 +206,24 @@ class Keystroke extends SimpleModule
       @editor.selection.setRangeAtStartOf $closestBlock, range
       true
 
-
-    # press delete in a empty li which has a nested list
     @add 'backspace', 'li', (e, $node) =>
       $childList = $node.children('ul, ol')
       $prevNode = $node.prev('li')
+      
+      if @editor.util.isEmptyNode($node) and $prevNode.length == 0
+        listEl = $node.parent()
+        newBlockEl = $('<p/>').append(@editor.util.phBr).insertAfter(listEl)
+        if $node.nextAll('li').length
+          newListEl = $('<' + listEl[0].tagName + '/>')
+            .append($node.nextAll('li'))
+          newBlockEl.after newListEl
+        listEl.remove()
+        @editor.selection.setRangeAtStartOf newBlockEl
+        return true # 返回true，就是会触发valuechanged, 返回false,则不会
+
       return false unless $childList.length > 0 and $prevNode.length > 0
 
+      # press delete in a empty li which has a nested list
       text = ''
       $textNode = null
       $node.contents().each (i, n) ->

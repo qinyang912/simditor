@@ -8,7 +8,7 @@ class CheckboxButton extends Button
 
   htmlTag: Simditor.CheckBox.selector.checkbox
 
-  enableTag: 'p,li' # 只有这里面的标签可以应用 checkbox
+  enableTag: 'p,li,div' # 只有这里面的标签可以应用 checkbox
 
   _filterTag: '.unselection-wrapper' # 需要被过滤掉的标签
 
