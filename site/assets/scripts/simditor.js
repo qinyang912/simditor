@@ -7362,6 +7362,15 @@ TableButton = (function(superClass) {
         });
       };
     })(this));
+    this.editor.on('valuechanged', (function(_this) {
+      return function(e, src) {
+        if (src === 'undo' || src === 'redo') {
+          return _this.editor.body.find('table').each(function(i, table) {
+            return _this.initResize($(table));
+          });
+        }
+      };
+    })(this));
     this.editor.on('selectionchanged.table', (function(_this) {
       return function(e) {
         var $container, range;
@@ -7479,10 +7488,14 @@ TableButton = (function(superClass) {
       });
       this.refreshTableWidth($table);
     }
-    $resizeHandle = $('<div />', {
-      "class": 'simditor-resize-handle',
-      contenteditable: 'false'
-    }).appendTo($wrapper);
+    if ($wrapper.find('.simditor-resize-handle').length === 0) {
+      $resizeHandle = $('<div />', {
+        "class": 'simditor-resize-handle',
+        contenteditable: 'false'
+      }).appendTo($wrapper);
+    } else {
+      $resizeHandle = $wrapper.find('.simditor-resize-handle');
+    }
     editor = this.editor;
     $wrapper.on('mousemove', 'td, th', function(e) {
       var $col, $td, index, ref, ref1, x;

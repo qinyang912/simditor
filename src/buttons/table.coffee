@@ -35,6 +35,11 @@ class TableButton extends Button
       $el.find('table').each (i, table) =>
         @undecorate $(table)
 
+    @editor.on 'valuechanged', (e, src) =>
+      if src == 'undo' or src == 'redo'
+        @editor.body.find('table').each (i, table) =>
+          @initResize $(table)
+
     @editor.on 'selectionchanged.table', (e) =>
       @editor.body.find('.simditor-table td, .simditor-table th')
         .removeClass('active')
@@ -124,11 +129,14 @@ class TableButton extends Button
 
       @refreshTableWidth $table
 
+    if $wrapper.find('.simditor-resize-handle').length == 0
+      $resizeHandle = $ '<div />',
+        class: 'simditor-resize-handle'
+        contenteditable: 'false'
+      .appendTo($wrapper)
+    else
+      $resizeHandle = $wrapper.find('.simditor-resize-handle')
 
-    $resizeHandle = $ '<div />',
-      class: 'simditor-resize-handle'
-      contenteditable: 'false'
-    .appendTo($wrapper)
     editor = @editor
     $wrapper.on 'mousemove', 'td, th', (e) ->
       return if $wrapper.hasClass('resizing')
