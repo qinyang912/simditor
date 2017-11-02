@@ -12,8 +12,6 @@ class CheckboxButton extends Button
 
   _filterTag: '.unselection-wrapper' # 需要被过滤掉的标签
 
-  shortcut: 'alt+c'
-
   _format: (node) ->
     $node = $(node)
     unless $node.is @enableTag

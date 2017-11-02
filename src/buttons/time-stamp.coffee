@@ -5,8 +5,6 @@ class TimeStampButton extends Button
 
   icon: 'time-stamp'
 
-  shortcut: 'alt+t'
-
   _prefix:(t) ->
     return if t < 10 then '0' + t else t
 

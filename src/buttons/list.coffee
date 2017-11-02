@@ -44,9 +44,9 @@ class OrderListButton extends ListButton
   name: 'ol'
   icon: 'ordered-list'
   htmlTag: 'ol'
-  shortcut: 'alt+o'
+  shortcut: 'ctrl+alt+o'
   _init: ->
-    @title = @title + ' ( Alt + O )'
+    @title = @title + ' ( Ctrl + Alt + O )'
     super()
 
 class UnorderListButton extends ListButton
@@ -54,9 +54,9 @@ class UnorderListButton extends ListButton
   name: 'ul'
   icon: 'unordered-list'
   htmlTag: 'ul'
-  shortcut: 'alt+u'
+  shortcut: 'ctrl+alt+u'
   _init: ->
-    @title = @title + ' ( Alt + U )'
+    @title = @title + ' ( Ctrl + Alt + U )'
     super()
 
 Simditor.Toolbar.addButton OrderListButton
