@@ -13,6 +13,8 @@ class ImageButton extends Button
 
   needFocus: false
 
+  shortcut: 'alt+i'
+
   _init: () ->
     if @editor.opts.imageButton
       if Array.isArray(@editor.opts.imageButton)
