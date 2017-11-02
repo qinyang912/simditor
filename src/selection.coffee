@@ -284,8 +284,8 @@ class Selection extends SimpleModule
       @range range
     else
       range.deleteContents()
-
-    range
+      @range startRange
+    return @range()
 
   breakBlockEl: (el, range = @range()) ->
     $el = $(el)

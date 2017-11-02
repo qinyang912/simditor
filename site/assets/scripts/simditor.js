@@ -381,8 +381,9 @@ Selection = (function(superClass) {
       this.range(range);
     } else {
       range.deleteContents();
+      this.range(startRange);
     }
-    return range;
+    return this.range();
   };
 
   Selection.prototype.breakBlockEl = function(el, range) {
@@ -471,13 +472,13 @@ Formatter = (function(superClass) {
     this.editor = this._module;
     this._allowedTags = $.merge(['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike', 'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'hr', 'inherit', 'input'], this.opts.allowedTags);
     this._allowedAttributes = $.extend({
-      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name'],
+      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name', 'class'],
       a: ['href', 'target'],
       font: ['color', 'size'],
       code: ['class'],
       p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
       span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title'],
-      input: ['class', 'type', 'value', 'disabled']
+      input: ['class', 'type', 'value', 'disabled', 'data-user-id']
     }, this.opts.allowedAttributes);
     this._allowedStyles = $.extend({
       span: ['color', 'font-size', 'font-family', 'background-color'],
@@ -490,7 +491,8 @@ Formatter = (function(superClass) {
       h1: ['margin-left', 'text-align'],
       h2: ['margin-left', 'text-align'],
       h3: ['margin-left', 'text-align'],
-      h4: ['margin-left', 'text-align']
+      h4: ['margin-left', 'text-align'],
+      img: ['width', 'height']
     }, this.opts.allowedStyles);
     return this.editor.body.on('click', 'a', function(e) {
       var href;
@@ -1362,7 +1364,7 @@ UndoManager = (function(superClass) {
       return function() {
         return _this._pushUndoState();
       };
-    })(this), 2000);
+    })(this), 1000);
     this.editor.on('valuechanged', (function(_this) {
       return function(e, src) {
         if (src === 'undo' || src === 'redo') {
@@ -1478,18 +1480,29 @@ UndoManager = (function(superClass) {
     return this.editor.trigger('valuechanged', ['redo']);
   };
 
+  UndoManager.prototype._filterHtml = function(html) {
+    var $div, div;
+    div = document.createElement('div');
+    div.innerHTML = html;
+    $div = $(div);
+    $div.find('td[class],th[class],a[class]').removeAttr('class');
+    $div.find('.simditor-resize-handle').remove();
+    $div.find('img[height],img[width]').removeAttr('height').removeAttr('width');
+    $div.find('img[style]').removeAttr('style');
+    return $(div).html();
+  };
+
   UndoManager.prototype.update = function() {
     var currentState, html;
     currentState = this.currentState();
     if (!currentState) {
       return;
     }
-    html = this.editor.body.html();
-    currentState.caret = this.caretPosition();
-    if (currentState.html !== html) {
+    html = this._filterHtml(this.editor.body.html());
+    if (this._filterHtml(currentState.html) !== html) {
       return;
     }
-    return currentState.html = html;
+    return currentState.caret = this.caretPosition();
   };
 
   UndoManager.prototype._getNodeOffset = function(node, index) {
@@ -1505,15 +1518,7 @@ UndoManager = (function(superClass) {
       if (node === child || (index === i && i === 0)) {
         return false;
       }
-      if (child.nodeType === Node.TEXT_NODE) {
-        if (!merging && child.nodeValue.length > 0) {
-          offset += 1;
-          merging = true;
-        }
-      } else {
-        offset += 1;
-        merging = false;
-      }
+      offset += 1;
       if (index - 1 === i) {
         return false;
       }
@@ -1561,7 +1566,7 @@ UndoManager = (function(superClass) {
       offset = ref[i];
       childNodes = node.childNodes;
       if (offset > childNodes.length - 1) {
-        if (i === position.length - 2 && $(node).is('pre:empty')) {
+        if (i === position.length - 2 && $(node).is(':empty')) {
           child = document.createTextNode('');
           node.appendChild(child);
           childNodes = node.childNodes;
@@ -1596,7 +1601,7 @@ UndoManager = (function(superClass) {
         endOffset = startOffset;
       } else {
         endContainer = this._getNodeByPosition(caret.end);
-        endOffset = caret.start[caret.start.length - 1];
+        endOffset = caret.end[caret.end.length - 1];
       }
       if (!startContainer || !endContainer) {
         if (typeof console !== "undefined" && console !== null) {
@@ -1614,10 +1619,14 @@ UndoManager = (function(superClass) {
         endOffset = endContainer.length;
       }
       if (startContainer.nodeType === 1) {
-        startOffset = 0;
+        if (startOffset > startContainer.childNodes.length) {
+          startOffset = startContainer.childNodes.length;
+        }
       }
       if (endContainer.nodeType === 1) {
-        endOffset = 0;
+        if (endOffset > endContainer.childNodes.length) {
+          endOffset = endContainer.childNodes.length;
+        }
       }
       range.setStart(startContainer, startOffset);
       range.setEnd(endContainer, endOffset);
