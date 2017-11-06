@@ -25,7 +25,7 @@ class Formatter extends SimpleModule
         'data-osskey', 'data-name', 'class'
       ]
       a: ['href', 'target']
-      font: ['color', 'size']
+      font: ['color', 'size', 'face']
       code: ['class']
       p: [
         'class', 'data-unique-id', 'data-file-id', 

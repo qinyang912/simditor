@@ -474,7 +474,7 @@ Formatter = (function(superClass) {
     this._allowedAttributes = $.extend({
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name', 'class'],
       a: ['href', 'target'],
-      font: ['color', 'size'],
+      font: ['color', 'size', 'face'],
       code: ['class'],
       p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
       span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title'],
@@ -8648,7 +8648,7 @@ FontFamilyButton = (function(superClass) {
     })(this));
     Object.keys(FontFamilyButton.fontFamily).forEach((function(_this) {
       return function(name) {
-        return _this.fontFamilyMap[name.toLowerCase().replace(/"|'/g, '')] = FontFamilyButton.fontFamily[name];
+        return _this.fontFamilyMap[name.toLowerCase().replace(/"|'|\s/g, '')] = FontFamilyButton.fontFamily[name];
       };
     })(this));
     return FontFamilyButton.__super__._init.call(this);
@@ -8677,7 +8677,7 @@ FontFamilyButton = (function(superClass) {
       return;
     }
     fontFamily = window.getComputedStyle(this.node[0], null).getPropertyValue('font-family');
-    family = this.fontFamilyMap[fontFamily.toLowerCase().replace(/"|'/g, '')];
+    family = this.fontFamilyMap[fontFamily.toLowerCase().replace(/"|'|\s/g, '')];
     name = family ? family.text : '其他字体';
     return this.el.find('span').text(name);
   };

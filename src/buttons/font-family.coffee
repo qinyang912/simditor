@@ -77,7 +77,7 @@ class FontFamilyButton extends Button
       @menu.push FontFamilyButton.fontFamily[name]
 
     Object.keys(FontFamilyButton.fontFamily).forEach (name) =>
-      @fontFamilyMap[name.toLowerCase().replace(/"|'/g, '')] = FontFamilyButton.fontFamily[name]
+      @fontFamilyMap[name.toLowerCase().replace(/"|'|\s/g, '')] = FontFamilyButton.fontFamily[name]
 
     super()
 
@@ -97,7 +97,7 @@ class FontFamilyButton extends Button
     return if not active
     return if not @node[0]
     fontFamily = window.getComputedStyle(@node[0], null).getPropertyValue('font-family')
-    family = @fontFamilyMap[fontFamily.toLowerCase().replace(/"|'/g, '')]
+    family = @fontFamilyMap[fontFamily.toLowerCase().replace(/"|'|\s/g, '')]
     name = if family then family.text else '其他字体'
     @el.find('span').text name
 
