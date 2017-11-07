@@ -149,6 +149,8 @@ class Indentation extends SimpleModule
       @editor.selection.restore()
     else if $blockEl.is 'p, h1, h2, h3, h4'
       marginLeft = parseInt($blockEl.css('margin-left')) || 0
+      if marginLeft <= 0
+        return false
       marginLeft = Math.max(Math.round(marginLeft / @opts.indentWidth) - 1, 0) *
         @opts.indentWidth
       $blockEl.css 'margin-left', if marginLeft == 0 then '' else marginLeft

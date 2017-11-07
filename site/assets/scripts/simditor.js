@@ -2689,6 +2689,9 @@ Indentation = (function(superClass) {
       this.editor.selection.restore();
     } else if ($blockEl.is('p, h1, h2, h3, h4')) {
       marginLeft = parseInt($blockEl.css('margin-left')) || 0;
+      if (marginLeft <= 0) {
+        return false;
+      }
       marginLeft = Math.max(Math.round(marginLeft / this.opts.indentWidth) - 1, 0) * this.opts.indentWidth;
       $blockEl.css('margin-left', marginLeft === 0 ? '' : marginLeft);
     } else if ($blockEl.is('table') || $blockEl.is('.simditor-table')) {
