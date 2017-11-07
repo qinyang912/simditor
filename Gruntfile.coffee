@@ -27,6 +27,7 @@ module.exports = (grunt) ->
             'src/checkBox.coffee'
             'src/imageBlock.coffee'
             'src/infoArea.coffee'
+            'src/attach.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
             'src/domRange.coffee'

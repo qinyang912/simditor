@@ -16,6 +16,7 @@ class Simditor extends SimpleModule
   @connect CheckBox
   @connect ImageBlock
   @connect InfoArea
+  @connect Attach
 
   @count: 0
 
