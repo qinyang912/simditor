@@ -2518,7 +2518,7 @@ Indentation = (function(superClass) {
 
   Indentation.prototype._init = function() {
     this.editor = this._module;
-    return this.editor.keystroke.add('tab', '*', (function(_this) {
+    this.editor.keystroke.add('tab', '*', (function(_this) {
       return function(e) {
         var codeButton;
         codeButton = _this.editor.toolbar.findButton('code');
@@ -2526,6 +2526,25 @@ Indentation = (function(superClass) {
           return;
         }
         return _this.indent(e.shiftKey);
+      };
+    })(this));
+    return this.editor.keystroke.add('backspace', '*', (function(_this) {
+      return function(e) {
+        var $blockEl, codeButton, range;
+        codeButton = _this.editor.toolbar.findButton('code');
+        if (!(_this.opts.tabIndent || (codeButton && codeButton.active))) {
+          return;
+        }
+        range = _this.editor.selection.range();
+        console.log('range', range);
+        if (!(range && range.collapsed)) {
+          return;
+        }
+        $blockEl = _this.editor.selection.blockNodes().last();
+        if (!_this.editor.selection.rangeAtStartOf($blockEl)) {
+          return;
+        }
+        return _this.indent(true);
       };
     })(this));
   };
@@ -7350,7 +7369,6 @@ ImageButton = (function(superClass) {
     $totalWrap.after($newLine);
     $img.data('wrapper', $wrapper);
     this.editor.selection.setRangeAtStartOf($newLine, range);
-    this.editor.trigger('valuechanged');
     return $img;
   };
 

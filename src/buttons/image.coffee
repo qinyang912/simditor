@@ -352,7 +352,7 @@ class ImageButton extends Button
 
     # range.insertNode $img[0]
     @editor.selection.setRangeAtStartOf $newLine, range
-    @editor.trigger 'valuechanged'
+    # @editor.trigger 'valuechanged'
 
     # $nextBlock = $block.next 'p'
     # unless $nextBlock.length > 0
