@@ -20,7 +20,6 @@ class Indentation extends SimpleModule
       codeButton = @editor.toolbar.findButton 'code'
       return unless @opts.tabIndent or (codeButton and codeButton.active)
       range = @editor.selection.range()
-      console.log 'range', range
       return unless range and range.collapsed
       $blockEl = @editor.selection.blockNodes().last()
       return unless @editor.selection.rangeAtStartOf $blockEl
