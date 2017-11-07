@@ -474,7 +474,7 @@ Formatter = (function(superClass) {
     this._allowedAttributes = $.extend({
       img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name', 'class'],
       a: ['href', 'target'],
-      font: ['color', 'size', 'face'],
+      font: ['color', 'size', 'face', 'style'],
       code: ['class'],
       p: ['class', 'data-unique-id', 'data-file-id', 'data-file-name', 'data-file-src', 'data-attach', 'data-img', 'data-global-link', 'data-setting', 'data-task-block'],
       span: ['class', 'contenteditable', 'data-name', 'data-size', 'href', 'data-bucket', 'data-osskey', 'data-key-name', 'title', 'data-global-link-type', 'data-title', 'data-sub-title'],
@@ -492,7 +492,8 @@ Formatter = (function(superClass) {
       h2: ['margin-left', 'text-align'],
       h3: ['margin-left', 'text-align'],
       h4: ['margin-left', 'text-align'],
-      img: ['width', 'height']
+      img: ['width', 'height'],
+      font: ['color', 'font-size', 'font-family', 'background-color']
     }, this.opts.allowedStyles);
     return this.editor.body.on('click', 'a', function(e) {
       var href;

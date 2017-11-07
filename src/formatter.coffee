@@ -25,7 +25,7 @@ class Formatter extends SimpleModule
         'data-osskey', 'data-name', 'class'
       ]
       a: ['href', 'target']
-      font: ['color', 'size', 'face']
+      font: ['color', 'size', 'face', 'style']
       code: ['class']
       p: [
         'class', 'data-unique-id', 'data-file-id', 
@@ -57,6 +57,7 @@ class Formatter extends SimpleModule
       h3: ['margin-left', 'text-align']
       h4: ['margin-left', 'text-align']
       img: ['width', 'height']
+      font: ['color', 'font-size', 'font-family', 'background-color']
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->
