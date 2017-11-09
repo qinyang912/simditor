@@ -36,7 +36,7 @@ class TableButton extends Button
         @undecorate $(table)
 
     @editor.on 'valuechanged', (e, src) =>
-      if src == 'undo' or src == 'redo'
+      if src == 'undo' or src == 'redo' or src == 'clipboard'
         @editor.body.find('table').each (i, table) =>
           @initResize $(table)
 

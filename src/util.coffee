@@ -416,6 +416,9 @@ class Util extends SimpleModule
     computedStyle = window.getComputedStyle(node, null)
     computedStyle.getPropertyValue(style)
 
+  resetBodyInnerHTML: (v) ->
+    @editor.body.get(0).innerHTML = v
+
   hasAttributes: (node) ->
     l = @getOuterHtml(node).replace(node.innerHTML, "")
     a = /=["][^"]/.test(l)

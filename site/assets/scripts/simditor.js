@@ -2219,6 +2219,10 @@ Util = (function(superClass) {
     return computedStyle.getPropertyValue(style);
   };
 
+  Util.prototype.resetBodyInnerHTML = function(v) {
+    return this.editor.body.get(0).innerHTML = v;
+  };
+
   Util.prototype.hasAttributes = function(node) {
     var a, b, c, l;
     l = this.getOuterHtml(node).replace(node.innerHTML, "");
@@ -2936,7 +2940,7 @@ Clipboard = (function(superClass) {
       $blockEl[insertPosition](pasteContent);
       this.editor.selection.setRangeAtEndOf(pasteContent.last());
     }
-    return this.editor.inputManager.throttledValueChanged();
+    return this.editor.inputManager.throttledValueChanged('clipboard');
   };
 
   return Clipboard;
@@ -7536,7 +7540,7 @@ TableButton = (function(superClass) {
     })(this));
     this.editor.on('valuechanged', (function(_this) {
       return function(e, src) {
-        if (src === 'undo' || src === 'redo') {
+        if (src === 'undo' || src === 'redo' || src === 'clipboard') {
           return _this.editor.body.find('table').each(function(i, table) {
             return _this.initResize($(table));
           });
