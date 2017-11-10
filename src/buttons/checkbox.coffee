@@ -2,7 +2,7 @@ class CheckboxButton extends Button
 
   name: 'checkbox'
 
-  icon: 'seleced-mult'
+  icon: 'selected-mult'
 
   disableTag: 'pre,table,li li'
 

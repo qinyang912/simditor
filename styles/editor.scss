@@ -300,13 +300,13 @@ $simditor-button-font-family-width: 80px;
           &.toolbar-item-color, &.toolbar-item-background {
             .color-selected {
               display: inline-block;
-              height: 3px;
-              width: 1.2em;
+              height: 2px;
+              width: 1em;
               position: absolute;
               left: 50%;
-              margin-left: -0.6em;
+              margin-left: -0.5em;
               top: 50%;
-              margin-top: 0.5em;
+              margin-top: 0.4em;
               opacity: 1;
             }
           }
