@@ -59,10 +59,11 @@ class InputManager extends SimpleModule
               .insertAfter($el)
             formatted = true
 
-          if $el.prev().length == 0
-            $('<p/>').append(@editor.util.phBr)
-              .insertBefore($el)
-            formatted = true
+          # hr, pre, .simditor-table前面如果为空的话，不再默认加一个空行
+          # if $el.prev().length == 0
+          #   $('<p/>').append(@editor.util.phBr)
+          #     .insertBefore($el)
+          #   formatted = true
 
           @throttledValueChanged() if formatted
 

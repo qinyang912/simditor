@@ -58,6 +58,8 @@ class Formatter extends SimpleModule
       h4: ['margin-left', 'text-align']
       img: ['width', 'height']
       font: ['color', 'font-size', 'font-family', 'background-color']
+      ul: ['line-height']
+      ol: ['line-height']
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->
