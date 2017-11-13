@@ -2491,6 +2491,9 @@ Toolbar = (function(superClass) {
 
   Toolbar.prototype.findButton = function(name) {
     var button;
+    if (!this.list) {
+      return;
+    }
     button = this.list.find('.toolbar-item-' + name).data('button');
     return button != null ? button : null;
   };

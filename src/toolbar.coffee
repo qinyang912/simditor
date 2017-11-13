@@ -183,6 +183,7 @@ class Toolbar extends SimpleModule
       , 0
 
   findButton: (name) ->
+    return unless @list
     button = @list.find('.toolbar-item-' + name).data('button')
     button ? null
 
