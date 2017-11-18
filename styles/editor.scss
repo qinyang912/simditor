@@ -3,6 +3,7 @@
 
 $simditor-button-height: 40px;
 $simditor-button-width: 46px;
+$simditor-button-font-family-width: 80px;
 
 .simditor {
   position: relative;
@@ -64,6 +65,21 @@ $simditor-button-width: 46px;
         position: absolute;
         bottom: 0;
         left: 0;
+      }
+      .progress-tip {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.40);
+        text-align: center;
+        line-height: 40px;
+        color: #fff;
+        font-size: 13px;
+        margin-left: -20px;
+        margin-top: -20px;
       }
     }
   }
@@ -268,41 +284,30 @@ $simditor-button-width: 46px;
           }
           &.toolbar-item-fontScale {
             &.active-font span:before {
-              font-size: 19px;
+              font-size: 18px;
               font-weight: bold;
               font-family: 'Times New Roman';
+              content: attr(data-size);
             }
-            &.active-12 span:before {
-              content: '12';
-              font-size: 18px;
-            }
-            &.active-14 span:before {
-              content: '14';
-              font-size: 18px;
-            }
-            &.active-16 span:before {
-              content: '16';
-              font-size: 18px;
-            }
-            &.active-18 span:before {
-              content: '18';
-              font-size: 18px;
-            }
-            &.active-20 span:before {
-              content: '20';
-              font-size: 18px;
-            }
-            &.active-24 span:before {
-              content: '24';
-              font-size: 18px;
-            }
-            &.active-30 span:before {
-              content: '30';
-              font-size: 18px;
-            }
-            &.active-36 span:before {
-              content: '36';
-              font-size: 18px;
+          }
+          &.toolbar-item-font-family {
+            width: $simditor-button-font-family-width;
+            padding: 0 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left; // 这个地方如果不配置为left，不知道为什么鼠标hover的时候，每次都会自动往右边移动，而且还找不到任何原因; 目前只是在chrome和safari发现了这个问题，firefox倒是很正常
+          }
+          &.toolbar-item-color, &.toolbar-item-background {
+            .color-selected {
+              display: inline-block;
+              height: 2px;
+              width: 1em;
+              position: absolute;
+              left: 50%;
+              margin-left: -0.5em;
+              top: 50%;
+              margin-top: 0.4em;
+              opacity: 1;
             }
           }
         }
@@ -356,7 +361,7 @@ $simditor-button-width: 46px;
         min-width: 160px;
         list-style: none;
         margin: 0;
-        padding: 10px 1px;
+        padding: 10px 0px;
 
         & > li {
 
@@ -410,16 +415,14 @@ $simditor-button-width: 46px;
 
       }
 
-      &.toolbar-menu-color {
+      &.toolbar-menu-color, &.toolbar-menu-background {
         width: 96px;
-
         .color-list {
           height: 40px;
-          margin: 10px 6px 6px 10px;
+          margin: 10px 6px 0px 10px;
           padding: 0;
-
           min-width: 0;
-
+          border-bottom: 1px solid #ddd;
           li {
             float: left;
             margin: 0 4px 4px 0;
@@ -447,6 +450,35 @@ $simditor-button-width: 46px;
                 background: $color;
               }
               $i: $i + 1;
+            }
+          }
+        }
+        .custom-color {
+          display: block;
+          font-size: 12px;
+          text-align: center;
+          color: #858585;
+          line-height: 16px;
+          cursor: pointer;
+        }
+        input {
+          visibility: hidden;
+          position: absolute;
+          top: -999999px;
+          left: -999999px;
+        }
+      }
+
+      &.toolbar-menu-background {
+        .color-list {
+          li {
+            .font-color {
+              &.font-color-default {
+                background: #fff;
+                border: 1px solid #e1e1e1;
+                width: 14px;
+                height: 14px;
+              }
             }
           }
         }
@@ -485,7 +517,6 @@ $simditor-button-width: 46px;
 
         .menu-edit-table {
           display: none;
-
           ul {
             li {
               white-space: nowrap;
@@ -517,6 +548,13 @@ $simditor-button-width: 46px;
         }
         .menu-item {
           text-align: center;
+          padding: 0;
+        }
+      }
+
+      &.toolbar-menu-font-family {
+        &:before {
+          width: $simditor-button-font-family-width + 5px * 2;
         }
       }
     }
@@ -595,6 +633,66 @@ $simditor-button-width: 46px;
       }
     }
   }
+  .simditor-resize-bar {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+    background: #7BBDFF;
+    user-select: none;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.45);
+    cursor: se-resize;
+  }
+  .simditor-table-context-menu {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    background: #ffffff;
+    text-align: left;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    ul {
+      min-width: 160px;
+      list-style: none;
+      margin: 0;
+      padding: 10px 0px;
+
+      & > li {
+
+        .menu-item {
+          display: block;
+          font-size:16px;
+          line-height: 2em;
+          padding: 0 10px;
+          text-decoration: none;
+          color: #666666;
+
+          &:hover {
+            background: #f6f6f6;
+          }
+        }
+
+        .separator {
+          display: block;
+          border-top: 1px solid #cccccc;
+          height: 0;
+          line-height: 0;
+          font-size: 0;
+          margin: 6px 0;
+        }
+      }
+
+    }
+    .menu-edit-table {
+      ul {
+        li {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
 
   &.simditor-mobile {
     .simditor-wrapper.toolbar-floating .simditor-toolbar {
@@ -604,14 +702,27 @@ $simditor-button-width: 46px;
         box-shadow: 0 0 6px rgba(0,0,0,0.1);
     }
   }
+
+  &.focus {
+    .simditor-info-area {
+      display: none;
+    }
+  }
 }
 
-
+// 下面的这个font-face主要用在editor编辑框内部的，和编辑器sass代码是一体的
+$base64-inside-icon: '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';
+@font-face {
+  font-family: 'editor-inside-icon';
+  src: url(data:application/font-woff;charset=utf-8;base64,#{$base64-inside-icon}) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 .simditor .simditor-body, .editor-style {
-  font-size: 16px;
-  font-family: arial, sans-serif;
-  line-height: 1.6;
+  font-size: 14px;
+  font-family: "Microsoft YaHei", STXihei;
+  line-height: 1.57;
   color: #333;
   outline: none;
   word-wrap: break-word;
@@ -623,6 +734,7 @@ $simditor-button-width: 46px;
     }
     img {
       box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
+      cursor: zoom-in;
     }
   }
   [data-img] {
@@ -902,9 +1014,10 @@ $simditor-button-width: 46px;
   a:hover, a:active{ outline: 0; }
 
   h1,h2,h3,h4,h5,h6 {
-    font-weight: normal;
-    margin: 40px 0 20px;
+    font-weight: bold;
+    margin: 25px 0 20px;
     color: #000000;
+    line-height: 1.2;
   }
 
   h1 { font-size: 24px; }
@@ -916,7 +1029,7 @@ $simditor-button-width: 46px;
 
   p, div {
     word-wrap: break-word;
-    margin: 0 0 15px 0;
+    margin: 0;
     color: #333;
     word-wrap: break-word;
   }
@@ -1025,7 +1138,7 @@ $simditor-button-width: 46px;
     td, th {
       min-width: 40px;
       height: 30px;
-      border: 1px solid #ccc;
+      border: 1px solid #bbb;
       vertical-align: top;
       padding: 2px 4px;
       text-align: left;
@@ -1036,11 +1149,73 @@ $simditor-button-width: 46px;
       }
     }
   }
+  
+  // 这个地方要不要把span设置为inline-block，还有待商榷
+  // span {
+  //   display: inline-block;
+  // }
 
 
   img {
-    margin: 0 5px;
+    max-width: 100%;
     vertical-align: middle;
+    height: auto;
   }
 
+  $font-size-map: (
+    1: 12px,
+    2: 14px,
+    3: 16px,
+    4: 18px,
+    5: 20px,
+    6: 24px,
+    7: 30px,
+    8: 36px
+  );
+
+  @each $size-num in map-keys($font-size-map) {
+    font[size="#{$size-num}"] {
+      font-size: map-get($font-size-map, $size-num);
+    }
+  }
+
+  [class^="check-box-item-"], [class*=" check-box-item-"] {
+    position: relative;
+    padding-left: 2em; // 方案1和2会用到
+    &:before {
+      font-family: 'editor-inside-icon' !important;
+      cursor: pointer;
+      display: inline-block;
+      padding: 0 1px;
+
+      // // 方案1
+      // position: absolute;
+      // top: 0;
+      // left: 0.5em;
+
+      // 方案2
+      position: absolute;
+      top: 50%;
+      left: 0.5em;
+      margin-top: -12.5px;
+      width: 16px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+
+      // // 方案3
+      // position: relative;
+      // margin-right: .5em;
+      // line-height: normal;
+    }
+  }
+  .check-box-item-unchecked:before {
+    content: "\e916";
+  }
+  .check-box-item-checked {
+    text-decoration: line-through;
+    &:before {
+      content: "\e97c"
+    }
+  }
 }

@@ -179,4 +179,4 @@ class Clipboard extends SimpleModule
       $blockEl[insertPosition](pasteContent)
       @editor.selection.setRangeAtEndOf(pasteContent.last())
 
-    @editor.inputManager.throttledValueChanged()
+    @editor.inputManager.throttledValueChanged('clipboard')

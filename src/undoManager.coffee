@@ -38,7 +38,7 @@ class UndoManager extends SimpleModule
 
     @throttledPushState = @editor.util.throttle =>
       @_pushUndoState()
-    , 2000
+    , 1000
 
     @editor.on 'valuechanged', (e, src) =>
       return if src == 'undo' or src == 'redo'
@@ -127,13 +127,23 @@ class UndoManager extends SimpleModule
 
     @editor.trigger 'valuechanged', ['redo']
 
+  _filterHtml: (html) ->
+    div = document.createElement 'div'
+    div.innerHTML = html
+    $div = $(div)
+    $div.find('td[class],th[class],a[class]').removeAttr('class')
+    $div.find('.simditor-resize-handle').remove()
+    $div.find('img[height],img[width]').removeAttr('height').removeAttr('width')
+    $div.find('img[style]').removeAttr('style')
+    return $(div).html()
+
   update: () ->
     currentState = @currentState()
     return unless currentState
-    html = @editor.body.html()
+    html = @_filterHtml(@editor.body.html())
+
+    return if @_filterHtml(currentState.html) != html
     currentState.caret = @caretPosition()
-    return if currentState.html != html
-    currentState.html = html
 
   _getNodeOffset: (node, index) ->
     if $.isNumeric index
@@ -145,14 +155,14 @@ class UndoManager extends SimpleModule
     merging = false
     $parent.contents().each (i, child) ->
       return false if node == child or index == i == 0
-
-      if child.nodeType == Node.TEXT_NODE
-        if !merging and child.nodeValue.length > 0
-          offset += 1
-          merging = true
-      else
-        offset += 1
-        merging = false
+      offset += 1
+      # if child.nodeType == Node.TEXT_NODE
+      #   if !merging
+      #     offset += 1
+      #     merging = true
+      # else
+      #   offset += 1
+      #   merging = false
 
       return false if index - 1 == i
       null
@@ -192,7 +202,7 @@ class UndoManager extends SimpleModule
       childNodes = node.childNodes
       if offset > childNodes.length - 1
         # when pre is empty, the text node will be lost
-        if i == position.length - 2 and $(node).is('pre:empty')
+        if i == position.length - 2 and $(node).is(':empty') # ($(node).is('pre:empty') || $(node).is('td:empty'))
           child = document.createTextNode ''
           node.appendChild child
           childNodes = node.childNodes
@@ -213,13 +223,11 @@ class UndoManager extends SimpleModule
         collapsed: range.collapsed
       else
         {}
-
       return caret
 
     # restore caret state
     else
       return unless caret.start
-
       startContainer = @_getNodeByPosition caret.start
       startOffset = caret.start[caret.start.length - 1]
 
@@ -228,7 +236,7 @@ class UndoManager extends SimpleModule
         endOffset = startOffset
       else
         endContainer = @_getNodeByPosition caret.end
-        endOffset = caret.start[caret.start.length - 1]
+        endOffset = caret.end[caret.end.length - 1]
 
       if !startContainer or !endContainer
         console?.warn? 'simditor: invalid caret state'
@@ -237,8 +245,15 @@ class UndoManager extends SimpleModule
       range = document.createRange()
       startOffset = startContainer.length if startOffset > startContainer.length 
       endOffset = endContainer.length if endOffset > endContainer.length
-      startOffset = 0 if startContainer.nodeType == 1
-      endOffset = 0 if endContainer.nodeType == 1
+      # startOffset = 0 if startContainer.nodeType == 1
+      # endOffset = 0 if endContainer.nodeType == 1
+      if startContainer.nodeType == 1
+        if startOffset > startContainer.childNodes.length
+          startOffset = startContainer.childNodes.length
+      if endContainer.nodeType == 1
+        if endOffset > endContainer.childNodes.length 
+          endOffset = endContainer.childNodes.length
+
       range.setStart(startContainer, startOffset)
       range.setEnd(endContainer, endOffset)
 

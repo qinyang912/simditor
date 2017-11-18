@@ -3,7 +3,7 @@ class HrButton extends Button
 
   name: 'hr'
 
-  icon: 'minus'
+  icon: 'cut-off-rule'
 
   htmlTag: 'hr'
 

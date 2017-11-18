@@ -3,7 +3,7 @@ class FontScaleButton extends Button
 
   name: 'fontScale'
 
-  icon: 'font'
+  icon: 'type-size'
 
   disableTag: 'pre'
 
@@ -13,35 +13,31 @@ class FontScaleButton extends Button
     @menu = [{
       name: '75%'
       text: '12'
-      param: '12px'
+      param: '1'
     }, {
       name: '87.5%'
       text: '14'
-      param: '14px'
+      param: '2'
     }, {
       name: '100%'
       text: '16'
-      param: '16px'
+      param: '3'
     }, {
       name: '112.5%'
       text: '18'
-      param: '18px'
+      param: '4'
     }, {
       name: '125%'
       text: '20'
-      param: '20px'
+      param: '5'
     }, {
       name: '150%'
       text: '24'
-      param: '24px'
+      param: '6'
     }, {
       name: '187.5%'
       text: '30'
-      param: '30px'
-    }, {
-      name: '225%'
-      text: '36'
-      param: '36px'
+      param: '7'
     }]
     super()
 
@@ -49,43 +45,25 @@ class FontScaleButton extends Button
     range = @editor.selection.range()
     startNodes = @editor.selection.startNodes()
     endNodes = @editor.selection.endNodes()
-    startNode = startNodes.filter('span[style*="font-size"]')
-    endNode = endNodes.filter('span[style*="font-size"]')
+    startNode = startNodes.eq 0
+    endNode = endNodes.eq 0
     active = startNodes.length > 0 and endNodes.length > 0 and startNode.is(endNode)
     @node = if active then startNode else null
+    @node = if @node != null and @node[0].nodeType is Node.TEXT_NODE then @node.parent() else @node
     @setActive active
     @active
 
-  setActive: (active, param) ->
+  setActive: (active) ->
     super active
-    @el.removeClass 'active-font active-12 active-14 active-16 active-18 active-20 active-24 active-30 active-36'
+    @el.removeClass 'active-font'
     return if not active
-    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size')    
-    @el.addClass('active active-font active-' + fontSize.replace('px', ''))
+    return unless @node[0]
+    fontSize = window.getComputedStyle(@node[0], null).getPropertyValue('font-size')
+    @el.addClass('active active-font')
+    @el.find('span').attr 'data-size', fontSize.replace('px', '')
 
   command: (param)->
-    range = @editor.selection.range()
-    return if range.collapsed
-
-    # Use span[style] instead of font[size]
-    document.execCommand 'styleWithCSS', false, true
-    document.execCommand 'fontSize', false, 3
-    document.execCommand 'styleWithCSS', false, false
-    @editor.selection.reset()
-    @editor.selection.range()
-
-    containerNode = @editor.selection.containerNode()
-
-    if containerNode[0].nodeType is Node.TEXT_NODE
-      $scales = containerNode.closest('[style*="font-size"]')
-    else
-      $scales = containerNode.find('[style*="font-size"]')
-
-    $scales.each (i, n) =>
-      $span = $(n)
-      size = n.style.fontSize
-      $span.css('fontSize', param)
-
+    document.execCommand 'fontSize', false, param
     @editor.trigger 'valuechanged'
 
 Simditor.Toolbar.addButton FontScaleButton

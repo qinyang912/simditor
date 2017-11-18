@@ -233,6 +233,22 @@ CommandUtil =
   isWhitespaceBetweenTableCells: (node) ->
     @isTextNode(node) && @isTextNodeEmpty(node) && $(node.parentNode).is("tr,tbody,thead,tfoot,table")
 
+  # 计算$child 相对于$parent的 x,y，$child必须是$parent的子元素
+  offsetParent: (_child, _parent) ->
+    offsetX = 0
+    offsetY = 0
+    $child = $(_child)
+    $parent = $(_parent)
+    if $child.is($parent)
+      return { x: 0, y: 0 }
+    else
+      # (!$child.is($parent) and !$child.is($('body')) and $.contains($parent[0], $child[0]))
+      while $.contains($parent[0], $child[0])
+        offsetX += $child[0].offsetLeft
+        offsetY += $child[0].offsetTop
+        $child = $child.offsetParent()
+      return { x: offsetX, y: offsetY }
+
   hasAttributes: (node) ->
     l = @getOuterHtml(node).replace(node.innerHTML, "")
     a = /=["][^"]/.test(l)

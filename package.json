@@ -13,11 +13,13 @@
     "url": "https://github.com/mycolorway/simditor/issues"
   },
   "scripts": {
-    "test": "grunt test --verbose"
+    "test": "grunt test --verbose",
+    "start": "grunt"
   },
   "main": "lib/simditor.js",
   "homepage": "http://simditor.tower.im",
   "dependencies": {
+    "jquery-colpick": "^3.1.0",
     "simple-hotkeys": "~1.0.3",
     "simple-uploader": "git+https://github.com/qinyang912/simple-uploader.git"
   },
@@ -30,12 +32,13 @@
     "grunt-contrib-compress": "0.x",
     "grunt-contrib-copy": "0.x",
     "grunt-contrib-jasmine": "0.x",
-    "grunt-contrib-sass": "0.x",
+    "grunt-contrib-sass": "^0.9.2",
     "grunt-contrib-uglify": "0.x",
     "grunt-contrib-watch": "0.x",
     "grunt-curl": "2.1.x",
     "grunt-express": "1.4.0",
     "grunt-jekyll": "0.x",
+    "grunt-parallel": "^0.5.1",
     "grunt-umd": "2.3.0"
   }
 }

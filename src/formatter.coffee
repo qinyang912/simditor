@@ -19,9 +19,13 @@ class Formatter extends SimpleModule
     )
 
     @_allowedAttributes = $.extend
-      img: ['src', 'alt', 'width', 'height', 'data-non-image', 'data-bucket', 'data-key-name', 'data-osskey', 'data-name']
+      img: [
+        'src', 'alt', 'width', 'height',
+        'data-non-image', 'data-bucket', 'data-key-name',
+        'data-osskey', 'data-name', 'class'
+      ]
       a: ['href', 'target']
-      font: ['color']
+      font: ['color', 'size', 'face', 'style']
       code: ['class']
       p: [
         'class', 'data-unique-id', 'data-file-id', 
@@ -36,22 +40,26 @@ class Formatter extends SimpleModule
         'data-global-link-type', 'data-title', 'data-sub-title'
       ]
       input: [
-        'class', 'type', 'value', 'disabled'
+        'class', 'type', 'value', 'disabled', 'data-user-id'
       ]
     , @opts.allowedAttributes
 
     @_allowedStyles = $.extend
-      span: ['color', 'font-size']
+      span: ['color', 'font-size', 'font-family', 'background-color', 'font-weight']
       b: ['color']
       i: ['color']
       strong: ['color']
       strike: ['color']
       u: ['color']
-      p: ['margin-left', 'text-align']
+      p: ['margin-left', 'text-align', 'line-height']
       h1: ['margin-left', 'text-align']
       h2: ['margin-left', 'text-align']
       h3: ['margin-left', 'text-align']
       h4: ['margin-left', 'text-align']
+      img: ['width', 'height']
+      font: ['color', 'font-size', 'font-family', 'background-color']
+      ul: ['line-height']
+      ol: ['line-height']
     , @opts.allowedStyles
 
     @editor.body.on 'click', 'a', (e) ->

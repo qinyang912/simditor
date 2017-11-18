@@ -16,6 +16,16 @@ class Indentation extends SimpleModule
 
       @indent e.shiftKey
 
+    @editor.keystroke.add 'backspace', '*', (e) =>
+      codeButton = @editor.toolbar.findButton 'code'
+      return unless @opts.tabIndent or (codeButton and codeButton.active)
+      range = @editor.selection.range()
+      return unless range and range.collapsed
+      $blockEl = @editor.selection.blockNodes().last()
+      return unless @editor.selection.rangeAtStartOf $blockEl
+      @indent true
+
+
   indent: (isBackward) ->
     $startNodes = @editor.selection.startNodes()
     $endNodes = @editor.selection.endNodes()
@@ -71,9 +81,10 @@ class Indentation extends SimpleModule
       @editor.selection.restore()
     else if $blockEl.is 'p, h1, h2, h3, h4'
       marginLeft = parseInt($blockEl.css('margin-left')) || 0
-      marginLeft = (Math.round(marginLeft / @opts.indentWidth) + 1) *
-        @opts.indentWidth
-      $blockEl.css 'margin-left', marginLeft
+      count = Math.round(marginLeft / @opts.indentWidth) + 1
+      if count < @opts.indentCount + 1
+        marginLeft = count * @opts.indentWidth
+        $blockEl.css 'margin-left', marginLeft
     else if $blockEl.is('table') or $blockEl.is('.simditor-table')
       $td = @editor.selection.containerNode().closest('td, th')
       $nextTd = $td.next('td, th')
@@ -138,6 +149,8 @@ class Indentation extends SimpleModule
       @editor.selection.restore()
     else if $blockEl.is 'p, h1, h2, h3, h4'
       marginLeft = parseInt($blockEl.css('margin-left')) || 0
+      if marginLeft <= 0
+        return false
       marginLeft = Math.max(Math.round(marginLeft / @opts.indentWidth) - 1, 0) *
         @opts.indentWidth
       $blockEl.css 'margin-left', if marginLeft == 0 then '' else marginLeft

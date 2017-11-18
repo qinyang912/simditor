@@ -35,6 +35,11 @@ class TableButton extends Button
       $el.find('table').each (i, table) =>
         @undecorate $(table)
 
+    @editor.on 'valuechanged', (e, src) =>
+      if src == 'undo' or src == 'redo' or src == 'clipboard'
+        @editor.body.find('table').each (i, table) =>
+          @initResize $(table)
+
     @editor.on 'selectionchanged.table', (e) =>
       @editor.body.find('.simditor-table td, .simditor-table th')
         .removeClass('active')
@@ -56,6 +61,7 @@ class TableButton extends Button
     @editor.on 'blur.table', (e) =>
       @editor.body.find('.simditor-table td, .simditor-table th')
         .removeClass('active')
+      @hideContextMenu();
 
     # press up arrow in td
     @editor.keystroke.add 'up', 'td', (e, $node) =>
@@ -72,6 +78,21 @@ class TableButton extends Button
     @editor.keystroke.add 'down', 'th', (e, $node) =>
       @_tdNav($node, 'down')
       true
+
+    @editor.body.on 'contextmenu', '.simditor-table table', (e) => # 点击右键的时候，这个事件会比 selectionchanged 先执行
+      e.preventDefault()
+      setTimeout () =>
+        offset = Simditor.CommandUtil.offsetParent(e.target, @editor.el)
+        @showContextMenu
+          top: offset.y + e.offsetY
+          left: offset.x + e.offsetX
+        , e.target
+      , 100
+
+    @editor.on 'selectionchanged.table-contextmenu', (e) =>
+      @hideContextMenu()
+
+    @renderContextMenu()
 
   _tdNav: ($td, direction = 'up') ->
     action = if direction == 'up' then 'prev' else 'next'
@@ -108,11 +129,14 @@ class TableButton extends Button
 
       @refreshTableWidth $table
 
+    if $wrapper.find('.simditor-resize-handle').length == 0
+      $resizeHandle = $ '<div />',
+        class: 'simditor-resize-handle'
+        contenteditable: 'false'
+      .appendTo($wrapper)
+    else
+      $resizeHandle = $wrapper.find('.simditor-resize-handle')
 
-    $resizeHandle = $ '<div />',
-      class: 'simditor-resize-handle'
-      contenteditable: 'false'
-    .appendTo($wrapper)
     editor = @editor
     $wrapper.on 'mousemove', 'td, th', (e) ->
       return if $wrapper.hasClass('resizing')
@@ -225,10 +249,8 @@ class TableButton extends Button
     return unless $table.parent('.simditor-table').length > 0
     $table.parent().replaceWith($table)
 
-  renderMenu: ->
-    $("""
-      <div class="menu-create-table">
-      </div>
+  _editTableTpl: () ->
+    tpl = """
       <div class="menu-edit-table">
         <ul>
           <li>
@@ -277,6 +299,13 @@ class TableButton extends Button
           </li>
         </ul>
       </div>
+    """
+
+  renderMenu: ->
+    $("""
+      <div class="menu-create-table">
+      </div>
+      #{@_editTableTpl()}
     """).appendTo(@menuWrapper)
 
     @createMenu = @menuWrapper.find('.menu-create-table')
@@ -317,6 +346,35 @@ class TableButton extends Button
       @editor.selection.setRangeAtStartOf $table.find('th:first')
       @editor.trigger 'valuechanged'
       false
+
+  renderContextMenu: () ->
+    @contextmenu = $('<div class="simditor-table-context-menu"></div>')
+    @contextmenu.append(@_editTableTpl())
+    @editor.el.append(@contextmenu)
+
+    @contextmenu.on 'mousedown', (e) =>
+      false
+
+    @contextmenu.on 'click', 'a.menu-item', (e) =>
+      btn = $ e.currentTarget
+      param = btn.attr 'data-param'
+      if @contextMenuUnit and @contextMenuUnit.length
+        @command param, @contextMenuUnit
+      @hideContextMenu()
+
+  showContextMenu: (opt, target) ->
+    @contextmenu.css
+      top: opt.top
+      left: opt.left
+    @contextMenuUnit = $(target).closest('td, th')
+    if @contextMenuUnit and @contextMenuUnit.length
+      @contextmenu.show()
+    else
+      @contextMenuUnit = null
+
+  hideContextMenu: () ->
+    @contextMenuUnit = null
+    @contextmenu.hide()
 
   createTable: (row, col, phBr) ->
     $table = $('<table/>')
@@ -446,8 +504,8 @@ class TableButton extends Button
     $table.remove()
     @editor.selection.setRangeAtStartOf($block) if $block.length > 0
 
-  command: (param) ->
-    $td = @editor.selection.containerNode().closest('td, th')
+  command: (param, _td) ->
+    $td = if _td then _td else $ @editor.selection.containerNode().closest('td, th')
     return unless $td.length > 0
 
     if param == 'deleteRow'

@@ -13,6 +13,10 @@ class Simditor extends SimpleModule
   @connect Indentation
   @connect Clipboard
   @connect WordNum
+  @connect CheckBox
+  @connect ImageBlock
+  @connect InfoArea
+  @connect Attach
 
   @count: 0
 
@@ -23,6 +27,7 @@ class Simditor extends SimpleModule
     params: {}
     upload: false
     indentWidth: 40
+    indentCount: 10 # 最大允许的缩进次数
 
   _init: ->
     @textarea = $(@opts.textarea)

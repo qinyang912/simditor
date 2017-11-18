@@ -2,7 +2,7 @@
   $(function() {
     var $preview, attachHtml, editor, globalLinkHtml, mobileToolbar, taskBlockHtml, toolbar;
     Simditor.locale = 'en-US';
-    toolbar = ['title', 'undo', 'redo', 'formatPaint', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
+    toolbar = ['title', 'undo', 'redo', 'formatPaint', 'clear-format', 'bold', 'italic', 'underline', 'strikethrough', 'font-family', 'fontScale', 'color', 'background', 'time-stamp', 'line-height', 'checkbox', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'attach', 'hr', '|', 'indent', 'outdent', 'alignment'];
     mobileToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol"];
     if (mobilecheck()) {
       toolbar = mobileToolbar;
@@ -46,7 +46,7 @@
         subTitle: '筛选结果：今天、已完成'
       }
     });
-    editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>');
+    editor.setValue(editor.getValue());
     $preview = $('#preview');
     if ($preview.length > 0) {
       return editor.on('valuechanged', function(e) {

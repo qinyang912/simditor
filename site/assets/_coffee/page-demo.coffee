@@ -7,12 +7,18 @@ $ ->
     'undo', 
     'redo', 
     'formatPaint', 
+    'clear-format',
     'bold', 
     'italic', 
     'underline', 
-    'strikethrough', 
+    'strikethrough',
+    'font-family',
     'fontScale', 
     'color', 
+    'background',
+    'time-stamp',
+    'line-height',
+    'checkbox'
     '|', 
     'ol', 
     'ul', 
@@ -64,7 +70,23 @@ $ ->
       title: '自动填充日程任务'
       subTitle: '筛选结果：今天、已完成'
 
-  editor.setValue(editor.getValue() + globalLinkHtml + attachHtml + taskBlockHtml + '<p>sfs</p>')
+  # imgHtml = Simditor.UnSelectionBlock.getImgHtml
+  #   file:
+  #     id: 1
+  #     realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/150884150442420160306115904image.png?Expires=1509061432&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=D2M2dGI/2ckE4Bm2wlsZa9WMDg8%3D'
+  #     name: 'image'
+  #     bucket: 'rishiqing-file'
+  #     filePath: ''
+
+  # imgHtml2 = Simditor.UnSelectionBlock.getImgHtml
+  #   file:
+  #     id: 2
+  #     realPath: 'https://rishiqing-file.oss-cn-beijing.aliyuncs.com/1508828568224road-1072823.jpg?Expires=1509061432&OSSAccessKeyId=JZJNf7zIXqCHwLpT&Signature=PHm3EfluZYRwxMEk1luF9/T6/%2BA%3D'
+  #     name: 'image'
+  #     bucket: 'rishiqing-file'
+  #     filePath: ''
+
+  editor.setValue(editor.getValue())
 
   $preview = $('#preview')
   if $preview.length > 0

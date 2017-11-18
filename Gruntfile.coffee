@@ -24,6 +24,10 @@ module.exports = (grunt) ->
             'src/wordNum.coffee'
             'src/globalLink.coffee'
             'src/taskBlock.coffee'
+            'src/checkBox.coffee'
+            'src/imageBlock.coffee'
+            'src/infoArea.coffee'
+            'src/attach.coffee'
             'src/core.coffee'
             'src/i18n.coffee'
             'src/domRange.coffee'
@@ -53,6 +57,11 @@ module.exports = (grunt) ->
             'src/buttons/redo.coffee'
             'src/buttons/format-paint.coffee'
             'src/buttons/attach.coffee'
+            'src/buttons/time-stamp.coffee'
+            'src/buttons/line-height.coffee'
+            'src/buttons/clear-format.coffee'
+            'src/buttons/font-family.coffee'
+            'src/buttons/checkbox.coffee'
             'src/commands/commandBase.coffee'
             'src/commands/inlineCommand.coffee'
             'src/commands/stripCommand.coffee'
@@ -118,8 +127,8 @@ module.exports = (grunt) ->
         globalAlias: 'Simditor'
         deps:
           'default': ['$', 'SimpleModule', 'simpleHotkeys', 'simpleUploader']
-          amd: ['jquery', 'simple-module', 'simple-hotkeys', 'simple-uploader']
-          cjs: ['jquery', 'simple-module', 'simple-hotkeys', 'simple-uploader']
+          amd: ['jquery', 'simple-module', 'simple-hotkeys', 'simple-uploader', 'jquery-colpick']
+          cjs: ['jquery', 'simple-module', 'simple-hotkeys', 'simple-uploader', 'jquery-colpick']
           global:
             items: ['jQuery', 'SimpleModule', 'simple.hotkeys', 'simple.uploader']
             prefix: ''
