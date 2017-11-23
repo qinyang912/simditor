@@ -14,10 +14,6 @@ class TableButton extends Button
   _init: ->
     super()
 
-    $.merge(
-      @editor.formatter._allowedTags,
-      ['thead', 'th', 'tbody', 'tr', 'td', 'colgroup', 'col']
-    )
     $.extend @editor.formatter._allowedAttributes,
       td: ['rowspan', 'colspan'],
       col: ['width']

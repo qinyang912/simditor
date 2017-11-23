@@ -14,8 +14,13 @@ class Formatter extends SimpleModule
     @_allowedTags = $.merge(
       ['br', 'span', 'a', 'img', 'b', 'strong', 'i', 'strike',
       'u', 'font', 'p', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'h1',
-      'h2', 'h3', 'h4', 'hr', 'inherit', 'input'],
+      'h2', 'h3', 'h4', 'hr', 'inherit', 'input', 'table'],
       @opts.allowedTags
+    )
+
+    $.merge(
+      @editor.formatter._allowedTags,
+      ['thead', 'th', 'tbody', 'tr', 'td', 'colgroup', 'col']
     )
 
     @_allowedAttributes = $.extend
