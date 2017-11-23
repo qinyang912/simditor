@@ -21,7 +21,7 @@ class TableButton extends Button
       td: ['text-align']
       th: ['text-align']
 
-    @_initShortcuts()
+    # @_initShortcuts()
 
     @editor.on 'decorate', (e, $el) =>
       $el.find('table').each (i, table) =>
@@ -258,13 +258,13 @@ class TableButton extends Button
           <li>
             <a tabindex="-1" unselectable="on" class="menu-item"
               href="javascript:;" data-param="insertRowAbove">
-              <span>#{ @_t 'insertRowAbove' } ( Ctrl + Alt + ↑ )</span>
+              <span>#{ @_t 'insertRowAbove' }</span>
             </a>
           </li>
           <li>
             <a tabindex="-1" unselectable="on" class="menu-item"
               href="javascript:;" data-param="insertRowBelow">
-              <span>#{ @_t 'insertRowBelow' } ( Ctrl + Alt + ↓ )</span>
+              <span>#{ @_t 'insertRowBelow' }</span>
             </a>
           </li>
           <li><span class="separator"></span></li>
@@ -277,13 +277,13 @@ class TableButton extends Button
           <li>
             <a tabindex="-1" unselectable="on" class="menu-item"
               href="javascript:;" data-param="insertColLeft">
-              <span>#{ @_t 'insertColumnLeft' } ( Ctrl + Alt + ← )</span>
+              <span>#{ @_t 'insertColumnLeft' }</span>
             </a>
           </li>
           <li>
             <a tabindex="-1" unselectable="on" class="menu-item"
               href="javascript:;" data-param="insertColRight">
-              <span>#{ @_t 'insertColumnRight' } ( Ctrl + Alt + → )</span>
+              <span>#{ @_t 'insertColumnRight' }</span>
             </a>
           </li>
           <li><span class="separator"></span></li>
