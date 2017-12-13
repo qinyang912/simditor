@@ -186,7 +186,7 @@ class ImageButton extends Button
               fileName: file.name
               filePath: result.key
             success: (data) =>
-              img_path = data.realPath;
+              img_path = data.viewPath;
               @loadImage $img, img_path, =>
                 $img.removeData 'file'
                 $img.removeClass 'uploading'

@@ -191,7 +191,7 @@ class UnSelectionBlock extends SimpleModule
     wrapper.attr UnSelectionBlock.attr.img, true
     if data && data.file
       $img = wrapper.find('img');
-      $img.attr('src', data.file.realPath)
+      $img.attr('src', data.file.viewPath)
       $img.attr('alt', data.file.name)
       $img.attr(UnSelectionBlock.attr.bucket, data.bucket)
       $img.attr(UnSelectionBlock.attr.key, data.file.filePath)

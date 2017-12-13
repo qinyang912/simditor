@@ -3146,7 +3146,7 @@ UnSelectionBlock = (function(superClass) {
     wrapper.attr(UnSelectionBlock.attr.img, true);
     if (data && data.file) {
       $img = wrapper.find('img');
-      $img.attr('src', data.file.realPath);
+      $img.attr('src', data.file.viewPath);
       $img.attr('alt', data.file.name);
       $img.attr(UnSelectionBlock.attr.bucket, data.bucket);
       $img.attr(UnSelectionBlock.attr.key, data.file.filePath);
@@ -3667,7 +3667,7 @@ GlobalLink = (function(superClass) {
       FileUtil = this.editor.opts.upload.FileUtil;
       _data.previewFile = FileUtil.isPreviewFile(data.name);
       _data.framePreviewFile = FileUtil.isFramePreviewFile(data.name);
-      _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.realPath;
+      _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.viewPath;
     }
     return $(UnSelectionBlock.getAttachHtml(_data));
   };
@@ -4131,7 +4131,7 @@ Attach = (function(superClass) {
                   FileUtil = _this.editor.opts.upload.FileUtil;
                   _data.previewFile = FileUtil.isPreviewFile(data.name);
                   _data.framePreviewFile = FileUtil.isFramePreviewFile(data.name);
-                  _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.realPath;
+                  _data.viewPath = _data.framePreviewFile ? FileUtil.getFramePreviewFileUrl(data.realPath, data.name) : data.viewPath;
                 }
                 html = UnSelectionBlock.getAttachHtml(_data);
                 $attach.replaceWith(html);
@@ -7197,7 +7197,7 @@ ImageButton = (function(superClass) {
                 filePath: result.key
               },
               success: function(data) {
-                img_path = data.realPath;
+                img_path = data.viewPath;
                 return _this.loadImage($img, img_path, function() {
                   var $mask, $wrapper;
                   $img.removeData('file');
