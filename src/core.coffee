@@ -129,6 +129,8 @@ class Simditor extends SimpleModule
       @placeholderEl.hide()
 
   setValue: (val) ->
+    if typeof val == 'string'
+      val += '<p>' + @util.phBr + '</p>'
     @hidePopover()
     @textarea.val val
     @body.get(0).innerHTML = val
