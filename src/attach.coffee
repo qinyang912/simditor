@@ -58,7 +58,7 @@ class Attach extends SimpleModule
                 FileUtil = @editor.opts.upload.FileUtil
                 _data.previewFile = FileUtil.isPreviewFile data.name
                 _data.framePreviewFile = FileUtil.isFramePreviewFile data.name
-                _data.viewPath = if _data.framePreviewFile then FileUtil.getFramePreviewFileUrl data.realPath, data.name else data.realPath
+                _data.viewPath = if _data.framePreviewFile then FileUtil.getFramePreviewFileUrl data.realPath, data.name else data.viewPath
 
               html = UnSelectionBlock.getAttachHtml(_data)
               $attach.replaceWith html
