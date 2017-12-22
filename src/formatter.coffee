@@ -268,6 +268,7 @@ class Formatter extends SimpleModule
     $contents.each (i, el) ->
       $el = $(el)
       invalid = $el.is(':not(img, br, col, td, hr, [class^="simditor-"]):empty')
-      $el.remove() if invalid or uselessP($el)
+      # $el.remove() if invalid or uselessP($el)
+      $el.remove() if invalid # 换成这个，不清理无用的p标签，保留空行
       $el.find(':not(img, br, col, td, hr, [class^="simditor-"]):empty')
         .remove()

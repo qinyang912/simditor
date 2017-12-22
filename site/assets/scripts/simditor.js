@@ -765,7 +765,7 @@ Formatter = (function(superClass) {
       var $el, invalid;
       $el = $(el);
       invalid = $el.is(':not(img, br, col, td, hr, [class^="simditor-"]):empty');
-      if (invalid || uselessP($el)) {
+      if (invalid) {
         $el.remove();
       }
       return $el.find(':not(img, br, col, td, hr, [class^="simditor-"]):empty').remove();
