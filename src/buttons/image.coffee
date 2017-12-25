@@ -97,7 +97,7 @@ class ImageButton extends Button
       $input = $ '<input/>',
         type: 'file'
         title: @_t('uploadImage')
-        multiple: false
+        multiple: true
         accept: 'image/*'
       .appendTo($uploadItem)
 
@@ -109,17 +109,23 @@ class ImageButton extends Button
       e.preventDefault()
 
     $uploadItem.on 'change', 'input[type=file]', (e) =>
-      if @editor.inputManager.focused
-        @editor.uploader.upload($input, {
-          inline: true
-        })
-        createInput()
-      else
-        @editor.focus()
-        @editor.uploader.upload($input, {
-          inline: true
-        })
-        createInput()
+      # 这个地方在electron里必须要延迟500ms，是因为，在electron里打开文件对话框的时候
+      # 编辑器会失焦，在关闭对话框的时候，编辑器会自动聚焦，但是如果这里不延迟，就会导致下面的上传代码
+      # 比聚焦的代码先执行，导致上传的时候以为没有焦点，导致图片无法上传到光标位置，而只能在文章末尾
+      # 所以在electron里，下面的代码延迟500ms执行
+      setTimeout () =>
+        if @editor.inputManager.focused
+          @editor.uploader.upload($input, {
+            inline: true
+          })
+          createInput()
+        else
+          @editor.focus()
+          @editor.uploader.upload($input, {
+            inline: true
+          })
+          createInput()
+      , if @editor.util.browser.electron then 500 else 0
       @wrapper.removeClass('menu-on')
 
 

@@ -36,6 +36,7 @@ class Util extends SimpleModule
     safari = /safari/i.test(ua) && !chrome
     firefox = /firefox/i.test(ua)
     edge = /edge/i.test(ua)
+    electron = /electron/i.test(ua)
 
     if ie
       msie: true
@@ -44,6 +45,9 @@ class Util extends SimpleModule
       edge: true
       webkit: true
       version: ua.match(/edge\/(\d+(\.\d+)?)/i)?[1] * 1
+    else if electron # 由于electron是基于chrome开发的，所以这个判断必须放到chrome前面，不然会被判断成chrome
+      webkit: true
+      electron: true
     else if chrome
       webkit: true
       chrome: true
