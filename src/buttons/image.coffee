@@ -267,14 +267,17 @@ class ImageButton extends Button
 
   loadImage: ($img, src, callback) ->
     positionMask = =>
-      imgOffset = $img.offset()
-      wrapperOffset = @editor.wrapper.offset()
-      $mask.css({
-        top: imgOffset.top - wrapperOffset.top
-        left: imgOffset.left - wrapperOffset.left
-        width: $img.width()
-        height: $img.height()
-      }).show()
+      maskList = @editor.wrapper.find '.simditor-image-loading'
+      maskList.each (i, e) =>
+        $$img = $(e).data('img')
+        imgOffset = $$img.offset()
+        wrapperOffset = @editor.wrapper.offset()
+        $(e).css({
+          top: imgOffset.top - wrapperOffset.top
+          left: imgOffset.left - wrapperOffset.left
+          width: $$img.width()
+          height: $$img.height()
+        }).show()
 
     $img.addClass('loading')
     $mask = $img.data('mask')
@@ -287,9 +290,10 @@ class ImageButton extends Button
       ''')
         .hide()
         .appendTo(@editor.wrapper)
-      positionMask()
+
       $img.data('mask', $mask)
       $mask.data('img', $img)
+      positionMask()
 
     img = new Image()
 
@@ -301,8 +305,6 @@ class ImageButton extends Button
 
       $img.attr
         src: src,
-        # width: width,
-        # height: height,
         'data-image-size': width + ',' + height
       .removeClass('loading')
 
@@ -329,15 +331,6 @@ class ImageButton extends Button
     range.deleteContents()
     @editor.selection.range range
 
-    # $block = @editor.selection.blockNodes().last()
-    # if $block.is('p') and !@editor.util.isEmptyNode $block
-    #   $block = $('<p/>').append(@editor.util.phBr).insertAfter($block)
-    #   @editor.selection.setRangeAtStartOf $block, range
-    #else if $block.is('li')
-      #$block = @editor.util.furthestNode $block, 'ul, ol'
-      #$block = $('<p/>').append(@editor.util.phBr).insertAfter($block)
-      #@editor.selection.setRangeAtStartOf $block, range
-
     $img = $('<img/>').attr('alt', name)
     $newLine = $('<p><br></p>')
     rootNode = @editor.selection.rootNodes().last()
@@ -356,15 +349,8 @@ class ImageButton extends Button
 
     $img.data 'wrapper', $wrapper
 
-    # range.insertNode $img[0]
     @editor.selection.setRangeAtStartOf $newLine, range
-    # @editor.trigger 'valuechanged'
-
-    # $nextBlock = $block.next 'p'
-    # unless $nextBlock.length > 0
-    #   $nextBlock = $('<p/>').append(@editor.util.phBr).insertAfter($block)
-    # @editor.selection.setRangeAtStartOf $nextBlock
-
+    
     $img
 
   command: (src) ->

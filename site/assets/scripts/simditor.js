@@ -7306,24 +7306,29 @@ ImageButton = (function(superClass) {
     var $mask, img, positionMask;
     positionMask = (function(_this) {
       return function() {
-        var imgOffset, wrapperOffset;
-        imgOffset = $img.offset();
-        wrapperOffset = _this.editor.wrapper.offset();
-        return $mask.css({
-          top: imgOffset.top - wrapperOffset.top,
-          left: imgOffset.left - wrapperOffset.left,
-          width: $img.width(),
-          height: $img.height()
-        }).show();
+        var maskList;
+        maskList = _this.editor.wrapper.find('.simditor-image-loading');
+        return maskList.each(function(i, e) {
+          var $$img, imgOffset, wrapperOffset;
+          $$img = $(e).data('img');
+          imgOffset = $$img.offset();
+          wrapperOffset = _this.editor.wrapper.offset();
+          return $(e).css({
+            top: imgOffset.top - wrapperOffset.top,
+            left: imgOffset.left - wrapperOffset.left,
+            width: $$img.width(),
+            height: $$img.height()
+          }).show();
+        });
       };
     })(this);
     $img.addClass('loading');
     $mask = $img.data('mask');
     if (!$mask) {
       $mask = $('<div class="simditor-image-loading">\n  <div class="progress"></div>\n  <div class="progress-tip">0%</div>\n</div>').hide().appendTo(this.editor.wrapper);
-      positionMask();
       $img.data('mask', $mask);
       $mask.data('img', $img);
+      positionMask();
     }
     img = new Image();
     img.onload = (function(_this) {
