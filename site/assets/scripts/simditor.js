@@ -715,7 +715,10 @@ Formatter = (function(superClass) {
       style = ref[w];
       style = $.trim(style);
       pair = style.split(':');
-      if (!(pair.length = 2)) {
+      if (pair.length !== 2) {
+        continue;
+      }
+      if (pair[0] === 'font-size' && pair[1] === ' 1px') {
         continue;
       }
       if (ref1 = pair[0], indexOf.call(allowedStyles, ref1) >= 0) {
