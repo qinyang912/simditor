@@ -86,8 +86,11 @@ class Keystroke extends SimpleModule
         $rootBlock = @editor.selection.rootNodes().first()
       catch
         return false
-      $prevBlockEl = $rootBlock.prev()
 
+      indentationResult = @editor.indentation.backspace(e)
+      return true if indentationResult # 如果indentation有变化，就提前返回了
+
+      $prevBlockEl = $rootBlock.prev()
       if $prevBlockEl.is('hr') and @editor.selection.rangeAtStartOf $rootBlock
         @editor.selection.save()
         $prevBlockEl.remove()

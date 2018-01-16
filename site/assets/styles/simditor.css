@@ -1344,12 +1344,26 @@ colpick Color Picker / colpick.com
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
   border: 1px solid #bababa !important;
 }
-.simditor .simditor-body [data-unselection-select] img, .editor-style [data-unselection-select] img {
+.simditor .simditor-body [data-unselection-select][data-img] img, .editor-style [data-unselection-select][data-img] img {
   box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
   cursor: zoom-in;
 }
+.simditor .simditor-body [data-unselection-select][data-map] > span, .editor-style [data-unselection-select][data-map] > span {
+  box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
+}
 .simditor .simditor-body [data-img], .editor-style [data-img] {
   padding: 0px !important;
+}
+.simditor .simditor-body [data-map], .editor-style [data-map] {
+  text-align: left !important;
+}
+.simditor .simditor-body [data-map] > span.wrap, .editor-style [data-map] > span.wrap {
+  border: 1px solid #EAEAEA;
+  display: inline-block;
+}
+.simditor .simditor-body [data-map] .location, .editor-style [data-map] .location {
+  padding-left: 10px;
+  display: block;
 }
 .simditor .simditor-body .unselection-wrapper, .editor-style .unselection-wrapper {
   text-align: center;

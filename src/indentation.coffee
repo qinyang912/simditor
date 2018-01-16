@@ -16,15 +16,20 @@ class Indentation extends SimpleModule
 
       @indent e.shiftKey
 
-    @editor.keystroke.add 'backspace', '*', (e) =>
-      codeButton = @editor.toolbar.findButton 'code'
-      return unless @opts.tabIndent or (codeButton and codeButton.active)
-      range = @editor.selection.range()
-      return unless range and range.collapsed
-      $blockEl = @editor.selection.blockNodes().last()
-      return unless @editor.selection.rangeAtStartOf $blockEl
-      @indent true
-
+  # backspace键按下的时候调用
+  # 在keystroke里的backspace * 里调用
+  # 之所以要放到keystroke里去执行
+  # 是因为keystroke.add 针对一个key, 一个node, 只能添加一个回调
+  # 如果在这里也用@editor.keystroke.add 'backspace', *的话
+  # 会把keystroke里自己加的事件给覆盖掉，导致bug
+  backspace: (e) =>
+    codeButton = @editor.toolbar.findButton 'code'
+    return unless @opts.tabIndent or (codeButton and codeButton.active)
+    range = @editor.selection.range()
+    return unless range and range.collapsed
+    $blockEl = @editor.selection.blockNodes().last()
+    return unless @editor.selection.rangeAtStartOf $blockEl
+    @indent true
 
   indent: (isBackward) ->
     $startNodes = @editor.selection.startNodes()
