@@ -1360,6 +1360,7 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body [data-map] > span.wrap, .editor-style [data-map] > span.wrap {
   border: 1px solid #EAEAEA;
   display: inline-block;
+  max-width: 284px;
 }
 .simditor .simditor-body [data-map] .location, .editor-style [data-map] .location {
   padding-left: 10px;
