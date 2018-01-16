@@ -32,12 +32,14 @@ class UnSelectionBlock extends SimpleModule
     fileSrc: 'data-file-src'
     attach: 'data-attach'
     img: 'data-img'
+    map: 'data-map'
     globalLink: 'data-global-link'
     globalLinkType: 'data-global-link-type'
     taskBlock: 'data-task-block'
     taskBlockSetting: 'data-setting'
     taskBlockTitle: 'data-title'
     taskBlockSubTitle: 'data-sub-title'
+    location: 'data-location'
 
   @event:
     unSelect: 'un-selection-block-un-select'
@@ -121,6 +123,10 @@ class UnSelectionBlock extends SimpleModule
 
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.taskBlockSetting}", (e) =>
       @_unTaskBlockSettingClick(e)
+
+    # 不知道为什么这里只监听.wrap，点击下面的img无法触发事件
+    @editor.body.on 'click.simditor-unSelection', "[data-map] .wrap img,[data-map] .wrap", (e) => 
+      @_unMapClick(e)
 
     $(document).on 'click.simditor-unSelection-' + @editor.id, (e) =>
       if !@_isUnSelectionClick and !@editor.imageBlock.isResize
@@ -372,6 +378,13 @@ class UnSelectionBlock extends SimpleModule
         id: id
         preview: opt.preview
         download: opt.download
+
+  _unMapClick: (e) ->
+    wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.map}=true]", @editor.body)
+    if wrapper.length
+      loc = wrapper.find('img').attr UnSelectionBlock.attr.location
+      @editor.trigger 'selectMap',
+        location: loc
 
   _unTaskBlockSettingClick: (e) ->
     wrapper = $(e.target).closest("[#{UnSelectionBlock.attr.taskBlock}=true]", @editor.body)
