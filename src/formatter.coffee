@@ -27,7 +27,7 @@ class Formatter extends SimpleModule
       img: [
         'src', 'alt', 'width', 'height',
         'data-non-image', 'data-bucket', 'data-key-name',
-        'data-osskey', 'data-name', 'class'
+        'data-osskey', 'data-name', 'class', 'data-location'
       ]
       a: ['href', 'target']
       font: ['color', 'size', 'face', 'style']
@@ -36,7 +36,7 @@ class Formatter extends SimpleModule
         'class', 'data-unique-id', 'data-file-id', 
         'data-file-name', 'data-file-src', 'data-attach', 
         'data-img', 'data-global-link', 'data-setting',
-        'data-task-block'
+        'data-task-block', 'data-map'
       ]
       span: [
         'class', 'contenteditable', 'data-name', 

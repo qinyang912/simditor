@@ -732,13 +732,28 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
       border: 1px solid #bababa !important;
     }
-    img {
+    &[data-img] img {
       box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
       cursor: zoom-in;
+    }
+    &[data-map] > span {
+      box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.4);
     }
   }
   [data-img] {
     padding: 0px !important;
+  }
+  [data-map] {
+    text-align: left !important;
+    & > span.wrap {
+      border: 1px solid #EAEAEA;
+      display: inline-block;
+      max-width: 284px;
+    }
+    .location {
+      padding-left: 10px; 
+      display: block;
+    }
   }
   .unselection-wrapper {
     text-align: center;
