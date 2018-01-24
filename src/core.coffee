@@ -128,7 +128,7 @@ class Simditor extends SimpleModule
     else
       @placeholderEl.hide()
 
-  setValue: (val) ->
+  setValue: (val, silent) -> # 如果silent为true的时候，则不触发 valuechanged
     if typeof val == 'string'
       val += '<p>' + @util.phBr + '</p>'
     @hidePopover()
@@ -140,7 +140,8 @@ class Simditor extends SimpleModule
 
     @util.reflow @body
     @inputManager.lastCaretPosition = null
-    @trigger 'valuechanged'
+    @_placeholder()
+    @trigger 'valuechanged' unless silent
 
   getValue: () ->
     @sync()
