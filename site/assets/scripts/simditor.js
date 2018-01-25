@@ -4281,7 +4281,8 @@ Simditor = (function(superClass) {
     params: {},
     upload: false,
     indentWidth: 40,
-    indentCount: 10
+    indentCount: 10,
+    tailNewLine: true
   };
 
   Simditor.prototype._init = function() {
@@ -4393,7 +4394,7 @@ Simditor = (function(superClass) {
   };
 
   Simditor.prototype.setValue = function(val, silent) {
-    if (typeof val === 'string') {
+    if (typeof val === 'string' && this.opts.tailNewLine) {
       val += '<p>' + this.util.phBr + '</p>';
     }
     this.hidePopover();
