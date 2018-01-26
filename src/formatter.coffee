@@ -166,6 +166,10 @@ class Formatter extends SimpleModule
     contents = if $node.is('iframe') then null else $node.contents()
     isDecoration = @editor.util.isDecoratedNode($node)
 
+    if $node.is('[data-attach],[data-img]')
+      fileId = $node.attr 'data-file-id'
+      return $node.remove() unless fileId
+
     if $node.is(@_allowedTags.join(',')) or isDecoration
       # img inside a is not allowed
       if $node.is('a') and ($childImg = $node.find('img')).length > 0
