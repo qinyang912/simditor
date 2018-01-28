@@ -28,6 +28,7 @@ class Simditor extends SimpleModule
     upload: false
     indentWidth: 40
     indentCount: 10 # 最大允许的缩进次数
+    tailNewLine: true # 尾部默认新加一个空行
 
   _init: ->
     @textarea = $(@opts.textarea)
@@ -128,8 +129,8 @@ class Simditor extends SimpleModule
     else
       @placeholderEl.hide()
 
-  setValue: (val) ->
-    if typeof val == 'string'
+  setValue: (val, silent) -> # 如果silent为true的时候，则不触发 valuechanged
+    if typeof val == 'string' and @opts.tailNewLine
       val += '<p>' + @util.phBr + '</p>'
     @hidePopover()
     @textarea.val val
@@ -140,7 +141,8 @@ class Simditor extends SimpleModule
 
     @util.reflow @body
     @inputManager.lastCaretPosition = null
-    @trigger 'valuechanged'
+    @_placeholder()
+    @trigger 'valuechanged' unless silent
 
   getValue: () ->
     @sync()
