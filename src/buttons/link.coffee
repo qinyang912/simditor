@@ -9,6 +9,8 @@ class LinkButton extends Button
 
   disableTag: 'pre,[data-mention="true"]'
 
+  shortcut: 'super+alt+k',
+
   _init: () ->
     super()
     @editor.body.on 'mouseenter', 'a:not(.unselection-attach-download)', (e) =>
@@ -26,6 +28,10 @@ class LinkButton extends Button
       , 500
 
   render: (args...) ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + k )'
+    else
+      @title = @title + ' ( Ctrl + alt + k )'
     super args...
     @popover = new LinkPopover
       button: @

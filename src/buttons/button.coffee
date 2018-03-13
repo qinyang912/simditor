@@ -90,7 +90,7 @@ class Button extends SimpleModule
 
 
     if @shortcut?
-      @editor.hotkeys.add @shortcut, (e) =>
+      @editor.hotkeys.add @editor.util.replaceHotkey(@shortcut), (e) =>
         @el.mousedown()
         false
 
@@ -157,6 +157,14 @@ class Button extends SimpleModule
         $menuBtnEl.find('span').text(menuItem.text)
       if menuItem.style
         $menuBtnEl.find('span').attr 'style', menuItem.style
+
+      if menuItem.shortcut
+        param = menuItem.param
+        do (param) =>
+          @editor.hotkeys.add @editor.util.replaceHotkey(menuItem.shortcut), (e) =>
+            if not @disabled
+              @command(param)
+              false
 
   setActive: (active) ->
     return if active == @active

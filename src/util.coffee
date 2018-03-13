@@ -423,6 +423,12 @@ class Util extends SimpleModule
   resetBodyInnerHTML: (v) ->
     @editor.body.get(0).innerHTML = v
 
+  replaceHotkey: (h) ->
+    if @os.mac
+      return h.replace 'super', 'cmd'
+    else
+      return h.replace 'super', 'ctrl'
+
   hasAttributes: (node) ->
     l = @getOuterHtml(node).replace(node.innerHTML, "")
     a = /=["][^"]/.test(l)

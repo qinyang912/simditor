@@ -12,6 +12,15 @@ class CheckboxButton extends Button
 
   _filterTag: '.unselection-wrapper' # 需要被过滤掉的标签
 
+  shortcut: 'super+alt+/'
+
+  render: ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + / )'
+    else
+      @title = @title + ' ( Ctrl + alt + / )'
+    super()
+
   _format: (node) ->
     $node = $(node)
     unless $node.is @enableTag

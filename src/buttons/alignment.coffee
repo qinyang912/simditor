@@ -6,6 +6,8 @@ class AlignmentButton extends Button
 
   htmlTag: 'p, h1, h2, h3, h4, td, th'
 
+  shortcutList: ['super+alt+y', 'left', 'center', 'right']
+
   _init: ->
     @menu = [{
       name: 'left',
@@ -23,6 +25,24 @@ class AlignmentButton extends Button
       icon: 'align-right',
       param: 'right'
     }]
+    super()
+    @editor.hotkeys.add @editor.util.replaceHotkey(@shortcutList[0]), (e) =>
+      if not @disabled
+        console.log('do align');
+        c = @nodes.first().css('text-align')
+        console.log(c);
+        i = @shortcutList.indexOf(c)
+        if i == -1 then i = 1
+        console.log('i', i)
+        _i = i + 1
+        if _i > 3 then _i = 1
+        @command(@shortcutList[_i]);
+
+  render: ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + y )'
+    else
+      @title = @title + ' ( Ctrl + alt + y )'
     super()
 
   setActive: (active, align = 'left') ->

@@ -9,6 +9,16 @@ class BlockquoteButton extends Button
 
   disableTag: 'pre, table'
 
+  shortcut: 'super+alt+.',
+
+  _init: ->
+    if @editor.util.os.mac
+      @title = "#{@title} ( Cmd + opt + . )"
+    else
+      @title = "#{@title} ( Ctrl + alt + ' )"
+      @shortcut = 'super+alt+\''
+    super()
+
   command: ->
     $rootNodes = @editor.selection.rootNodes()
     $rootNodes = $rootNodes.filter (i, node) ->

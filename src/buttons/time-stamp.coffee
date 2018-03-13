@@ -5,6 +5,15 @@ class TimeStampButton extends Button
 
   icon: 'time-stamp'
 
+  shortcut: 'super+alt+t'
+
+  render: ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + t )'
+    else
+      @title = @title + ' ( Ctrl + alt + t )'
+    super()
+
   _prefix:(t) ->
     return if t < 10 then '0' + t else t
 

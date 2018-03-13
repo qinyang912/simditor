@@ -257,6 +257,16 @@ $simditor-button-font-family-width: 80px;
               content: 'H3';
               font-size: 18px;
             }
+
+            &.active-h4 span:before {
+              content: 'H4';
+              font-size: 18px;
+            }
+
+            &.active-h5 span:before {
+              content: 'H5';
+              font-size: 18px;
+            }
           }
 
           &.toolbar-item-image {

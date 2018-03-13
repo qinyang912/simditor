@@ -9,6 +9,15 @@ class StrikethroughButton extends Button
 
   disableTag: 'pre'
 
+  shortcut: 'super+shift+s'
+
+  render: ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + shift + s )'
+    else
+      @title = @title + ' ( Ctrl + shift + s )'
+    super()
+
   _activeStatus: ->
     active = document.queryCommandState('strikethrough') is true
     @setActive active

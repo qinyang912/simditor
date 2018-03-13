@@ -7,7 +7,14 @@ class HrButton extends Button
 
   htmlTag: 'hr'
 
-  _status: ->
+  shortcut: 'super+alt+h',
+
+  render: ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + h )'
+    else
+      @title = @title + ' ( Ctrl + alt + h )'
+    super()
 
   command: ->
     $rootBlock = @editor.selection.rootNodes().first()

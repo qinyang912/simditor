@@ -9,6 +9,8 @@ class CodeButton extends Button
 
   disableTag: 'ul, ol, table'
 
+  shortcut: 'super+alt+v',
+
   _init: ->
     super()
 
@@ -21,6 +23,11 @@ class CodeButton extends Button
         @undecorate $(pre)
 
   render: (args...) ->
+    if @editor.util.os.mac
+      @title = @title + ' ( Cmd + opt + v )'
+    else
+      @title = @title + ' ( Ctrl + alt + v )'
+
     super args...
     @popover = new CodePopover
       button: @

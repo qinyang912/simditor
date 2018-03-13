@@ -11,28 +11,43 @@ class TitleButton extends Button
     @menu = [{
       name: 'normal',
       text: @_t('normalText'),
+      shortcut: 'super+alt+0',
       param: 'p'
     }, '|', {
       name: 'h1',
       text: @_t('title') + ' 1',
+      shortcut: 'super+alt+1',
       param: 'h1'
     }, {
       name: 'h2',
       text: @_t('title') + ' 2',
+      shortcut: 'super+alt+2',
       param: 'h2'
     }, {
       name: 'h3',
       text: @_t('title') + ' 3',
+      shortcut: 'super+alt+3',
       param: 'h3'
     }, {
       name: 'h4',
       text: @_t('title') + ' 4',
+      shortcut: 'super+alt+4',
       param: 'h4'
     }, {
       name: 'h5',
       text: @_t('title') + ' 5',
+      shortcut: 'super+alt+5',
       param: 'h5'
     }]
+    @menu.forEach (m) =>
+      if m == '|'
+        return
+      _t = @editor.util.replaceHotkey(m.shortcut)
+      if @editor.util.os.mac
+        _t = _t.replace 'alt', 'opt'
+      
+      m.title = m.text + " (#{_t})"
+
     super()
 
   setActive: (active, param) ->
