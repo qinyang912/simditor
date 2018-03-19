@@ -29,7 +29,7 @@ class Formatter extends SimpleModule
         'data-non-image', 'data-bucket', 'data-key-name',
         'data-osskey', 'data-name', 'class', 'data-location'
       ]
-      a: ['href', 'target']
+      a: ['href', 'target', 'class', 'title']
       font: ['color', 'size', 'face', 'style']
       code: ['class']
       p: [
