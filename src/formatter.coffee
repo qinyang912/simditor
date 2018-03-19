@@ -42,7 +42,8 @@ class Formatter extends SimpleModule
         'class', 'contenteditable', 'data-name', 
         'data-size', 'href', 'data-bucket', 
         'data-osskey', 'data-key-name', 'title', 
-        'data-global-link-type', 'data-title', 'data-sub-title'
+        'data-global-link-type', 'data-title', 'data-sub-title',
+        'data-attach-type'
       ]
       input: [
         'class', 'type', 'value', 'disabled', 'data-user-id'

@@ -10,7 +10,6 @@ class UnSelectionBlock extends SimpleModule
     attach: 'unselection-attach'
     select: 'unselection-select'
     content: 'unselection-content'
-    preview: 'unselection-attach-preview'
     download: 'unselection-attach-download'
     _delete: 'unselection-attach-delete'
     progress: 'unSelection-attach-progress'
@@ -46,6 +45,33 @@ class UnSelectionBlock extends SimpleModule
     select: 'un-selection-block-select'
     unSelectDelete: 'un-selection-delete'
 
+  @fileTypeMap:
+    doc: 'word',
+    docx: 'word',
+    ppt: 'ppt',   # ppt
+    pptx: 'ppt',
+    xls: 'excel', # excel
+    xlsx: 'excel',
+    pdf: 'pdf',   # pdf
+    jpg: 'image', # 图片
+    png: 'image',
+    gif: 'image',
+    bmp: 'image',
+    jpeg: 'image',
+    mp3: 'sound',  # 音频
+    wav: 'sound',
+    mp4: 'video',  # 视频
+    avi: 'video',
+    flv: 'video',
+    wmv: 'video',
+    rmvb: 'video',
+    rm: 'video',
+    zip: 'zip', # 压缩文件
+    rar: 'zip',
+    km: 'minder', # 思维导图文件
+    xmind: 'minder',
+    mm: 'minder'
+
   _selectedWrapper: null
 
   @_tpl:
@@ -54,15 +80,14 @@ class UnSelectionBlock extends SimpleModule
       <inherit>
         <span class='#{UnSelectionBlock.className.inlineWrapper}'>
           <span class='#{UnSelectionBlock.className.attach} #{UnSelectionBlock.className.content}' contenteditable='false'>
-            <span class='simditor-r-icon-attachment unselection-attach-icon'></span>
+            <span data-attach-type=''></span>
             <span data-name=''></span>
             <span data-size='24M'></span>
             <span class='unselection-attach-operation' contenteditable='false'>
-              <span class='simditor-r-icon-eye unselection-attach-operation-icon unselection-attach-preview' title='预览'></span>
-              <a class='simditor-r-icon-download unselection-attach-operation-icon unselection-attach-download' title='下载' target='_blank'></a>
               <span class='simditor-r-icon-arrow_down unselection-attach-operation-icon unselection-attach-more' title='更多'>
                 <span class='unselection-attach-menu'>
-                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除'></span>
+                  <a class='unselection-attach-menu-item unselection-attach-download' title='下载文件' target='_blank'></a>
+                  <span class='unselection-attach-menu-item unselection-attach-delete' title='删除文件'></span>
                 </span>
               </span>
             </span>
@@ -110,10 +135,6 @@ class UnSelectionBlock extends SimpleModule
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.globalLink}", (e) =>
       @_unGlobalLinkClick(e)
 
-    @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.preview}", (e) => 
-      @_unAttachPreviewClick(e)
-      return false;
-
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.download}", (e) =>
       @_unAttachDownloadClick(e)
       return false;
@@ -160,17 +181,20 @@ class UnSelectionBlock extends SimpleModule
     wrapper.append UnSelectionBlock._tpl.attach
     wrapper.attr UnSelectionBlock.attr.attach, true
     if data && data.file
-      $preview = wrapper.find('.unselection-attach-preview')
       $name = wrapper.find('[data-name]')
       $size = wrapper.find('[data-size]')
+      $type = wrapper.find('[data-attach-type]')
 
       $name.attr('data-name', data.file.name)
       $name.attr('title', data.file.name)
-
       $size.attr('data-size', UnSelectionBlock.getFileSize(data.file.size))
 
-      if !data.previewFile
-        $preview.remove()
+      contentType = data.file.ext || data.file.contentType
+      if contentType
+        type = UnSelectionBlock.fileTypeMap[contentType.toLowerCase()] || 'file'
+      else
+        type = 'file'
+      $type.attr('data-attach-type', type)
         
   @getFileSize: (bytes) ->
     sizes = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -362,10 +386,6 @@ class UnSelectionBlock extends SimpleModule
         id: id,
         type: type
 
-  _unAttachPreviewClick: (e) ->
-    @_unAttachClick e,
-      preview: true
-
   _unAttachDownloadClick: (e) ->
     @_unAttachClick e,
       download: true
@@ -376,7 +396,6 @@ class UnSelectionBlock extends SimpleModule
       id = wrapper.attr UnSelectionBlock.attr.fileId
       @editor.trigger 'selectAttach',
         id: id
-        preview: opt.preview
         download: opt.download
 
   _unMapClick: (e) ->

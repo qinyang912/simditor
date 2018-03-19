@@ -54,11 +54,11 @@ class Attach extends SimpleModule
             success: (data) =>
               _data = {file: data}
               _data.bucket = 'rishiqing-file'
-              if @editor.opts.upload and @editor.opts.upload.FileUtil # 这个FileUtil是opts.upload传过来的
-                FileUtil = @editor.opts.upload.FileUtil
-                _data.previewFile = FileUtil.isPreviewFile data.name
-                _data.framePreviewFile = FileUtil.isFramePreviewFile data.name
-                _data.viewPath = if _data.framePreviewFile then FileUtil.getFramePreviewFileUrl data.realPath, data.name else data.viewPath
+              # if @editor.opts.upload and @editor.opts.upload.FileUtil # 这个FileUtil是opts.upload传过来的
+              #   FileUtil = @editor.opts.upload.FileUtil
+              #   _data.previewFile = FileUtil.isPreviewFile data.name
+              #   _data.framePreviewFile = FileUtil.isFramePreviewFile data.name
+              #   _data.viewPath = if _data.framePreviewFile then FileUtil.getFramePreviewFileUrl data.realPath, data.name else data.viewPath
 
               html = UnSelectionBlock.getAttachHtml(_data)
               $attach.replaceWith html
@@ -97,6 +97,5 @@ class Attach extends SimpleModule
     $totalWrap
 
   upload: (file, opt) ->
-    console.log 'file', file
     return unless @uploader
     @uploader.upload file, opt
