@@ -1652,6 +1652,7 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-body .unselection-wrapper inherit, .editor-style .unselection-wrapper inherit {
   display: block;
+  font-size: 0px;
 }
 .simditor .simditor-body .unselection-wrapper[data-file-id] .unselection-attach:hover .unselection-attach-operation, .simditor .simditor-body .unselection-wrapper[data-file-id] .unselection-global-link:hover .unselection-attach-operation, .editor-style .unselection-wrapper[data-file-id] .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-wrapper[data-file-id] .unselection-global-link:hover .unselection-attach-operation {
   display: inline-block;
@@ -1661,6 +1662,9 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-body .unselection-wrapper[data-global-link], .editor-style .unselection-wrapper[data-global-link] {
   line-height: 10px;
+}
+.simditor .simditor-body .unselection-wrapper + .unselection-wrapper, .editor-style .unselection-wrapper + .unselection-wrapper {
+  margin-top: 8px;
 }
 .simditor .simditor-body[contenteditable="true"] .unselection-content:hover .unselection-attach-more, .editor-style[contenteditable="true"] .unselection-content:hover .unselection-attach-more {
   display: inline-block;

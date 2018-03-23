@@ -1052,6 +1052,7 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     }
     inherit {
       display: block;
+      font-size: 0px;
     }
     &[data-file-id] {
       .unselection-attach:hover, .unselection-global-link:hover {
@@ -1068,6 +1069,10 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     &[data-global-link] {
       line-height: 10px;
     }
+  }
+
+  .unselection-wrapper + .unselection-wrapper {
+    margin-top: 8px;
   }
 
   &[contenteditable="true"] {
