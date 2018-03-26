@@ -1,7 +1,7 @@
 /*!
 * Simditor v2.3.6
 * http://simditor.tower.im/
-* 2018-03-23
+* 2018-03-26
 */
 @charset "UTF-8";
 @font-face {
@@ -1606,6 +1606,7 @@ colpick Color Picker / colpick.com
   background: #F4F3F3;
   border: 1px solid transparent;
   position: relative;
+  font-size: 14px;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-task-block [data-title], .editor-style .unselection-wrapper .unselection-task-block [data-title] {
   font-size: 14px;
