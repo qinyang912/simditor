@@ -65,6 +65,7 @@ class ColorButton extends Button
 
       @_format hex
 
+    # colpick 文档： http://www.jq22.com/demo/colpick-jQuery-Color-Picker-master/
     @menuWrapper.find('.custom-color').colpick
       layout: 'hex'
       submit: 0

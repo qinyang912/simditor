@@ -332,6 +332,9 @@ Selection = (function(superClass) {
     }
     $node = $(node);
     node = $node[0];
+    if (!node) {
+      return;
+    }
     if ($node.is('pre')) {
       contents = $node.contents();
       if (contents.length > 0) {
@@ -689,6 +692,8 @@ Formatter = (function(superClass) {
       } else if ($node.is('th')) {
         $td = $('<td/>').append($node.contents());
         $node.replaceWith($td);
+      } else if ($node.is('style')) {
+        $node.remove();
       } else {
         contents.first().unwrap();
       }
@@ -7039,6 +7044,9 @@ LinkPopover = (function(superClass) {
     var args;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     LinkPopover.__super__.show.apply(this, args);
+    if (typeof $target === "undefined" || $target === null) {
+      return;
+    }
     this.textEl.val(this.target.text());
     this.urlEl.val(this.target.attr('href'));
     this.el.off('mouseenter.hover-to-show');

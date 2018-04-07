@@ -218,6 +218,8 @@ class Formatter extends SimpleModule
       else if $node.is 'th'
         $td = $('<td/>').append $node.contents()
         $node.replaceWith $td
+      else if $node.is 'style' # 如果style节点，则直接删除
+        $node.remove()
       else
         contents.first().unwrap()
     else

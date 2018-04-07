@@ -145,6 +145,7 @@ class LinkPopover extends Popover
 
   show: (args...) ->
     super args...
+    return unless $target?
     @textEl.val @target.text()
     @urlEl.val @target.attr('href')
     @el.off 'mouseenter.hover-to-show'

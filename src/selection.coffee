@@ -239,6 +239,8 @@ class Selection extends SimpleModule
     $node = $(node)
     node = $node[0]
 
+    return unless node
+
     if $node.is('pre')
       contents = $node.contents()
       if contents.length > 0
