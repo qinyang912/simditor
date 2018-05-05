@@ -1,8 +1,3 @@
-/*!
-* Simditor v2.3.6
-* http://simditor.tower.im/
-* 2018-04-03
-*/
 @charset "UTF-8";
 @font-face {
   font-family: 'Simditor';
@@ -1451,6 +1446,9 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:before, .editor-style .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item:before {
   content: attr(title);
 }
+.simditor .simditor-body .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item.unselection-attach-delete, .editor-style .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item.unselection-attach-delete {
+  display: none;
+}
 .simditor .simditor-body .unselection-wrapper .unselection-attach, .editor-style .unselection-wrapper .unselection-attach {
   display: inline-block;
   height: 45px;
@@ -1572,9 +1570,6 @@ colpick Color Picker / colpick.com
   vertical-align: middle;
   width: calc(100% - 73px);
 }
-.simditor .simditor-body .unselection-wrapper .unselection-global-link .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-global-link .unselection-attach-operation {
-  display: inline-block;
-}
 .simditor .simditor-body .unselection-wrapper .unselection-global-link .unselection-attach-operation-icon, .editor-style .unselection-wrapper .unselection-global-link .unselection-attach-operation-icon {
   line-height: 45px;
 }
@@ -1672,14 +1667,26 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body .unselection-wrapper + .unselection-wrapper, .editor-style .unselection-wrapper + .unselection-wrapper {
   margin-top: 8px;
 }
-.simditor .simditor-body[contenteditable="true"] .unselection-content:hover .unselection-attach-more, .editor-style[contenteditable="true"] .unselection-content:hover .unselection-attach-more {
+.simditor .simditor-body .unselection-content:hover .unselection-attach-more, .editor-style .unselection-content:hover .unselection-attach-more {
+  display: inline-block !important;
+}
+.simditor .simditor-body .unselection-attach-more:hover .unselection-attach-menu, .editor-style .unselection-attach-more:hover .unselection-attach-menu {
+  display: inline-block !important;
+}
+.simditor .simditor-body .unselection-attach:hover .unselection-attach-operation, .editor-style .unselection-attach:hover .unselection-attach-operation {
   display: inline-block;
 }
-.simditor .simditor-body[contenteditable="true"] .unselection-attach-more:hover .unselection-attach-menu, .editor-style[contenteditable="true"] .unselection-attach-more:hover .unselection-attach-menu {
-  display: inline-block;
+.simditor .simditor-body .unselection-attach:hover [data-size], .editor-style .unselection-attach:hover [data-size] {
+  display: none;
 }
 .simditor .simditor-body[contenteditable="true"] .unselection-task-block:hover .simditor-r-icon-close, .editor-style[contenteditable="true"] .unselection-task-block:hover .simditor-r-icon-close {
   display: block;
+}
+.simditor .simditor-body[contenteditable="true"] .unselection-attach-delete, .editor-style[contenteditable="true"] .unselection-attach-delete {
+  display: block !important;
+}
+.simditor .simditor-body[contenteditable="true"] .unselection-global-link:hover .unselection-attach-operation, .editor-style[contenteditable="true"] .unselection-global-link:hover .unselection-attach-operation {
+  display: inline-block;
 }
 .simditor .simditor-body > :first-child, .editor-style > :first-child {
   margin-top: 0 !important;

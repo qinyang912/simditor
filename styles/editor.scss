@@ -834,6 +834,9 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             &:before {
               content: attr(title);
             }
+            &.unselection-attach-delete {
+              display: none;
+            }
           }
         }
       }
@@ -965,9 +968,6 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         vertical-align: middle;
         width: calc(100% - 73px);
       }
-      .unselection-attach-operation {
-        display: inline-block;
-      }
       .unselection-attach-operation-icon {
         line-height: 45px;
       }
@@ -1076,20 +1076,40 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     margin-top: 8px;
   }
 
+  .unselection-content:hover {
+    .unselection-attach-more {
+      display: inline-block !important;
+    }
+  }
+  .unselection-attach-more:hover {
+    .unselection-attach-menu {
+      display: inline-block !important;
+    }
+  }
+
+  .unselection-attach:hover {
+    .unselection-attach-operation {
+      display: inline-block;
+    }
+  }
+  .unselection-attach:hover {
+    [data-size] {
+      display: none;
+    }
+  }
+
   &[contenteditable="true"] {
-    .unselection-content:hover {
-      .unselection-attach-more {
-        display: inline-block;
-      }
-    }
-    .unselection-attach-more:hover {
-      .unselection-attach-menu {
-        display: inline-block;
-      }
-    }
     .unselection-task-block:hover {
       .simditor-r-icon-close {
         display: block;
+      }
+    }
+    .unselection-attach-delete {
+      display: block !important;
+    }
+    .unselection-global-link:hover {
+      .unselection-attach-operation {
+        display: inline-block;
       }
     }
   }
