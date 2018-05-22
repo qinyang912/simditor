@@ -45,14 +45,13 @@ class WordNum extends SimpleModule
     @editor = @_module
 
     @throttledCalculateWord = @editor.util.throttle =>
-      @_calculateWord()
+      @calculateWord()
     , 2000
 
     @editor.on 'valuechanged', (e, src) =>
       @throttledCalculateWord()
 
-  _calculateWord: ->
-
+  calculateWord: ->
     totalNum = WordNum.calculateWord(@editor.getValue())
 
     if @_totalNum != totalNum

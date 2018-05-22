@@ -3647,7 +3647,7 @@ WordNum = (function(superClass) {
     this.editor = this._module;
     this.throttledCalculateWord = this.editor.util.throttle((function(_this) {
       return function() {
-        return _this._calculateWord();
+        return _this.calculateWord();
       };
     })(this), 2000);
     return this.editor.on('valuechanged', (function(_this) {
@@ -3657,7 +3657,7 @@ WordNum = (function(superClass) {
     })(this));
   };
 
-  WordNum.prototype._calculateWord = function() {
+  WordNum.prototype.calculateWord = function() {
     var totalNum;
     totalNum = WordNum.calculateWord(this.editor.getValue());
     if (this._totalNum !== totalNum) {
@@ -4436,7 +4436,10 @@ Simditor = (function(superClass) {
     this.inputManager.lastCaretPosition = null;
     this._placeholder();
     if (!silent) {
-      return this.trigger('valuechanged');
+      this.trigger('valuechanged');
+    }
+    if (silent) {
+      return this.wordNum.calculateWord();
     }
   };
 

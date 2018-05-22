@@ -143,6 +143,9 @@ class Simditor extends SimpleModule
     @inputManager.lastCaretPosition = null
     @_placeholder()
     @trigger 'valuechanged' unless silent
+    # 当silent的时候，由于不会触发 valuechanged 事件，所以手动调用一下 
+    # calculateWord 来计算字数
+    if silent then @wordNum.calculateWord()
 
   getValue: () ->
     @sync()
