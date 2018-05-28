@@ -7,7 +7,7 @@ class WordNum extends SimpleModule
   @englishExp: /([a-z|0-9]+)/ig
 
   @blockNodes: ["div","p","ul","ol","li","blockquote","hr","pre","h1","h2","h3",
-    "h4", "h5", "table"]
+    "h4", "h5", "table", "td", "th"]
 
   _totalNum: 0 # 总字数
 
