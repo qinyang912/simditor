@@ -73,6 +73,7 @@ class Formatter extends SimpleModule
         return true
       href = $(@).prop('href')
       window.open(href) # 只在新窗口打开页面
+      return false
 
   decorate: ($el = @editor.body) ->
     @editor.trigger 'decorate', [$el]

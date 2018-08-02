@@ -508,7 +508,8 @@ Formatter = (function(superClass) {
         return true;
       }
       href = $(this).prop('href');
-      return window.open(href);
+      window.open(href);
+      return false;
     });
   };
 
@@ -6889,6 +6890,9 @@ LinkButton = (function(superClass) {
     this.editor.body.on('mouseenter', 'a:not(.unselection-attach-download)', (function(_this) {
       return function(e) {
         var $node;
+        if (!_this.editor.body.attr('contenteditable' === 'true')) {
+          return;
+        }
         $node = $(e.target);
         $node.data('data-popover-show', true);
         return setTimeout(function() {
@@ -7043,11 +7047,9 @@ LinkPopover = (function(superClass) {
     })(this));
   };
 
-  LinkPopover.prototype.show = function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    LinkPopover.__super__.show.apply(this, args);
-    if (typeof $target === "undefined" || $target === null) {
+  LinkPopover.prototype.show = function($target) {
+    LinkPopover.__super__.show.call(this, $target);
+    if ($target == null) {
       return;
     }
     this.textEl.val(this.target.text());

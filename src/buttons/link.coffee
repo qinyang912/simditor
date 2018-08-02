@@ -14,6 +14,7 @@ class LinkButton extends Button
   _init: () ->
     super()
     @editor.body.on 'mouseenter', 'a:not(.unselection-attach-download)', (e) =>
+      return unless @editor.body.attr 'contenteditable' == 'true'
       $node = $(e.target)
       $node.data 'data-popover-show', true
       setTimeout () =>
@@ -143,8 +144,8 @@ class LinkPopover extends Popover
       @target.attr 'target', @selectTarget.val()
       @editor.inputManager.throttledValueChanged()
 
-  show: (args...) ->
-    super args...
+  show: ($target) ->
+    super $target
     return unless $target?
     @textEl.val @target.text()
     @urlEl.val @target.attr('href')
