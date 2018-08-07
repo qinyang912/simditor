@@ -767,7 +767,7 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   }
   .unselection-wrapper {
     text-align: center;
-    &[data-attach], &[data-global-link] {
+    &[data-attach], &[data-global-link], &[data-record] {
       text-align: left;
     }
     .unselection-inline-wrapper {
@@ -785,6 +785,15 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       transition: right 0.2s;
       &:before {
         content: attr(data-name);
+      }
+    }
+    [data-duration] {
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: right 0.2s;
+      &:before {
+        content: attr(data-duration);
       }
     }
 
@@ -841,8 +850,8 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         }
       }
     }
-    
-    .unselection-attach {
+
+    .unselection-attach, .unselection-record {
       display: inline-block;
       height: 45px;
       width: 80%;
@@ -854,7 +863,9 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       color: #575757;
       font-size: 0px;
       white-space: nowrap;
-      // overflow: hidden;
+    }
+    
+    .unselection-attach {      
       // unselection-attach-icon这个class之前的附件还在用，所以不能删掉
       .unselection-attach-icon {
         display: inline-block;
@@ -1049,6 +1060,35 @@ $base64-inside-icon: 'd09GRgABAAAAAAXcAAsAAAAABZAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         color: #BDBDBD;
         cursor: pointer;
         display: none;
+      }
+    }
+    .unselection-record {
+      [data-record-control] {
+        width: 24px;
+        height: 28px;
+        position: absolute;
+        top: 8.5px;
+        left: 10px;
+        background: url(https://res-front-cdn.timetask.cn/common/img/file/2018-03-16/sound_2x.png) no-repeat;
+        background-size: 24px 28px;
+      }
+      [data-name] {
+        position: absolute;
+        left: 42px;
+        right: 60px;
+        bottom: 0px;
+        top: 0px;
+        line-height: 45px;
+      }
+      [data-duration] {
+        position: absolute;
+        display: inline-block;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        font-size: 12px;
+        line-height: 45px;
+        padding-right: 10px;
       }
     }
     inherit {

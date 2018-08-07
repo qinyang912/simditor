@@ -1,8 +1,3 @@
-/*!
-* Simditor v2.3.6
-* http://simditor.tower.im/
-* 2018-08-02
-*/
 @charset "UTF-8";
 @font-face {
   font-family: 'Simditor';
@@ -1382,7 +1377,7 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body .unselection-wrapper, .editor-style .unselection-wrapper {
   text-align: center;
 }
-.simditor .simditor-body .unselection-wrapper[data-attach], .simditor .simditor-body .unselection-wrapper[data-global-link], .editor-style .unselection-wrapper[data-attach], .editor-style .unselection-wrapper[data-global-link] {
+.simditor .simditor-body .unselection-wrapper[data-attach], .simditor .simditor-body .unselection-wrapper[data-global-link], .simditor .simditor-body .unselection-wrapper[data-record], .editor-style .unselection-wrapper[data-attach], .editor-style .unselection-wrapper[data-global-link], .editor-style .unselection-wrapper[data-record] {
   text-align: left;
 }
 .simditor .simditor-body .unselection-wrapper .unselection-inline-wrapper, .editor-style .unselection-wrapper .unselection-inline-wrapper {
@@ -1400,6 +1395,15 @@ colpick Color Picker / colpick.com
 }
 .simditor .simditor-body .unselection-wrapper [data-name]:before, .editor-style .unselection-wrapper [data-name]:before {
   content: attr(data-name);
+}
+.simditor .simditor-body .unselection-wrapper [data-duration], .editor-style .unselection-wrapper [data-duration] {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: right 0.2s;
+}
+.simditor .simditor-body .unselection-wrapper [data-duration]:before, .editor-style .unselection-wrapper [data-duration]:before {
+  content: attr(data-duration);
 }
 .simditor .simditor-body .unselection-wrapper .unselection-attach-operation, .editor-style .unselection-wrapper .unselection-attach-operation {
   display: none;
@@ -1454,7 +1458,7 @@ colpick Color Picker / colpick.com
 .simditor .simditor-body .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item.unselection-attach-delete, .editor-style .unselection-wrapper .unselection-attach-operation .unselection-attach-more .unselection-attach-menu .unselection-attach-menu-item.unselection-attach-delete {
   display: none;
 }
-.simditor .simditor-body .unselection-wrapper .unselection-attach, .editor-style .unselection-wrapper .unselection-attach {
+.simditor .simditor-body .unselection-wrapper .unselection-attach, .simditor .simditor-body .unselection-wrapper .unselection-record, .editor-style .unselection-wrapper .unselection-attach, .editor-style .unselection-wrapper .unselection-record {
   display: inline-block;
   height: 45px;
   width: 80%;
@@ -1655,6 +1659,33 @@ colpick Color Picker / colpick.com
   color: #BDBDBD;
   cursor: pointer;
   display: none;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-record [data-record-control], .editor-style .unselection-wrapper .unselection-record [data-record-control] {
+  width: 24px;
+  height: 28px;
+  position: absolute;
+  top: 8.5px;
+  left: 10px;
+  background: url(https://res-front-cdn.timetask.cn/common/img/file/2018-03-16/sound_2x.png) no-repeat;
+  background-size: 24px 28px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-record [data-name], .editor-style .unselection-wrapper .unselection-record [data-name] {
+  position: absolute;
+  left: 42px;
+  right: 60px;
+  bottom: 0px;
+  top: 0px;
+  line-height: 45px;
+}
+.simditor .simditor-body .unselection-wrapper .unselection-record [data-duration], .editor-style .unselection-wrapper .unselection-record [data-duration] {
+  position: absolute;
+  display: inline-block;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  font-size: 12px;
+  line-height: 45px;
+  padding-right: 10px;
 }
 .simditor .simditor-body .unselection-wrapper inherit, .editor-style .unselection-wrapper inherit {
   display: block;

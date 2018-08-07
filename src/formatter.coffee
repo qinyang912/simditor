@@ -36,14 +36,14 @@ class Formatter extends SimpleModule
         'class', 'data-unique-id', 'data-file-id', 
         'data-file-name', 'data-file-src', 'data-attach', 
         'data-img', 'data-global-link', 'data-setting',
-        'data-task-block', 'data-map'
+        'data-task-block', 'data-map', 'data-record'
       ]
       span: [
         'class', 'contenteditable', 'data-name', 
         'data-size', 'href', 'data-bucket', 
         'data-osskey', 'data-key-name', 'title', 
         'data-global-link-type', 'data-title', 'data-sub-title',
-        'data-attach-type'
+        'data-attach-type', 'data-record-control', 'data-duration'
       ]
       input: [
         'class', 'type', 'value', 'disabled', 'data-user-id'
