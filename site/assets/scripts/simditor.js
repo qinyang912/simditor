@@ -6890,7 +6890,7 @@ LinkButton = (function(superClass) {
     this.editor.body.on('mouseenter', 'a:not(.unselection-attach-download)', (function(_this) {
       return function(e) {
         var $node;
-        if (!_this.editor.body.attr('contenteditable' === 'true')) {
+        if (_this.editor.body.attr('contenteditable') !== 'true') {
           return;
         }
         $node = $(e.target);

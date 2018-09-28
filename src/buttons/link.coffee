@@ -14,7 +14,7 @@ class LinkButton extends Button
   _init: () ->
     super()
     @editor.body.on 'mouseenter', 'a:not(.unselection-attach-download)', (e) =>
-      return unless @editor.body.attr 'contenteditable' == 'true'
+      return unless @editor.body.attr('contenteditable') == 'true'
       $node = $(e.target)
       $node.data 'data-popover-show', true
       setTimeout () =>
