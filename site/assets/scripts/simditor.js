@@ -372,6 +372,9 @@ Selection = (function(superClass) {
     if (range == null) {
       range = this.range();
     }
+    if (!range) {
+      return;
+    }
     startRange = range.cloneRange();
     endRange = range.cloneRange();
     startRange.collapse(true);
@@ -412,6 +415,9 @@ Selection = (function(superClass) {
       range = this.range();
     }
     if (this._selectionSaved) {
+      return;
+    }
+    if (!range) {
       return;
     }
     endRange = range.cloneRange();

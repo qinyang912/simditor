@@ -271,6 +271,7 @@ class Selection extends SimpleModule
     @range range
 
   deleteRangeContents: (range = @range()) ->
+    return unless range
     startRange = range.cloneRange()
     endRange = range.cloneRange()
     startRange.collapse(true)
@@ -298,6 +299,8 @@ class Selection extends SimpleModule
 
   save: (range = @range()) ->
     return if @_selectionSaved
+
+    return unless range
 
     endRange = range.cloneRange()
     endRange.collapse(false)
