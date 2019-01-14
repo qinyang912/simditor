@@ -127,7 +127,6 @@ class UnSelectionBlock extends SimpleModule
   _init: ->
     @editor = @_module
     @editor.on 'selectionchanged.simditor-unSelection', @_onSelectionChange.bind(@)
-    @_preview()
     @_patchFirefox()
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.wrapper}", (e) =>
       @_isUnSelectionClick = true
@@ -144,6 +143,9 @@ class UnSelectionBlock extends SimpleModule
 
     @editor.body.on 'click.simditor-unSelection', ".#{UnSelectionBlock.className.taskBlockSetting}", (e) =>
       @_unTaskBlockSettingClick(e)
+
+    @editor.body.on 'click.simditor-unSelection', "[#{UnSelectionBlock.attr.img}] img", (e) =>
+      @_unImgClick(e)
 
     # 不知道为什么这里只监听.wrap，点击下面的img无法触发事件
     @editor.body.on 'click.simditor-unSelection', "[data-map] .wrap img,[data-map] .wrap", (e) => 
@@ -419,6 +421,18 @@ class UnSelectionBlock extends SimpleModule
           subTitle: subTitle
       catch e
 
+  _unImgClick: (e) ->
+    src = e.target.src
+    editable = @editor.body.attr 'contenteditable'
+    if editable == 'true'
+      select = e.target.parentElement.getAttribute UnSelectionBlock.attr.select
+      if select
+        @editor.trigger 'selectImg',
+          src: src
+    else
+      @editor.trigger 'selectImg',
+        src: src
+
   _selectWrapper: (wrapper) ->
     html = wrapper.html()
     if html == '' or html == '<br>' # 当内容为空的时候，说明这个wrapper正在被删除，则直接用一个全新的p标签来替换wrapper
@@ -458,52 +472,3 @@ class UnSelectionBlock extends SimpleModule
         range = document.createRange()
         @editor.selection.setRangeAtEndOf previousSibling, range
       @editor.trigger 'valuechanged'
-
-  _preview: ->
-    # 判断是否有magnificPopup插件，这个文件预览必须是magnificPopup插件才能支持
-    return unless $.fn.magnificPopup
-    @editor.body.magnificPopup
-      delegate: "[data-unselection-select='true'][data-img] img"
-      type: 'image'
-      preloader: true
-      removalDelay: 1000
-      mainClass: 'mfp-fade' # 'mfp-with-zoom',
-      tLoading: 'Loading...'
-      autoFocusLast: false
-      zoom:
-        enabled: true # By default it's false, so don't forget to enable it
-        duration: 300 # duration of the effect, in milliseconds
-        easing: 'ease-in-out' # CSS transition easing function
-        # The "opener" function should return the element from which popup will be zoomed in
-        # and to which popup will be scaled down
-        # By defailt it looks for an image tag:
-        opener: (openerElement) =>
-          # openerElement is the element on which popup was initialized, in this case its <a> tag
-          # you don't need to add "opener" option if this code matches your needs, it's defailt one.
-          # if openerElement.is('img')
-          #   return openerElement
-          # else
-          #   return openerElement.find('img')
-          openerElement
-
-      callbacks: 
-        beforeOpen: ->
-        open: ->
-        close: ->
-        elementParse: (item) ->
-          item.src = item.el.attr 'src' unless item.src
-          if item.src and typeof item.src == 'string'
-            item.src = item.src.replace('officeweb365.com/o', 'ow365.cn') # 由于365的调整，链接需要调整
-      gallery:
-        enabled: true
-        preload: [0, 2]
-        navigateByImgClick: false
-        tPrev: '上一个' # title for left button
-        tNext: '下一个'
-
-      image:
-        titleSrc: 'title'
-        tError: '<a href="%url%">The image</a> could not be loaded.'
-      iframe: {}
-      ajax:
-        tError: '<a href="%url%">The content</a> could not be loaded.'

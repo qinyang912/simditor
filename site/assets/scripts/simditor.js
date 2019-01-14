@@ -3086,7 +3086,6 @@ UnSelectionBlock = (function(superClass) {
   UnSelectionBlock.prototype._init = function() {
     this.editor = this._module;
     this.editor.on('selectionchanged.simditor-unSelection', this._onSelectionChange.bind(this));
-    this._preview();
     this._patchFirefox();
     this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.wrapper, (function(_this) {
       return function(e) {
@@ -3112,6 +3111,11 @@ UnSelectionBlock = (function(superClass) {
     this.editor.body.on('click.simditor-unSelection', "." + UnSelectionBlock.className.taskBlockSetting, (function(_this) {
       return function(e) {
         return _this._unTaskBlockSettingClick(e);
+      };
+    })(this));
+    this.editor.body.on('click.simditor-unSelection', "[" + UnSelectionBlock.attr.img + "] img", (function(_this) {
+      return function(e) {
+        return _this._unImgClick(e);
       };
     })(this));
     this.editor.body.on('click.simditor-unSelection', "[data-map] .wrap img,[data-map] .wrap", (function(_this) {
@@ -3491,6 +3495,24 @@ UnSelectionBlock = (function(superClass) {
     }
   };
 
+  UnSelectionBlock.prototype._unImgClick = function(e) {
+    var editable, select, src;
+    src = e.target.src;
+    editable = this.editor.body.attr('contenteditable');
+    if (editable === 'true') {
+      select = e.target.parentElement.getAttribute(UnSelectionBlock.attr.select);
+      if (select) {
+        return this.editor.trigger('selectImg', {
+          src: src
+        });
+      }
+    } else {
+      return this.editor.trigger('selectImg', {
+        src: src
+      });
+    }
+  };
+
   UnSelectionBlock.prototype._selectWrapper = function(wrapper) {
     var html, p;
     html = wrapper.html();
@@ -3547,59 +3569,6 @@ UnSelectionBlock = (function(superClass) {
       }
       return this.editor.trigger('valuechanged');
     }
-  };
-
-  UnSelectionBlock.prototype._preview = function() {
-    if (!$.fn.magnificPopup) {
-      return;
-    }
-    return this.editor.body.magnificPopup({
-      delegate: "[data-unselection-select='true'][data-img] img",
-      type: 'image',
-      preloader: true,
-      removalDelay: 1000,
-      mainClass: 'mfp-fade',
-      tLoading: 'Loading...',
-      autoFocusLast: false,
-      zoom: {
-        enabled: true,
-        duration: 300,
-        easing: 'ease-in-out',
-        opener: (function(_this) {
-          return function(openerElement) {
-            return openerElement;
-          };
-        })(this)
-      },
-      callbacks: {
-        beforeOpen: function() {},
-        open: function() {},
-        close: function() {},
-        elementParse: function(item) {
-          if (!item.src) {
-            item.src = item.el.attr('src');
-          }
-          if (item.src && typeof item.src === 'string') {
-            return item.src = item.src.replace('officeweb365.com/o', 'ow365.cn');
-          }
-        }
-      },
-      gallery: {
-        enabled: true,
-        preload: [0, 2],
-        navigateByImgClick: false,
-        tPrev: '上一个',
-        tNext: '下一个'
-      },
-      image: {
-        titleSrc: 'title',
-        tError: '<a href="%url%">The image</a> could not be loaded.'
-      },
-      iframe: {},
-      ajax: {
-        tError: '<a href="%url%">The content</a> could not be loaded.'
-      }
-    });
   };
 
   return UnSelectionBlock;
