@@ -7252,8 +7252,8 @@ ImageButton = (function(superClass) {
         });
       };
     })(this));
-    uploadProgress = $.proxy(this.editor.util.throttle(function(e, file, loaded, total) {
-      var $img, $mask, percent;
+    uploadProgress = $.proxy(this.editor.util.throttle(function(e, file, percent) {
+      var $img, $mask;
       if (!file.inline) {
         return;
       }
@@ -7266,7 +7266,6 @@ ImageButton = (function(superClass) {
         $mask.remove();
         return;
       }
-      percent = loaded / total;
       percent = (percent * 100).toFixed(0);
       if (percent > 99) {
         percent = 99;

@@ -148,7 +148,7 @@ class ImageButton extends Button
 
         @loadImage $img, src
 
-    uploadProgress = $.proxy @editor.util.throttle((e, file, loaded, total) ->
+    uploadProgress = $.proxy @editor.util.throttle((e, file, percent) ->
       return unless file.inline
       $mask = file.img.data('mask')
       return unless $mask
@@ -158,7 +158,6 @@ class ImageButton extends Button
         $mask.remove()
         return
 
-      percent = loaded / total
       percent = (percent * 100).toFixed(0)
       percent = 99 if percent > 99
       $mask.find('.progress').height "#{100 - percent}%"
